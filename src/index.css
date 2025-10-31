@@ -111,6 +111,10 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     font-family: 'Bricolage Grotesque', sans-serif;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
@@ -127,6 +131,11 @@ All colors MUST be HSL.
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Scroll offset for fixed header */
+  section[id] {
+    scroll-margin-top: 100px;
   }
 
   .gradient-primary {
