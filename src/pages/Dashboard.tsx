@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { AppSidebar } from '@/components/AppSidebar';
+import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -131,8 +132,7 @@ export default function Dashboard() {
                   } />
                   <Route path="ondc" element={
                     <div>
-                      <h2 className="text-3xl font-bold mb-6">ONDC Integration</h2>
-                      <p className="text-muted-foreground">Manage your ONDC network connections and integrations.</p>
+                      <ONDCRegistrationForm />
                     </div>
                   } />
                   <Route path="experiences" element={
