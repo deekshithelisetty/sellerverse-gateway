@@ -11,7 +11,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20">
+    <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-16">
       {/* Ultra bright vibrant gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
       

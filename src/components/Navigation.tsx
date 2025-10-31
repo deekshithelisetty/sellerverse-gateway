@@ -6,23 +6,26 @@ const Navigation = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-3">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
       <div className="max-w-7xl mx-auto">
-        <div className="glass-card rounded-full px-6 py-3 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
+        <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
             <h1 className="text-2xl font-bold tracking-tight">SELLER TSP</h1>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" className="text-sm font-medium hover:text-primary transition-colors">
-              About
+            <a href="#products" className="text-sm font-medium hover:text-primary transition-colors">
+              Products
             </a>
-            <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">
-              Services
+            <a href="#creators" className="text-sm font-medium hover:text-primary transition-colors">
+              Creators
             </a>
-            <a href="#ondc" className="text-sm font-medium hover:text-primary transition-colors">
-              ONDC Integration
+            <a href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
+              Pricing
+            </a>
+            <a href="#resources" className="text-sm font-medium hover:text-primary transition-colors">
+              Resources
             </a>
             <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">
               Contact
