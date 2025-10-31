@@ -5,6 +5,8 @@ import ProductsSection from "@/components/ProductsSection";
 import CreatorsSection from "@/components/CreatorsSection";
 import PricingSection from "@/components/PricingSection";
 import ONDCSection from "@/components/ONDCSection";
+import ContactSection from "@/components/ContactSection";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -28,14 +30,10 @@ const Index = () => {
       <ONDCSection />
 
       {/* Contact Section */}
-      <section id="contact" className="relative py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-3xl p-12">
-            <h2 className="text-4xl font-bold mb-6">Contact</h2>
-            <p className="text-lg text-muted-foreground">Get in touch with our team to start your ONDC journey.</p>
-          </div>
-        </div>
-      </section>
+      <ContactSection />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
