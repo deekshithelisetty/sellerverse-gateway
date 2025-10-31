@@ -111,32 +111,17 @@ export function ONDCRegistrationForm() {
     return () => subscription.unsubscribe();
   });
 
-  // Calculate progress based on section completion
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  
+  // Calculate progress based on filled fields
   const calculateProgress = () => {
-    if (isSubmitted) return 100;
-    
-    let completedSections = 0;
-    
-    STEPS.forEach(step => {
-      const sectionFields = step.fields as Array<keyof ONDCFormValues>;
-      const allFieldsFilled = sectionFields.every(field => {
-        const value = watchedValues[field];
-        return value !== '' && value !== undefined && value !== null;
-      });
-      
-      if (allFieldsFilled) {
-        completedSections++;
-      }
-    });
-    
-    return Math.round((completedSections / STEPS.length) * 100);
+    const totalFields = Object.keys(form.getValues()).length;
+    const filledFields = Object.values(watchedValues).filter(value => 
+      value !== '' && value !== undefined && value !== null
+    ).length;
+    return Math.round((filledFields / totalFields) * 100);
   };
 
   const onSubmit = (data: ONDCFormValues) => {
     console.log('Form submitted:', data);
-    setIsSubmitted(true);
     toast.success('ONDC Registration submitted successfully!');
   };
 
@@ -165,24 +150,23 @@ export function ONDCRegistrationForm() {
             </p>
           </div>
           
-          {/* Progress Bar - Right Side */}
+          {/* Progress Bar - Top Right */}
           <div className="flex flex-col items-end gap-2 min-w-[240px]">
-            <span className="text-sm font-semibold">
-              {calculateProgress()}%
+            <span className="text-sm font-bold">
+              Profile Completion: {calculateProgress()}%
             </span>
-            <div className="relative w-full h-4 rounded-full bg-secondary/20 overflow-hidden">
+            <div className="relative w-full h-4 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
               <div 
                 className="h-full transition-all duration-500 ease-out rounded-full"
-                style={{
+                style={{ 
                   width: `${calculateProgress()}%`,
-                  background: calculateProgress() === 100 
-                    ? 'linear-gradient(90deg, #22c55e 0%, #86efac 100%)'
-                    : `linear-gradient(90deg, #f97316 0%, #fbbf24 ${Math.min(calculateProgress() * 2, 100)}%, #22c55e ${calculateProgress()}%)`,
-                  boxShadow: calculateProgress() > 0 
-                    ? calculateProgress() === 100
-                      ? '0 0 20px rgba(34, 197, 94, 0.6)'
-                      : '0 0 15px rgba(251, 191, 36, 0.5)'
-                    : 'none'
+                  background: `linear-gradient(90deg, 
+                    hsl(25, 95%, 53%) 0%, 
+                    hsl(45, 93%, 47%) 25%,
+                    hsl(84, 81%, 44%) 50%,
+                    hsl(120, 100%, 40%) 75%,
+                    hsl(142, 76%, 36%) 100%)`,
+                  boxShadow: calculateProgress() > 0 ? '0 0 20px rgba(255, 127, 0, 0.5), 0 0 40px rgba(34, 197, 94, 0.3)' : 'none'
                 }}
               />
             </div>
