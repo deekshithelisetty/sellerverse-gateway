@@ -22,8 +22,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Shield, CheckCircle2 } from 'lucide-react';
+import { Shield, CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { Progress } from '@/components/ui/progress';
 
 const ondcFormSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters').max(50, 'First name too long'),
@@ -70,7 +71,15 @@ const ondcDomains = [
   'Services',
 ];
 
+const STEPS = [
+  { title: 'Personal Information', fields: ['firstName', 'lastName', 'mobile', 'email'] },
+  { title: 'Business Information', fields: ['entityName', 'role', 'ondcDomain', 'productDomains', 'transactionType', 'gstNo'] },
+  { title: 'Network Configuration', fields: ['subscriberId', 'environment', 'sslCertificate'] },
+  { title: 'Location Information', fields: ['city', 'state', 'zip', 'stdCode', 'country'] },
+];
+
 export function ONDCRegistrationForm() {
+  const [currentStep, setCurrentStep] = useState(0);
   const [previewData, setPreviewData] = useState<Partial<ONDCFormValues>>({});
 
   const form = useForm<ONDCFormValues>({
@@ -102,27 +111,60 @@ export function ONDCRegistrationForm() {
     return () => subscription.unsubscribe();
   });
 
+  // Calculate progress based on filled fields
+  const calculateProgress = () => {
+    const totalFields = Object.keys(form.getValues()).length;
+    const filledFields = Object.values(watchedValues).filter(value => 
+      value !== '' && value !== undefined && value !== null
+    ).length;
+    return Math.round((filledFields / totalFields) * 100);
+  };
+
   const onSubmit = (data: ONDCFormValues) => {
     console.log('Form submitted:', data);
     toast.success('ONDC Registration submitted successfully!');
+  };
+
+  const handleNext = async () => {
+    const currentStepFields = STEPS[currentStep].fields as Array<keyof ONDCFormValues>;
+    const isValid = await form.trigger(currentStepFields);
+    
+    if (isValid) {
+      setCurrentStep(prev => Math.min(prev + 1, STEPS.length - 1));
+    }
+  };
+
+  const handleBack = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 0));
   };
 
   return (
     <div className="grid lg:grid-cols-2 gap-8">
       {/* Form Section */}
       <div className="space-y-6">
-        <div>
-          <h3 className="text-2xl font-bold mb-2">ONDC Registration</h3>
-          <p className="text-muted-foreground text-sm">
-            Fill in the details below to register on the ONDC network
-          </p>
+        <div className="flex justify-between items-start gap-4">
+          <div>
+            <h3 className="text-2xl font-bold mb-2">ONDC Registration</h3>
+            <p className="text-muted-foreground text-sm">
+              Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
+            </p>
+          </div>
+          
+          {/* Progress Bar - Top Right */}
+          <div className="flex flex-col items-end gap-2 min-w-[200px]">
+            <span className="text-xs font-semibold text-muted-foreground">
+              Profile Completion: {calculateProgress()}%
+            </span>
+            <Progress value={calculateProgress()} className="h-2 w-full" />
+          </div>
         </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Personal Information */}
-            <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
-              <h4 className="font-semibold text-lg">Personal Information</h4>
+            {/* Step 1: Personal Information */}
+            {currentStep === 0 && (
+              <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <h4 className="font-semibold text-lg">{STEPS[0].title}</h4>
               
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -182,11 +224,13 @@ export function ONDCRegistrationForm() {
                   </FormItem>
                 )}
               />
-            </div>
+              </div>
+            )}
 
-            {/* Business Information */}
-            <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
-              <h4 className="font-semibold text-lg">Business Information</h4>
+            {/* Step 2: Business Information */}
+            {currentStep === 1 && (
+              <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <h4 className="font-semibold text-lg">{STEPS[1].title}</h4>
 
               <FormField
                 control={form.control}
@@ -306,11 +350,13 @@ export function ONDCRegistrationForm() {
                   </FormItem>
                 )}
               />
-            </div>
+              </div>
+            )}
 
-            {/* Network Configuration */}
-            <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
-              <h4 className="font-semibold text-lg">Network Configuration</h4>
+            {/* Step 3: Network Configuration */}
+            {currentStep === 2 && (
+              <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <h4 className="font-semibold text-lg">{STEPS[2].title}</h4>
 
               <FormField
                 control={form.control}
@@ -368,11 +414,13 @@ export function ONDCRegistrationForm() {
                 <FormDescription>Upload your SSL certificate (.pem or .crt file)</FormDescription>
                 <FormMessage />
               </FormItem>
-            </div>
+              </div>
+            )}
 
-            {/* Location Information */}
-            <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
-              <h4 className="font-semibold text-lg">Location Information</h4>
+            {/* Step 4: Location Information */}
+            {currentStep === 3 && (
+              <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <h4 className="font-semibold text-lg">{STEPS[3].title}</h4>
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -447,11 +495,38 @@ export function ONDCRegistrationForm() {
                   </FormItem>
                 )}
               />
-            </div>
+              </div>
+            )}
 
-            <Button type="submit" className="w-full gradient-primary text-lg py-6">
-              Submit Registration
-            </Button>
+            {/* Navigation Buttons */}
+            <div className="flex gap-4">
+              {currentStep > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleBack}
+                  className="flex-1 glass border-white/20"
+                >
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+              )}
+              
+              {currentStep < STEPS.length - 1 ? (
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  className="flex-1 gradient-primary"
+                >
+                  Next
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button type="submit" className="flex-1 gradient-primary text-lg py-6">
+                  Submit Registration
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
       </div>
