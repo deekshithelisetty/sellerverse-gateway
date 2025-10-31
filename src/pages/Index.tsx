@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
+import ProductsSection from "@/components/ProductsSection";
 
 const Index = () => {
   return (
@@ -8,14 +9,7 @@ const Index = () => {
       <HeroSection />
       
       {/* Products Section */}
-      <section id="products" className="relative py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-3xl p-12">
-            <h2 className="text-4xl font-bold mb-6">Products</h2>
-            <p className="text-lg text-muted-foreground">Discover our suite of products designed for ONDC platform integration.</p>
-          </div>
-        </div>
-      </section>
+      <ProductsSection />
 
       {/* Creators Section */}
       <section id="creators" className="relative py-20 px-6">
