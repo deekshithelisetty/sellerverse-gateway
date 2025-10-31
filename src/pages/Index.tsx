@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import ProductsSection from "@/components/ProductsSection";
 import CreatorsSection from "@/components/CreatorsSection";
+import PricingSection from "@/components/PricingSection";
 
 const Index = () => {
   return (
@@ -16,14 +17,7 @@ const Index = () => {
       <CreatorsSection />
 
       {/* Pricing Section */}
-      <section id="pricing" className="relative py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-3xl p-12">
-            <h2 className="text-4xl font-bold mb-6">Pricing</h2>
-            <p className="text-lg text-muted-foreground">Simple, transparent pricing that grows with your business.</p>
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* Resources Section */}
       <section id="resources" className="relative py-20 px-6">
