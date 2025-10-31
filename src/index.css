@@ -135,7 +135,8 @@ All colors MUST be HSL.
 
   /* Scroll offset for fixed header */
   section[id] {
-    scroll-margin-top: 100px;
+    scroll-margin-top: 80px;
+    padding-top: 1.25rem;
   }
 
   .gradient-primary {
