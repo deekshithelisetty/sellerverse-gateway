@@ -1,36 +1,44 @@
 import { Home, Network, Sparkles, ShoppingBag, Settings } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { Separator } from '@/components/ui/separator';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/dashboard', icon: Home, gradient: 'from-blue-500 to-cyan-500' },
-  { title: 'ONDC', url: '/dashboard/ondc', icon: Network, gradient: 'from-purple-500 to-pink-500' },
-  { title: 'Experiences', url: '/dashboard/experiences', icon: Sparkles, gradient: 'from-pink-500 to-rose-500' },
-  { title: 'Retail', url: '/dashboard/retail', icon: ShoppingBag, gradient: 'from-orange-500 to-yellow-500' },
-  { title: 'Settings', url: '/dashboard/settings', icon: Settings, gradient: 'from-gray-500 to-slate-500' },
+  { title: 'Dashboard', url: '/dashboard', icon: Home },
+  { title: 'ONDC', url: '/dashboard/ondc', icon: Network },
+  { title: 'Experiences', url: '/dashboard/experiences', icon: Sparkles },
+  { title: 'Retail', url: '/dashboard/retail', icon: ShoppingBag },
+  { title: 'Settings', url: '/dashboard/settings', icon: Settings },
 ];
 
 export function AppSidebar() {
   return (
-    <nav className="flex flex-col gap-3">
-      {menuItems.map((item) => (
-        <NavLink
-          key={item.title}
-          to={item.url}
-          end={item.url === '/dashboard'}
-          className={({ isActive }) =>
-            `group flex flex-col items-center gap-2 px-3 py-4 rounded-2xl transition-all ${
-              isActive
-                ? 'glass-card border border-white/20 shadow-lg scale-105'
-                : 'hover:glass hover:border hover:border-white/10 hover:scale-105'
-            }`
-          }
-        >
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
-            <item.icon className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-xs font-semibold text-center">{item.title}</span>
-        </NavLink>
-      ))}
-    </nav>
+    <div className="flex flex-col gap-4">
+      <nav className="flex flex-col gap-2">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.title}
+            to={item.url}
+            end={item.url === '/dashboard'}
+            className={({ isActive }) =>
+              `group flex flex-col items-center gap-2 px-3 py-3 rounded-xl transition-all ${
+                isActive
+                  ? 'bg-white/20 border border-white/30 shadow-md'
+                  : 'hover:bg-white/10 hover:border hover:border-white/20'
+              }`
+            }
+          >
+            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/20 transition-all border border-white/20">
+              <item.icon className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-medium text-center">{item.title}</span>
+          </NavLink>
+        ))}
+      </nav>
+      
+      {/* Animated Divider */}
+      <div className="relative px-4">
+        <Separator className="bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
+      </div>
+    </div>
   );
 }

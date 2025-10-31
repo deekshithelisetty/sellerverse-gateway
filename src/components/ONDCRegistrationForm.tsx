@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,7 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Shield, CheckCircle2 } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ondcFormSchema = z.object({
@@ -71,8 +70,6 @@ const ondcDomains = [
 ];
 
 export function ONDCRegistrationForm() {
-  const [previewData, setPreviewData] = useState<Partial<ONDCFormValues>>({});
-
   const form = useForm<ONDCFormValues>({
     resolver: zodResolver(ondcFormSchema),
     defaultValues: {
@@ -92,34 +89,51 @@ export function ONDCRegistrationForm() {
     },
   });
 
-  const watchedValues = form.watch();
-
-  // Update preview in real-time
-  useState(() => {
-    const subscription = form.watch((values) => {
-      setPreviewData(values as Partial<ONDCFormValues>);
-    });
-    return () => subscription.unsubscribe();
-  });
-
   const onSubmit = (data: ONDCFormValues) => {
     console.log('Form submitted:', data);
     toast.success('ONDC Registration submitted successfully!');
   };
 
-  return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      {/* Form Section */}
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-2xl font-bold mb-2">ONDC Registration</h3>
-          <p className="text-muted-foreground text-sm">
-            Fill in the details below to register on the ONDC network
-          </p>
-        </div>
+  const calculateProgress = () => {
+    const values = form.getValues();
+    const fields = Object.keys(ondcFormSchema.shape);
+    const filledFields = fields.filter(field => {
+      const value = values[field as keyof ONDCFormValues];
+      return value !== undefined && value !== '' && value !== null;
+    });
+    return Math.round((filledFields.length / fields.length) * 100);
+  };
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+  const progress = calculateProgress();
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-2xl font-bold mb-2">ONDC Registration</h3>
+        <p className="text-muted-foreground text-sm">
+          Fill in the details below to register on the ONDC network
+        </p>
+      </div>
+
+      {/* Progress Bar - Indian Flag Colors */}
+      <div className="glass-card p-6 rounded-2xl border-white/20 space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Registration Progress</span>
+          <span className="text-sm font-bold">{progress}%</span>
+        </div>
+        <div className="relative h-4 w-full overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full transition-all duration-500 rounded-full"
+            style={{
+              width: `${progress}%`,
+              background: 'linear-gradient(to right, #FF9933 0%, #FFFFFF 50%, #138808 100%)'
+            }}
+          />
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Personal Information */}
             <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
               <h4 className="font-semibold text-lg">Personal Information</h4>
@@ -449,122 +463,11 @@ export function ONDCRegistrationForm() {
               />
             </div>
 
-            <Button type="submit" className="w-full gradient-primary text-lg py-6">
-              Submit Registration
-            </Button>
-          </form>
-        </Form>
-      </div>
-
-      {/* Real-time Preview Section */}
-      <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-        <div>
-          <h3 className="text-2xl font-bold mb-2">Live Preview</h3>
-          <p className="text-muted-foreground text-sm">
-            Real-time preview of your registration data
-          </p>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl border-white/20 space-y-6">
-          {/* Personal Info Preview */}
-          {(watchedValues.firstName || watchedValues.lastName || watchedValues.email || watchedValues.mobile) && (
-            <div className="space-y-3">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Personal Details</h4>
-              {(watchedValues.firstName || watchedValues.lastName) && (
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <p className="font-medium">{watchedValues.firstName} {watchedValues.lastName}</p>
-                </div>
-              )}
-              {watchedValues.email && (
-                <p className="text-sm text-muted-foreground pl-6">{watchedValues.email}</p>
-              )}
-              {watchedValues.mobile && (
-                <p className="text-sm text-muted-foreground pl-6">📱 {watchedValues.mobile}</p>
-              )}
-            </div>
-          )}
-
-          {/* Business Info Preview */}
-          {(watchedValues.entityName || watchedValues.role || watchedValues.ondcDomain) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Business Details</h4>
-              {watchedValues.entityName && (
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <p className="font-medium">{watchedValues.entityName}</p>
-                </div>
-              )}
-              {watchedValues.role && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Role: <span className="font-medium capitalize">{watchedValues.role}</span>
-                </p>
-              )}
-              {watchedValues.ondcDomain && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Domain: <span className="font-medium capitalize">{watchedValues.ondcDomain}</span>
-                </p>
-              )}
-              {watchedValues.transactionType && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Type: <span className="font-medium">{watchedValues.transactionType}</span>
-                </p>
-              )}
-              {watchedValues.gstNo && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  GST: <span className="font-mono text-xs">{watchedValues.gstNo}</span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Network Config Preview */}
-          {(watchedValues.subscriberId || watchedValues.environment) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Network Configuration</h4>
-              {watchedValues.subscriberId && (
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-blue-500" />
-                  <p className="font-mono text-sm">{watchedValues.subscriberId}</p>
-                </div>
-              )}
-              {watchedValues.environment && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Environment: <span className="font-medium capitalize">{watchedValues.environment}</span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Location Preview */}
-          {(watchedValues.city || watchedValues.state || watchedValues.country) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Location</h4>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                <p className="text-sm">
-                  {[watchedValues.city, watchedValues.state, watchedValues.country].filter(Boolean).join(', ')}
-                </p>
-              </div>
-              {watchedValues.zip && (
-                <p className="text-sm text-muted-foreground pl-6">ZIP: {watchedValues.zip}</p>
-              )}
-              {watchedValues.stdCode && (
-                <p className="text-sm text-muted-foreground pl-6">STD: {watchedValues.stdCode}</p>
-              )}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!watchedValues.firstName && !watchedValues.entityName && !watchedValues.subscriberId && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-sm">
-                Start filling the form to see live preview
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+          <Button type="submit" className="w-full gradient-primary text-lg py-6">
+            Submit Registration
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }
