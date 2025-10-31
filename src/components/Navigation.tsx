@@ -24,8 +24,8 @@ const Navigation = () => {
             <a href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
               Pricing
             </a>
-            <a href="#resources" className="text-sm font-medium hover:text-primary transition-colors">
-              Resources
+            <a href="#ondc" className="text-sm font-medium hover:text-primary transition-colors">
+              ONDC
             </a>
             <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">
               Contact
