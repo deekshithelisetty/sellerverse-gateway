@@ -12,13 +12,14 @@ const HeroSection = () => {
 
   return (
     <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20">
-      {/* Bright luminous gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-300 to-cyan-400"></div>
+      {/* Ultra bright vibrant gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
       
-      {/* Bright animated gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-pink-300 to-purple-400 rounded-full blur-3xl opacity-60 animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-cyan-300 to-blue-400 rounded-full blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-gradient-to-br from-purple-300 to-pink-400 rounded-full blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      {/* Luminous animated gradient orbs for enhanced glassy effect */}
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-1/3 right-1/3 w-[500px] h-[500px] bg-gradient-to-br from-blue-100 to-pink-200 rounded-full blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
         <div className="glass-card rounded-[3rem] p-12 md:p-16 relative overflow-hidden">

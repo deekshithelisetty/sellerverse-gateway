@@ -6,9 +6,9 @@ const Navigation = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-3">
       <div className="max-w-7xl mx-auto">
-        <div className="glass-card rounded-3xl px-8 py-4 flex items-center justify-between">
+        <div className="glass-card rounded-full px-6 py-3 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
             <h1 className="text-2xl font-bold tracking-tight">SELLER TSP</h1>
