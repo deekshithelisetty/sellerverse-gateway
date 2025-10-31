@@ -18,7 +18,7 @@ export function AppSidebar() {
           to={item.url}
           end={item.url === '/dashboard'}
           className={({ isActive }) =>
-            `group flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
+            `group flex items-center gap-3 px-2 py-1.5 rounded-lg transition-all ${
               isActive
                 ? 'glass-card border border-white/20 shadow-lg'
                 : 'hover:glass hover:border hover:border-white/10'
