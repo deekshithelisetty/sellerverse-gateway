@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import ProductsSection from "@/components/ProductsSection";
+import CreatorsSection from "@/components/CreatorsSection";
 
 const Index = () => {
   return (
@@ -10,16 +11,9 @@ const Index = () => {
       
       {/* Products Section */}
       <ProductsSection />
-
+      
       {/* Creators Section */}
-      <section id="creators" className="relative py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-3xl p-12">
-            <h2 className="text-4xl font-bold mb-6">Creators</h2>
-            <p className="text-lg text-muted-foreground">Empowering creators to build and scale their business on ONDC.</p>
-          </div>
-        </div>
-      </section>
+      <CreatorsSection />
 
       {/* Pricing Section */}
       <section id="pricing" className="relative py-20 px-6">
