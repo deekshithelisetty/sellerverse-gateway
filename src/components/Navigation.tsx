@@ -1,14 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, User } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import AuthDialog from "./AuthDialog";
 
 const Navigation = () => {
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
@@ -38,22 +33,17 @@ const Navigation = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {user ? (
+            {isSignedIn ? (
               <>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="gap-2"
-                  onClick={() => navigate('/dashboard')}
-                >
+                <Button variant="ghost" size="sm" className="gap-2">
                   <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">Dashboard</span>
+                  <span className="hidden sm:inline">Profile</span>
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="gap-2 glass border-white/20"
-                  onClick={signOut}
+                  onClick={() => setIsSignedIn(false)}
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden sm:inline">Sign Out</span>
@@ -63,7 +53,7 @@ const Navigation = () => {
               <Button 
                 className="gap-2 gradient-primary border-0 hover:shadow-lg transition-all"
                 size="sm"
-                onClick={() => setAuthDialogOpen(true)}
+                onClick={() => setIsSignedIn(true)}
               >
                 <LogIn className="w-4 h-4" />
                 <span className="hidden sm:inline">Get Started</span>
@@ -72,7 +62,6 @@ const Navigation = () => {
           </div>
         </div>
       </div>
-      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
     </nav>
   );
 };

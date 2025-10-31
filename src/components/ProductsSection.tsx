@@ -53,9 +53,8 @@ const ProductsSection = () => {
   ];
 
   return (
-    <section id="products" className="relative py-16 px-6">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background rounded-t-[3rem] rounded-b-[3rem]"></div>
-      <div className="max-w-7xl mx-auto relative">
+    <section id="products" className="relative py-20 px-6">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Everything You Need to Succeed
