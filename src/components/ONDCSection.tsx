@@ -91,7 +91,7 @@ const ONDCSection = () => {
               C
             </span>
             <svg className="inline-block animate-spin-slow" width="40" height="40" viewBox="0 0 40 40" style={{ margin: '0 -4px' }}>
-              <circle cx="20" cy="20" r="18" fill="#001F8D" stroke="white" strokeWidth="1" />
+              <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
               <g transform="translate(20, 20)">
                 {[...Array(24)].map((_, i) => {
                   const angle = (i * 15 * Math.PI) / 180;
@@ -107,11 +107,11 @@ const ONDCSection = () => {
                       x2={x2}
                       y2={y2}
                       stroke="#001F8D"
-                      strokeWidth="1"
+                      strokeWidth="1.5"
                     />
                   );
                 })}
-                <circle cx="0" cy="0" r="3" fill="white" />
+                <circle cx="0" cy="0" r="3" fill="#001F8D" />
               </g>
             </svg>
             <span className="text-white" style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4)' }}>
