@@ -25,7 +25,7 @@ export function AppSidebar() {
             }`
           }
         >
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
             <item.icon className="h-5 w-5 text-white" />
           </div>
           <span className="text-[10px] font-semibold text-center">{item.title}</span>
