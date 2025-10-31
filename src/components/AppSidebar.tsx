@@ -24,10 +24,10 @@ export function AppSidebar() {
   const { open } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="glass-card border-white/20">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-gradient font-semibold">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -37,8 +37,8 @@ export function AppSidebar() {
                       to={item.url}
                       className={({ isActive }) =>
                         isActive
-                          ? 'bg-accent text-accent-foreground'
-                          : 'hover:bg-accent/50'
+                          ? 'glass-card border-white/20 rounded-xl hover:scale-105 transition-all'
+                          : 'hover:glass hover:border-white/10 rounded-xl hover:scale-105 transition-all'
                       }
                     >
                       <item.icon className="h-4 w-4" />

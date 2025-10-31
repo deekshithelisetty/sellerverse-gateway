@@ -36,11 +36,15 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full gradient-mesh relative overflow-hidden">
+        {/* Animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-40 animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        
         <AppSidebar />
         
-        <div className="flex-1 flex flex-col">
-          <header className="h-16 border-b bg-background flex items-center justify-between px-6">
+        <div className="flex-1 flex flex-col relative z-10">
+          <header className="h-16 glass-card border-white/20 flex items-center justify-between px-6">
             <SidebarTrigger />
             
             <DropdownMenu>
@@ -76,9 +80,9 @@ export default function Dashboard() {
 
           <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
-              <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+              <h1 className="text-3xl font-bold mb-6 text-gradient">Dashboard</h1>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <div className="glass-card p-6 rounded-lg border">
+                <div className="glass-card p-6 rounded-2xl border-white/20 hover:scale-105 transition-transform">
                   <h3 className="text-lg font-semibold mb-2">Welcome Back!</h3>
                   <p className="text-muted-foreground">
                     Start managing your seller operations from here.

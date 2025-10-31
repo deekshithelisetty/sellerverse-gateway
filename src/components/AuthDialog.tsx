@@ -73,18 +73,18 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] glass-card border-white/20 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Seller Portal</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-2xl font-bold text-gradient">Seller Portal</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Sign in or create your seller account
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="signup" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 glass border-white/10">
+            <TabsTrigger value="signup" className="data-[state=active]:glass-card">Sign Up</TabsTrigger>
+            <TabsTrigger value="signin" className="data-[state=active]:glass-card">Sign In</TabsTrigger>
           </TabsList>
 
           <TabsContent value="signup" className="space-y-4">
@@ -97,7 +97,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     id="signup-email"
                     type="email"
                     placeholder="seller@example.com"
-                    className="pl-10"
+                    className="pl-10 glass border-white/20 focus:border-white/40"
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
                     required
@@ -113,7 +113,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     id="signup-phone"
                     type="tel"
                     placeholder="+1234567890"
-                    className="pl-10"
+                    className="pl-10 glass border-white/20 focus:border-white/40"
                     value={signUpPhone}
                     onChange={(e) => setSignUpPhone(e.target.value)}
                     required
@@ -129,7 +129,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     id="signup-password"
                     type="password"
                     placeholder="••••••••"
-                    className="pl-10"
+                    className="pl-10 glass border-white/20 focus:border-white/40"
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     required
@@ -137,7 +137,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full gradient-primary border-0 hover:shadow-lg hover:scale-105 transition-all">
                 Create Account
               </Button>
             </form>
@@ -154,7 +154,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full glass border-white/20 hover:bg-white/10 hover:scale-105 transition-all"
               onClick={handleGoogleSignUp}
             >
               <Chrome className="mr-2 h-4 w-4" />
@@ -173,13 +173,13 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                       id="signin-phone"
                       type="tel"
                       placeholder="+1234567890"
-                      className="pl-10"
+                      className="pl-10 glass border-white/20 focus:border-white/40"
                       value={signInPhoneOTP}
                       onChange={(e) => setSignInPhoneOTP(e.target.value)}
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full" variant="secondary">
+                <Button type="submit" className="w-full gradient-secondary border-0 hover:shadow-lg hover:scale-105 transition-all" variant="secondary">
                   Send OTP to Phone
                 </Button>
               </form>
@@ -202,13 +202,13 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                       id="signin-email"
                       type="email"
                       placeholder="seller@example.com"
-                      className="pl-10"
+                      className="pl-10 glass border-white/20 focus:border-white/40"
                       value={signInEmailOTP}
                       onChange={(e) => setSignInEmailOTP(e.target.value)}
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full" variant="secondary">
+                <Button type="submit" className="w-full gradient-secondary border-0 hover:shadow-lg hover:scale-105 transition-all" variant="secondary">
                   Send OTP to Email
                 </Button>
               </form>
@@ -225,7 +225,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full glass border-white/20 hover:bg-white/10 hover:scale-105 transition-all"
                 onClick={handleGoogleSignUp}
               >
                 <Chrome className="mr-2 h-4 w-4" />
