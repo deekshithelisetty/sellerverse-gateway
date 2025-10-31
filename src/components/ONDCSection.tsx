@@ -56,8 +56,8 @@ const ONDCSection = () => {
   ];
 
   return (
-    <section id="ondc" className="relative py-20 px-6">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20"></div>
+    <section id="ondc" className="relative py-16 px-6">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 rounded-t-[3rem] rounded-b-[3rem]"></div>
       
       <div className="max-w-7xl mx-auto relative">
         <div className="text-center mb-16">

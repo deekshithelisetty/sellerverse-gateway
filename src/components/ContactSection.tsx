@@ -49,10 +49,10 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-20 px-6 overflow-hidden">
+    <section id="contact" className="relative py-16 px-6 overflow-hidden">
       {/* Gradient Background matching hero */}
-      <div className="absolute inset-0 gradient-mesh"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10"></div>
+      <div className="absolute inset-0 gradient-mesh rounded-t-[3rem] rounded-b-[3rem]"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-t-[3rem] rounded-b-[3rem]"></div>
       
       {/* Animated gradient orbs */}
       <div className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
@@ -103,7 +103,7 @@ const ContactSection = () => {
             </div>
 
             <div className="glass-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
-              <div className="flex items-start gap-6">
+              <div className="flex items-start gap-6 mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-lg">
                   <Mail className="w-7 h-7 text-white" />
                 </div>
@@ -113,6 +113,24 @@ const ContactSection = () => {
                     info@ondc.org<br />
                     support@ondc.org
                   </p>
+                </div>
+              </div>
+
+              {/* Newsletter Section */}
+              <div className="pt-6 border-t border-border/50">
+                <h4 className="text-lg font-bold mb-3">Stay Updated</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Subscribe to our newsletter for the latest updates and insights.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="flex-1 px-4 py-2 rounded-full glass border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                  />
+                  <button className="px-6 py-2 rounded-full gradient-primary text-white font-semibold hover:shadow-lg transition-all text-sm whitespace-nowrap">
+                    Subscribe
+                  </button>
                 </div>
               </div>
             </div>

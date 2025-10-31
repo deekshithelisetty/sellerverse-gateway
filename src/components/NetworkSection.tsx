@@ -30,10 +30,10 @@ const NetworkSection = () => {
   ];
 
   return (
-    <section className="relative py-20 px-6 overflow-hidden">
+    <section className="relative py-16 px-6 overflow-hidden">
       {/* Gradient Background matching hero */}
-      <div className="absolute inset-0 gradient-mesh"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10"></div>
+      <div className="absolute inset-0 gradient-mesh rounded-t-[3rem] rounded-b-[3rem]"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-t-[3rem] rounded-b-[3rem]"></div>
       
       {/* Animated gradient orbs */}
       <div className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
