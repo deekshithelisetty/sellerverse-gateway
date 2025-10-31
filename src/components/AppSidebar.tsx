@@ -11,23 +11,24 @@ const menuItems = [
 
 export function AppSidebar() {
   return (
-    <div className="flex items-center gap-4">
+    <nav className="flex flex-col gap-2">
       {menuItems.map((item) => (
         <NavLink
           key={item.title}
           to={item.url}
+          end={item.url === '/dashboard'}
           className={({ isActive }) =>
-            `flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive
-                ? 'glass-card border border-white/20 font-semibold'
-                : 'hover:glass hover:border hover:border-white/10'
+                ? 'glass-card border border-white/20 font-semibold shadow-lg'
+                : 'hover:glass hover:border hover:border-white/10 hover:scale-105'
             }`
           }
         >
-          <item.icon className="h-4 w-4" />
-          <span className="text-sm">{item.title}</span>
+          <item.icon className="h-5 w-5" />
+          <span className="text-sm font-medium">{item.title}</span>
         </NavLink>
       ))}
-    </div>
+    </nav>
   );
 }
