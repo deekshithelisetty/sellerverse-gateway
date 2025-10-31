@@ -1,5 +1,15 @@
 import { Home, Network, Sparkles, ShoppingBag, Settings } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: Home, gradient: 'from-blue-500 to-cyan-500' },
@@ -10,27 +20,46 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
+  const { open } = useSidebar();
+
   return (
-    <nav className="flex flex-col gap-3">
-      {menuItems.map((item) => (
-        <NavLink
-          key={item.title}
-          to={item.url}
-          end={item.url === '/dashboard'}
-          className={({ isActive }) =>
-            `group flex flex-col items-center gap-2 px-3 py-4 rounded-2xl transition-all ${
-              isActive
-                ? 'glass-card border border-white/20 shadow-lg scale-105'
-                : 'hover:glass hover:border hover:border-white/10 hover:scale-105'
-            }`
-          }
-        >
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
-            <item.icon className="h-5 w-5 text-white" />
-          </div>
-          <span className="text-[10px] font-semibold text-center">{item.title}</span>
-        </NavLink>
-      ))}
-    </nav>
+    <Sidebar collapsible="icon">
+      <SidebarContent className="glass-card border-white/20">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-3 p-2">
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      end={item.url === '/dashboard'}
+                      className={({ isActive }) =>
+                        `group flex ${open ? 'flex-row' : 'flex-col'} items-center gap-2 px-3 py-4 rounded-xl transition-all ${
+                          isActive
+                            ? 'glass-card border border-white/20 shadow-lg'
+                            : 'hover:glass hover:border hover:border-white/10'
+                        }`
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <div className={`${open ? 'w-8 h-8' : 'w-10 h-10'} rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg flex-shrink-0`}>
+                            <item.icon className={`${open ? 'h-4 w-4' : 'h-5 w-5'} text-white`} />
+                          </div>
+                          <span className={`${open ? 'text-sm' : 'text-[10px]'} font-semibold text-center ${!open && 'mt-1'}`}>
+                            {item.title}
+                          </span>
+                        </>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
