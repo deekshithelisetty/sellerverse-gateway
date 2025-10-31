@@ -18,17 +18,17 @@ export function AppSidebar() {
           to={item.url}
           end={item.url === '/dashboard'}
           className={({ isActive }) =>
-            `group flex flex-col items-center gap-2 px-3 py-4 rounded-2xl transition-all ${
+            `group flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
               isActive
-                ? 'glass-card border border-white/20 shadow-lg scale-105'
-                : 'hover:glass hover:border hover:border-white/10 hover:scale-105'
+                ? 'glass-card border border-white/20 shadow-lg'
+                : 'hover:glass hover:border hover:border-white/10'
             }`
           }
         >
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
-            <item.icon className="h-5 w-5 text-white" />
+          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
+            <item.icon className="h-4 w-4 text-white" />
           </div>
-          <span className="text-[10px] font-semibold text-center">{item.title}</span>
+          <span className="text-xs font-semibold">{item.title}</span>
         </NavLink>
       ))}
     </nav>
