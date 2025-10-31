@@ -80,7 +80,7 @@ const STEPS = [
 
 export function ONDCRegistrationForm() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [previewData, setPreviewData] = useState<Partial<ONDCFormValues>>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const form = useForm<ONDCFormValues>({
     resolver: zodResolver(ondcFormSchema),
@@ -101,27 +101,15 @@ export function ONDCRegistrationForm() {
     },
   });
 
-  const watchedValues = form.watch();
-
-  // Update preview in real-time
-  useState(() => {
-    const subscription = form.watch((values) => {
-      setPreviewData(values as Partial<ONDCFormValues>);
-    });
-    return () => subscription.unsubscribe();
-  });
-
-  // Calculate progress based on filled fields
+  // Calculate progress based on current step
   const calculateProgress = () => {
-    const totalFields = Object.keys(form.getValues()).length;
-    const filledFields = Object.values(watchedValues).filter(value => 
-      value !== '' && value !== undefined && value !== null
-    ).length;
-    return Math.round((filledFields / totalFields) * 100);
+    if (isSubmitted) return 100;
+    return currentStep * 25; // 0%, 25%, 50%, 75%
   };
 
   const onSubmit = (data: ONDCFormValues) => {
     console.log('Form submitted:', data);
+    setIsSubmitted(true);
     toast.success('ONDC Registration submitted successfully!');
   };
 
@@ -139,8 +127,7 @@ export function ONDCRegistrationForm() {
   };
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      {/* Form Section */}
+    <div className="max-w-4xl mx-auto">
       <div className="space-y-6">
         <div className="flex justify-between items-start gap-4">
           <div>
@@ -545,115 +532,6 @@ export function ONDCRegistrationForm() {
         </Form>
       </div>
 
-      {/* Real-time Preview Section */}
-      <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-        <div>
-          <h3 className="text-2xl font-bold mb-2">Live Preview</h3>
-          <p className="text-muted-foreground text-sm">
-            Real-time preview of your registration data
-          </p>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl border-white/20 space-y-6">
-          {/* Personal Info Preview */}
-          {(watchedValues.firstName || watchedValues.lastName || watchedValues.email || watchedValues.mobile) && (
-            <div className="space-y-3">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Personal Details</h4>
-              {(watchedValues.firstName || watchedValues.lastName) && (
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <p className="font-medium">{watchedValues.firstName} {watchedValues.lastName}</p>
-                </div>
-              )}
-              {watchedValues.email && (
-                <p className="text-sm text-muted-foreground pl-6">{watchedValues.email}</p>
-              )}
-              {watchedValues.mobile && (
-                <p className="text-sm text-muted-foreground pl-6">📱 {watchedValues.mobile}</p>
-              )}
-            </div>
-          )}
-
-          {/* Business Info Preview */}
-          {(watchedValues.entityName || watchedValues.role || watchedValues.ondcDomain) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Business Details</h4>
-              {watchedValues.entityName && (
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <p className="font-medium">{watchedValues.entityName}</p>
-                </div>
-              )}
-              {watchedValues.role && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Role: <span className="font-medium capitalize">{watchedValues.role}</span>
-                </p>
-              )}
-              {watchedValues.ondcDomain && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Domain: <span className="font-medium capitalize">{watchedValues.ondcDomain}</span>
-                </p>
-              )}
-              {watchedValues.transactionType && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Type: <span className="font-medium">{watchedValues.transactionType}</span>
-                </p>
-              )}
-              {watchedValues.gstNo && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  GST: <span className="font-mono text-xs">{watchedValues.gstNo}</span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Network Config Preview */}
-          {(watchedValues.subscriberId || watchedValues.environment) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Network Configuration</h4>
-              {watchedValues.subscriberId && (
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-blue-500" />
-                  <p className="font-mono text-sm">{watchedValues.subscriberId}</p>
-                </div>
-              )}
-              {watchedValues.environment && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  Environment: <span className="font-medium capitalize">{watchedValues.environment}</span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Location Preview */}
-          {(watchedValues.city || watchedValues.state || watchedValues.country) && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Location</h4>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                <p className="text-sm">
-                  {[watchedValues.city, watchedValues.state, watchedValues.country].filter(Boolean).join(', ')}
-                </p>
-              </div>
-              {watchedValues.zip && (
-                <p className="text-sm text-muted-foreground pl-6">ZIP: {watchedValues.zip}</p>
-              )}
-              {watchedValues.stdCode && (
-                <p className="text-sm text-muted-foreground pl-6">STD: {watchedValues.stdCode}</p>
-              )}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!watchedValues.firstName && !watchedValues.entityName && !watchedValues.subscriberId && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-sm">
-                Start filling the form to see live preview
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
