@@ -83,8 +83,44 @@ const ONDCSection = () => {
       
       <div className="max-w-7xl mx-auto relative w-full">
         <div className="text-center mb-12">
-          
-          <h2 className="text-5xl font-bold mb-6 text-gradient">The Future of Commerce is Open</h2>
+          <h2 className="text-5xl font-bold mb-6 flex items-center justify-center gap-2 flex-wrap">
+            <span className="text-orange-500" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6), 0 0 40px rgba(249, 115, 22, 0.4)' }}>
+              The Future of
+            </span>
+            <span className="text-white" style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4)' }}>
+              C
+            </span>
+            <svg className="inline-block animate-spin-slow" width="40" height="40" viewBox="0 0 40 40" style={{ margin: '0 -4px' }}>
+              <circle cx="20" cy="20" r="18" fill="#001F8D" stroke="white" strokeWidth="1" />
+              <g transform="translate(20, 20)">
+                {[...Array(24)].map((_, i) => {
+                  const angle = (i * 15 * Math.PI) / 180;
+                  const x1 = 0;
+                  const y1 = 0;
+                  const x2 = Math.cos(angle) * 16;
+                  const y2 = Math.sin(angle) * 16;
+                  return (
+                    <line
+                      key={i}
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      stroke="#001F8D"
+                      strokeWidth="1"
+                    />
+                  );
+                })}
+                <circle cx="0" cy="0" r="3" fill="white" />
+              </g>
+            </svg>
+            <span className="text-white" style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4)' }}>
+              mmerce
+            </span>
+            <span className="text-green-500" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(34, 197, 94, 0.4)' }}>
+              is Open
+            </span>
+          </h2>
           <p className="max-w-4xl mx-auto leading-relaxed text-sm text-slate-600">We are proud to be part of the Open Network for Digital Commerce (ONDC), a revolutionary initiative to unbundle and democratize e-commerce in India.</p>
         </div>
 
@@ -188,6 +224,13 @@ const ONDCSection = () => {
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-15px); }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
         }
       `}</style>
     </section>;
