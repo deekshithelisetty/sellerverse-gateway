@@ -4,7 +4,6 @@ import NetworkSection from "@/components/NetworkSection";
 import ProductsSection from "@/components/ProductsSection";
 import CreatorsSection from "@/components/CreatorsSection";
 import PricingSection from "@/components/PricingSection";
-import ONDCSection from "@/components/ONDCSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
@@ -25,9 +24,6 @@ const Index = () => {
 
       {/* Pricing Section */}
       <PricingSection />
-
-      {/* ONDC Investor Relations Section */}
-      <ONDCSection />
 
       {/* Contact Section */}
       <ContactSection />
