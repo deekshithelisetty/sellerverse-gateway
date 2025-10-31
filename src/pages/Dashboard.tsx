@@ -6,7 +6,6 @@ import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,25 +37,23 @@ export default function Dashboard() {
   }
 
   return (
-    <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen w-full">
-        {/* Ultra bright vibrant gradient background - same as hero */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
-        
-        {/* Luminous animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        
-        {/* Fixed Header - Same as hero page */}
-        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
-          <div className="max-w-7xl mx-auto">
-            <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
-              <div className="flex items-center gap-2">
-                <SidebarTrigger className="mr-2" />
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                <h1 className="text-2xl font-bold tracking-tight">SELLER TSP</h1>
-              </div>
+    <div className="min-h-screen">
+      {/* Ultra bright vibrant gradient background - same as hero */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
+      
+      {/* Luminous animated gradient orbs */}
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      
+      {/* Fixed Header - Same as hero page */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
+        <div className="max-w-7xl mx-auto">
+          <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+              <h1 className="text-2xl font-bold tracking-tight">SELLER TSP</h1>
+            </div>
             
             <div className="hidden md:flex items-center gap-8">
               <a href="/#products" className="text-sm font-medium hover:text-primary transition-colors">
@@ -106,19 +103,24 @@ export default function Dashboard() {
         </div>
       </nav>
 
-        <AppSidebar />
-        
-        {/* Main Content Area with padding */}
-        <div className="relative z-10 pt-24 px-6 pb-8 w-full">
-          <div className="max-w-7xl mx-auto">
-            <div className="glass-card rounded-[3rem] p-8 relative overflow-hidden border border-white/20">
-              {/* Subtle grid pattern overlay */}
-              <div className="absolute inset-0 opacity-5" style={{
-                backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
-                backgroundSize: '40px 40px'
-              }}></div>
+      {/* Main Content Area with padding */}
+      <div className="relative z-10 pt-24 px-6 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="glass-card rounded-[3rem] p-8 relative overflow-hidden border border-white/20">
+            {/* Subtle grid pattern overlay */}
+            <div className="absolute inset-0 opacity-5" style={{
+              backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
+              backgroundSize: '40px 40px'
+            }}></div>
 
-              {/* Content Area with Scroll */}
+            {/* Content Grid: Left Sidebar + Right Content */}
+            <div className="relative grid lg:grid-cols-[200px_1fr] gap-6">
+              {/* Left Sidebar - Menu */}
+              <aside className="space-y-2">
+                <AppSidebar />
+              </aside>
+
+              {/* Right Content Area with Scroll */}
               <ScrollArea className="h-[calc(100vh-200px)]">
                 <main className="pr-4">
                   <Routes>
@@ -178,6 +180,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }
