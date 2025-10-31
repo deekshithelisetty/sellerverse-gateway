@@ -151,11 +151,25 @@ export function ONDCRegistrationForm() {
           </div>
           
           {/* Progress Bar - Top Right */}
-          <div className="flex flex-col items-end gap-2 min-w-[200px]">
-            <span className="text-xs font-semibold text-muted-foreground">
+          <div className="flex flex-col items-end gap-2 min-w-[240px]">
+            <span className="text-sm font-bold">
               Profile Completion: {calculateProgress()}%
             </span>
-            <Progress value={calculateProgress()} className="h-2 w-full" />
+            <div className="relative w-full h-4 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
+              <div 
+                className="h-full transition-all duration-500 ease-out rounded-full"
+                style={{ 
+                  width: `${calculateProgress()}%`,
+                  background: `linear-gradient(90deg, 
+                    hsl(25, 95%, 53%) 0%, 
+                    hsl(45, 93%, 47%) 25%,
+                    hsl(84, 81%, 44%) 50%,
+                    hsl(120, 100%, 40%) 75%,
+                    hsl(142, 76%, 36%) 100%)`,
+                  boxShadow: calculateProgress() > 0 ? '0 0 20px rgba(255, 127, 0, 0.5), 0 0 40px rgba(34, 197, 94, 0.3)' : 'none'
+                }}
+              />
+            </div>
           </div>
         </div>
 
