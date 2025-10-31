@@ -137,10 +137,15 @@ All colors MUST be HSL.
   section[id] {
     scroll-margin-top: 5rem;
     padding-top: 1.25rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   
   /* Ensure sections fit within viewport */
   section {
+    scroll-snap-type: y mandatory;
     scroll-snap-align: start;
   }
 
