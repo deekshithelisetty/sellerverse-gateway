@@ -5,6 +5,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,6 +55,24 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold tracking-tight">SELLER TSP</h1>
             </div>
             
+            <div className="hidden md:flex items-center gap-8">
+              <a href="/#products" className="text-sm font-medium hover:text-primary transition-colors">
+                Products
+              </a>
+              <a href="/#creators" className="text-sm font-medium hover:text-primary transition-colors">
+                Creators
+              </a>
+              <a href="/#pricing" className="text-sm font-medium hover:text-primary transition-colors">
+                Pricing
+              </a>
+              <a href="/#ondc" className="text-sm font-medium hover:text-primary transition-colors">
+                ONDC
+              </a>
+              <a href="/#contact" className="text-sm font-medium hover:text-primary transition-colors">
+                Contact
+              </a>
+            </div>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/10">
@@ -95,15 +114,16 @@ export default function Dashboard() {
             }}></div>
 
             {/* Content Grid: Left Sidebar + Right Content */}
-            <div className="relative grid lg:grid-cols-[250px_1fr] gap-8">
+            <div className="relative grid lg:grid-cols-[200px_1fr] gap-6">
               {/* Left Sidebar - Menu */}
               <aside className="space-y-2">
                 <AppSidebar />
               </aside>
 
-              {/* Right Content Area */}
-              <main>
-                <Routes>
+              {/* Right Content Area with Scroll */}
+              <ScrollArea className="h-[calc(100vh-200px)]">
+                <main className="pr-4">
+                  <Routes>
                   <Route index element={
                     <div className="space-y-6">
                       <div>
@@ -153,8 +173,9 @@ export default function Dashboard() {
                       <p className="text-muted-foreground">Configure your account and preferences.</p>
                     </div>
                   } />
-                </Routes>
-              </main>
+                  </Routes>
+                </main>
+              </ScrollArea>
             </div>
           </div>
         </div>
