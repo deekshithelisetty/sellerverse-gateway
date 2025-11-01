@@ -297,15 +297,18 @@ export default function Dashboard() {
           }}></div>
 
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
-            <div className="relative flex gap-6 flex-1 min-h-0">
+            <div className="relative flex gap-4 flex-1 min-h-0">
               {/* Left Section - Menu */}
-              <aside className="w-[200px] flex-shrink-0">
-                <AppSidebar />
+              <aside className="w-[240px] flex-shrink-0">
+                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4">
+                  <AppSidebar />
+                </div>
               </aside>
 
               {/* Center Section - Main Content */}
-              <div className="flex-1 min-w-0 overflow-auto">
-                  <main className="h-full">
+              <div className={`flex-1 min-w-0 ${location.pathname.includes('/experiences') ? '' : 'mr-0'}`}>
+                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
+                  <main className="h-full overflow-auto p-6">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={<div>
@@ -326,12 +329,13 @@ export default function Dashboard() {
                       <Route path="settings" element={<Settings />} />
                     </Routes>
                   </main>
+                </div>
               </div>
 
               {/* Right Section - Preview (only show on experiences route) */}
               {location.pathname.includes('/experiences') && (
                 <aside className="w-[420px] flex-shrink-0">
-                  <div className="h-full rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden">
+                  <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
                     {showPreview ? (
                       <div className="h-full p-6 overflow-auto animate-fade-in">
                         <ExperiencePreview />

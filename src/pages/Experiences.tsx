@@ -15,7 +15,7 @@ export default function Experiences({
 }) {
 
   return (
-    <div className="h-full flex flex-col gap-4 pr-4">
+    <div className="h-full flex flex-col gap-4">
       {/* Header Section */}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
@@ -25,13 +25,13 @@ export default function Experiences({
         <div className="flex gap-3">
           <Button 
             variant={showPreview ? "default" : "outline"}
-            className="gap-2 bg-background/80 backdrop-blur-sm"
+            className="gap-2"
             onClick={() => setShowPreview(!showPreview)}
           >
             <Monitor className="w-4 h-4" />
             Live Preview
           </Button>
-          <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm">
+          <Button variant="outline" className="gap-2">
             <Grid3x3 className="w-4 h-4" />
             View All
           </Button>
@@ -43,9 +43,9 @@ export default function Experiences({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3">
+      <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden">
         {showForm ? (
-          <div className="h-full p-8 overflow-auto animate-fade-in">
+          <div className="h-full p-6 overflow-auto animate-fade-in">
             <ExperienceForm />
           </div>
         ) : (
