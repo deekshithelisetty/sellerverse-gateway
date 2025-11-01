@@ -1,5 +1,15 @@
 import { Home, Network, Sparkles, ShoppingBag, Settings } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: Home, gradient: 'from-blue-500 to-cyan-500' },
@@ -10,27 +20,48 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
+  const { state } = useSidebar();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isCollapsed = state === 'collapsed';
+
+  const isActive = (url: string) => {
+    if (url === '/dashboard') {
+      return currentPath === '/dashboard';
+    }
+    return currentPath.startsWith(url);
+  };
+
   return (
-    <nav className="flex flex-col gap-3">
-      {menuItems.map((item) => (
-        <NavLink
-          key={item.title}
-          to={item.url}
-          end={item.url === '/dashboard'}
-          className={({ isActive }) =>
-            `group flex items-center gap-3 px-2 py-1.5 rounded-lg transition-all ${
-              isActive
-                ? 'glass-card border border-white/20 shadow-lg'
-                : 'hover:glass hover:border hover:border-white/10'
-            }`
-          }
-        >
-          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
-            <item.icon className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-xs font-semibold">{item.title}</span>
-        </NavLink>
-      ))}
-    </nav>
+    <Sidebar collapsible="icon" className="border-none bg-transparent">
+      <SidebarContent className="bg-transparent">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-2">
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={`group h-auto py-2 px-2 transition-all ${
+                      isActive(item.url)
+                        ? 'glass-card border border-white/20 shadow-lg'
+                        : 'hover:glass hover:border hover:border-white/10'
+                    }`}
+                  >
+                    <NavLink to={item.url} end={item.url === '/dashboard'}>
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md flex-shrink-0`}>
+                        <item.icon className="h-4 w-4 text-white" />
+                      </div>
+                      {!isCollapsed && <span className="text-xs font-semibold ml-3">{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
