@@ -10,8 +10,202 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { LogOut, User } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity } from 'lucide-react';
+import { Bar, BarChart, Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Routes, Route } from 'react-router-dom';
+
+// Sample data for charts
+const barChartData = [
+  { month: 'Jan', sales: 4000, orders: 240 },
+  { month: 'Feb', sales: 3000, orders: 198 },
+  { month: 'Mar', sales: 5000, orders: 350 },
+  { month: 'Apr', sales: 4500, orders: 280 },
+  { month: 'May', sales: 6000, orders: 420 },
+  { month: 'Jun', sales: 5500, orders: 380 },
+];
+
+const lineChartData = [
+  { day: 'Mon', visitors: 400 },
+  { day: 'Tue', visitors: 300 },
+  { day: 'Wed', visitors: 600 },
+  { day: 'Thu', visitors: 450 },
+  { day: 'Fri', visitors: 700 },
+  { day: 'Sat', visitors: 550 },
+  { day: 'Sun', visitors: 480 },
+];
+
+const recentActivities = [
+  { id: 1, action: 'New seller registered', user: 'John Doe', time: '2 minutes ago', icon: Users },
+  { id: 2, action: 'Order #1234 completed', user: 'Jane Smith', time: '15 minutes ago', icon: ShoppingBag },
+  { id: 3, action: 'Product added to catalog', user: 'Mike Johnson', time: '1 hour ago', icon: Package },
+  { id: 4, action: 'ONDC verification completed', user: 'Sarah Williams', time: '2 hours ago', icon: Activity },
+  { id: 5, action: 'New seller registered', user: 'Tom Brown', time: '3 hours ago', icon: Users },
+];
+
+const chartConfig = {
+  sales: {
+    label: "Sales",
+    color: "hsl(var(--primary))",
+  },
+  orders: {
+    label: "Orders",
+    color: "hsl(var(--secondary))",
+  },
+  visitors: {
+    label: "Visitors",
+    color: "hsl(var(--primary))",
+  },
+};
+
+function DashboardContent() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
+        <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
+      </div>
+
+      {/* Score Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="glass-card border-white/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">$45,231</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingUp className="h-3 w-3 text-green-500" />
+              <span className="text-green-500">+20.1%</span> from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sellers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1,257</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingUp className="h-3 w-3 text-green-500" />
+              <span className="text-green-500">+15.3%</span> from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">82</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingDown className="h-3 w-3 text-red-500" />
+              <span className="text-red-500">-5.2%</span> from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Products</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3,456</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingUp className="h-3 w-3 text-green-500" />
+              <span className="text-green-500">+8.7%</span> from last month
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Bar Chart */}
+        <Card className="glass-card border-white/20">
+          <CardHeader>
+            <CardTitle>Sales & Orders Overview</CardTitle>
+            <CardDescription>Monthly sales and order statistics</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-[300px]">
+              <BarChart data={barChartData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="sales" fill="var(--color-sales)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="orders" fill="var(--color-orders)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        {/* Line Chart */}
+        <Card className="glass-card border-white/20">
+          <CardHeader>
+            <CardTitle>Visitor Analytics</CardTitle>
+            <CardDescription>Weekly visitor trends</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-[300px]">
+              <LineChart data={lineChartData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis dataKey="day" className="text-xs" />
+                <YAxis className="text-xs" />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Line 
+                  type="monotone" 
+                  dataKey="visitors" 
+                  stroke="var(--color-visitors)" 
+                  strokeWidth={2}
+                  dot={{ fill: "var(--color-visitors)" }}
+                />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activities */}
+      <Card className="glass-card border-white/20">
+        <CardHeader>
+          <CardTitle>Recent Activities</CardTitle>
+          <CardDescription>Latest updates and actions on the platform</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentActivities.map((activity) => {
+              const Icon = activity.icon;
+              return (
+                <div key={activity.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{activity.action}</p>
+                    <p className="text-xs text-muted-foreground">{activity.user}</p>
+                  </div>
+                  <div className="text-xs text-muted-foreground whitespace-nowrap">
+                    {activity.time}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const {
     user,
@@ -108,30 +302,7 @@ export default function Dashboard() {
               <ScrollArea className="h-[calc(100vh-200px)]">
                 <main className="pr-4">
                   <Routes>
-                  <Route index element={<div className="space-y-6">
-                      <div>
-                        <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
-                        <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-2xl font-bold mb-6">Dashboard Overview</h3>
-                        <div className="grid gap-6 md:grid-cols-3">
-                          <div className="glass-card p-6 rounded-2xl border-white/20 hover:scale-105 transition-transform">
-                            <p className="text-sm text-muted-foreground mb-2">Total Sellers</p>
-                            <h3 className="text-4xl font-bold">1,257</h3>
-                          </div>
-                          <div className="glass-card p-6 rounded-2xl border-white/20 hover:scale-105 transition-transform">
-                            <p className="text-sm text-muted-foreground mb-2">Pending Verification</p>
-                            <h3 className="text-4xl font-bold">82</h3>
-                          </div>
-                          <div className="glass-card p-6 rounded-2xl border-white/20 hover:scale-105 transition-transform">
-                            <p className="text-sm text-muted-foreground mb-2">Monthly Growth</p>
-                            <h3 className="text-4xl font-bold text-green-500">+15.3%</h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>} />
+                  <Route index element={<DashboardContent />} />
                   <Route path="ondc" element={<div>
                       <ONDCRegistrationForm />
                     </div>} />
