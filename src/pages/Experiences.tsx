@@ -7,7 +7,7 @@ export default function Experiences() {
   const [showForm, setShowForm] = useState(false);
 
   return (
-    <div className="h-full p-8">
+    <div className="h-full p-2">
       <div className="h-full flex flex-col gap-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
