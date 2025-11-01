@@ -8,7 +8,7 @@ export default function Experiences() {
 
   return (
     <div className="h-full p-8">
-      <div className="h-full flex flex-col gap-8">
+      <div className="h-full flex flex-col gap-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -28,7 +28,7 @@ export default function Experiences() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden">
+        <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3">
           {showForm ? (
             <div className="h-full p-8 overflow-auto animate-fade-in">
               <ExperienceForm />
