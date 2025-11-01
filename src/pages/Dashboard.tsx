@@ -332,19 +332,13 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Right Section - Preview (only show on experiences route) */}
-              {location.pathname.includes('/experiences') && (
+              {/* Right Section - Preview (only show when Live Preview is active) */}
+              {location.pathname.includes('/experiences') && showPreview && (
                 <aside className="w-[420px] flex-shrink-0">
                   <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                    {showPreview ? (
-                      <div className="h-full p-6 overflow-auto animate-fade-in">
-                        <ExperiencePreview />
-                      </div>
-                    ) : (
-                      <div className="h-full flex items-center justify-center p-6">
-                        <p className="text-muted-foreground text-center text-sm">Enable Live Preview to see your experience</p>
-                      </div>
-                    )}
+                    <div className="h-full p-6 overflow-auto animate-fade-in">
+                      <ExperiencePreview />
+                    </div>
                   </div>
                 </aside>
               )}
