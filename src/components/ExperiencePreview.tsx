@@ -1,4 +1,4 @@
-import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2, Bookmark } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2, Maximize2, Minimize2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -11,8 +11,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useState } from 'react';
 
 export function ExperiencePreview({ data }: { data: ExperienceData }) {
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -31,22 +33,27 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   return (
-    <div className="flex justify-center items-start min-h-screen p-6 pt-8 pb-12">
-      {/* Phone Mockup */}
-      <div className="relative w-[380px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl">
-        {/* Phone Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-foreground/10 rounded-b-2xl z-10" />
+    <div className={isFullscreen ? "fixed inset-0 z-50 bg-background" : "flex justify-center items-start min-h-screen p-6 pt-8 pb-12"}>
+      {/* Phone Mockup or Fullscreen */}
+      <div className={isFullscreen ? "w-full h-full overflow-y-auto" : "relative w-[380px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl"}>
+        {/* Phone Notch - only in non-fullscreen */}
+        {!isFullscreen && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-foreground/10 rounded-b-2xl z-10" />}
         
         {/* Phone Screen Content */}
-        <div className="bg-background overflow-hidden rounded-[2.25rem]">
+        <div className={isFullscreen ? "bg-background" : "bg-background overflow-hidden rounded-[2.25rem]"}>
           {/* Top Header Bar */}
-          <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20">
+          <div className={`sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20 ${isFullscreen ? 'max-w-4xl mx-auto' : ''}`}>
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <Share2 className="w-4 h-4" />
             </Button>
             <h3 className="text-sm font-semibold">Experience Details</h3>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <Bookmark className="w-4 h-4" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </Button>
           </div>
 
@@ -69,7 +76,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
           </div>
 
           {/* Content */}
-          <div className="px-5 py-6 space-y-6">
+          <div className={`px-5 py-6 space-y-6 ${isFullscreen ? 'max-w-4xl mx-auto' : ''}`}>
             {/* Creator Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
