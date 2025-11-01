@@ -9,9 +9,9 @@ export default function Experiences() {
   const [showPreview, setShowPreview] = useState(false);
 
   return (
-    <>
+    <div className="h-full flex gap-4">
       {/* Main Content Section */}
-      <div className="h-full flex flex-col gap-4">
+      <div className="flex-1 flex flex-col gap-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -52,14 +52,18 @@ export default function Experiences() {
         </div>
       </div>
 
-      {/* Live Preview Panel - Positioned absolutely to break out and span full height */}
-      {showPreview && (
-        <div className="fixed right-6 top-24 bottom-8 w-[380px] z-50 animate-fade-in">
-          <div className="h-full rounded-2xl border bg-background/80 backdrop-blur-xl shadow-2xl p-6 overflow-auto">
+      {/* Right Side Section */}
+      <div className="w-[380px] rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3">
+        {showPreview ? (
+          <div className="h-full p-6 overflow-auto animate-fade-in">
             <ExperiencePreview />
           </div>
-        </div>
-      )}
-    </>
+        ) : (
+          <div className="h-full flex items-center justify-center p-6">
+            <p className="text-muted-foreground text-center">Enable Live Preview to see your experience</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
