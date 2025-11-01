@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Plus, Grid3x3 } from 'lucide-react';
+import { Plus, Grid3x3, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
+import { ExperiencePreview } from '@/components/ExperiencePreview';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 
 export default function Experiences() {
   const [showForm, setShowForm] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   return (
     <div className="h-full p-8">
-      <div className="h-full flex flex-col gap-8">
+      <div className="h-full flex flex-col gap-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -16,6 +19,14 @@ export default function Experiences() {
             <p className="text-muted-foreground">Create and manage customer experiences.</p>
           </div>
           <div className="flex gap-3">
+            <Button 
+              variant={showPreview ? "default" : "outline"}
+              className="gap-2 bg-background/80 backdrop-blur-sm"
+              onClick={() => setShowPreview(!showPreview)}
+            >
+              <Monitor className="w-4 h-4" />
+              Live Preview
+            </Button>
             <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm">
               <Grid3x3 className="w-4 h-4" />
               View All
@@ -28,15 +39,41 @@ export default function Experiences() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden">
-          {showForm ? (
-            <div className="h-full p-8 overflow-auto animate-fade-in">
-              <ExperienceForm />
-            </div>
+        <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3">
+          {showPreview ? (
+            <ResizablePanelGroup direction="horizontal" className="h-full">
+              <ResizablePanel defaultSize={50} minSize={30}>
+                {showForm ? (
+                  <div className="h-full p-8 overflow-auto animate-fade-in">
+                    <ExperienceForm />
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
+                  </div>
+                )}
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={50} minSize={30}>
+                <div className="h-full p-6 overflow-auto animate-fade-in">
+                  <div className="h-full rounded-2xl border bg-background/60 backdrop-blur-xl shadow-lg p-6">
+                    <ExperiencePreview />
+                  </div>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           ) : (
-            <div className="h-full flex items-center justify-center">
-              <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
-            </div>
+            <>
+              {showForm ? (
+                <div className="h-full p-8 overflow-auto animate-fade-in">
+                  <ExperienceForm />
+                </div>
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
