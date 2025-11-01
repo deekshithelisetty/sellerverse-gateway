@@ -300,7 +300,7 @@ export default function Dashboard() {
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
             <div className="relative flex gap-4 flex-1 min-h-0">
               {/* Left Section - Menu */}
-              <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300`}>
+              <aside className={`${sidebarCollapsed ? 'w-14' : 'w-[240px]'} flex-shrink-0 transition-all duration-300`}>
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4">
                   <AppSidebar 
                     collapsed={sidebarCollapsed} 
