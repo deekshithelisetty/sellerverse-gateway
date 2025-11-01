@@ -281,10 +281,10 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      {/* Main Content Area with padding */}
-      <div className="relative z-10 pt-24 px-6 pb-8">
+      {/* Main Content Area with minimal padding */}
+      <div className="relative z-10 pt-16 px-6 pb-4">
         <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-[3rem] p-8 relative overflow-hidden border border-white/20">
+          <div className="glass-card rounded-[3rem] p-4 relative overflow-hidden border border-white/20">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-5" style={{
             backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
