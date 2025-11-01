@@ -9,9 +9,10 @@ import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef } from 'react';
 
 export function ExperienceForm({ data, onChange }: { data: ExperienceData; onChange: (data: ExperienceData) => void }) {
-  const [uploadedMedia, setUploadedMedia] = useState<{ file: File; preview: string }[]>([]);
-  const [sourceMedia, setSourceMedia] = useState<'upload' | 'bulk'>('upload');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [thumbnailImage, setThumbnailImage] = useState<{ file: File; preview: string } | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const imagesInputRef = useRef<HTMLInputElement>(null);
   const updateField = (field: keyof ExperienceData, value: any) => {
     onChange({ ...data, [field]: value });
   };
@@ -62,30 +63,51 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     updateField('faqs', newFaqs);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    
+    if (thumbnailImage) {
+      URL.revokeObjectURL(thumbnailImage.preview);
+    }
+    
+    const preview = URL.createObjectURL(file);
+    setThumbnailImage({ file, preview });
+  };
+
+  const removeThumbnail = () => {
+    if (thumbnailImage) {
+      URL.revokeObjectURL(thumbnailImage.preview);
+      setThumbnailImage(null);
+    }
+    if (thumbnailInputRef.current) {
+      thumbnailInputRef.current.value = '';
+    }
+  };
+
+  const handleImagesUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
     
-    const newMedia: { file: File; preview: string }[] = [];
-    Array.from(files).forEach(file => {
-      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+    const remainingSlots = 10 - uploadedImages.length;
+    if (remainingSlots <= 0) return;
+    
+    const newImages: { file: File; preview: string }[] = [];
+    Array.from(files).slice(0, remainingSlots).forEach(file => {
+      if (file.type.startsWith('image/')) {
         const preview = URL.createObjectURL(file);
-        newMedia.push({ file, preview });
+        newImages.push({ file, preview });
       }
     });
     
-    setUploadedMedia(prev => [...prev, ...newMedia]);
+    setUploadedImages(prev => [...prev, ...newImages]);
   };
 
-  const removeMedia = (index: number) => {
-    setUploadedMedia(prev => {
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => {
       URL.revokeObjectURL(prev[index].preview);
       return prev.filter((_, i) => i !== index);
     });
-  };
-
-  const triggerFileUpload = () => {
-    fileInputRef.current?.click();
   };
 
   return (
@@ -122,8 +144,8 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
           />
         </div>
 
-        {/* Three Column Layout for Aspect Ratio, Content Type, Source Media */}
-        <div className="grid grid-cols-3 gap-6">
+        {/* Three Column Layout for Aspect Ratio and Content Type */}
+        <div className="grid grid-cols-2 gap-6">
           {/* Aspect Ratio */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Aspect Ratio</Label>
@@ -157,78 +179,101 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
               </div>
             </RadioGroup>
           </div>
+        </div>
+      </div>
 
-          {/* Source Media */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Source Media</Label>
-            <RadioGroup value={sourceMedia} onValueChange={(value: 'upload' | 'bulk') => setSourceMedia(value)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="upload" id="upload" />
-                <Label htmlFor="upload" className="font-normal cursor-pointer flex items-center gap-2">
-                  <Upload className="w-4 h-4" />
-                  Upload Files
-                </Label>
+      {/* Section 2: Source Media */}
+      <div className="space-y-4">
+        <h4 className="text-lg font-semibold">Source Media</h4>
+        <Separator />
+        
+        {/* Thumbnail Image */}
+        <div className="space-y-2">
+          <Label className="text-base font-semibold">Thumbnail Image</Label>
+          <input
+            ref={thumbnailInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnailUpload}
+            className="hidden"
+          />
+          <div className="flex items-center gap-4">
+            {thumbnailImage ? (
+              <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+                <img 
+                  src={thumbnailImage.preview} 
+                  alt="Thumbnail" 
+                  className="w-full h-full object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 h-6 w-6"
+                  onClick={removeThumbnail}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="bulk" id="bulk" />
-                <Label htmlFor="bulk" className="font-normal cursor-pointer flex items-center gap-2">
-                  <FolderUp className="w-4 h-4" />
-                  Bulk Upload
-                </Label>
-              </div>
-            </RadioGroup>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-32 h-32"
+                onClick={() => thumbnailInputRef.current?.click()}
+              >
+                <Upload className="w-6 h-6" />
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Upload Area */}
-        <div className="space-y-4">
+        {/* Upload Images (up to 10) */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-base font-semibold">Upload Images</Label>
+            <span className="text-sm text-muted-foreground">{uploadedImages.length} / 10</span>
+          </div>
           <input
-            ref={fileInputRef}
+            ref={imagesInputRef}
             type="file"
             multiple
-            accept="image/*,video/*"
-            onChange={handleFileUpload}
+            accept="image/*"
+            onChange={handleImagesUpload}
             className="hidden"
           />
-          <div 
-            onClick={triggerFileUpload}
-            className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
-          >
-            <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
-            <p className="text-xs text-muted-foreground mt-1">PNG, JPG, MP4 up to 50MB</p>
+          
+          <div className="grid grid-cols-5 gap-4">
+            {uploadedImages.map((image, index) => (
+              <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
+                <img 
+                  src={image.preview} 
+                  alt={`Image ${index + 1}`} 
+                  className="w-full h-full object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeImage(index)}
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              </div>
+            ))}
+            
+            {uploadedImages.length < 10 && (
+              <Button
+                type="button"
+                variant="outline"
+                className="aspect-square"
+                onClick={() => imagesInputRef.current?.click()}
+              >
+                <Upload className="w-6 h-6" />
+              </Button>
+            )}
           </div>
-
-          {/* Media Preview */}
-          {uploadedMedia.length > 0 && (
-            <div className="grid grid-cols-4 gap-4">
-              {uploadedMedia.map((media, index) => (
-                <div key={index} className="relative group rounded-lg overflow-hidden border border-border">
-                  {media.file.type.startsWith('image/') ? (
-                    <img 
-                      src={media.preview} 
-                      alt={`Upload ${index + 1}`} 
-                      className="w-full h-32 object-cover"
-                    />
-                  ) : (
-                    <video 
-                      src={media.preview} 
-                      className="w-full h-32 object-cover"
-                    />
-                  )}
-                  <button
-                    onClick={() => removeMedia(index)}
-                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
-                    {media.file.name}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
