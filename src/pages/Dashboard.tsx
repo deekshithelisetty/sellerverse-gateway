@@ -63,7 +63,7 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
+        <h2 className="text-3xl font-bold mb-2">Dashboard</h2>
         <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
       </div>
 
