@@ -52,15 +52,15 @@ export default function Experiences() {
         </div>
       </div>
 
-      {/* Right Side Section - Positioned Outside */}
-      <div className="fixed right-6 top-[104px] bottom-8 w-[380px] z-40 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3 animate-fade-in">
+      {/* Right Side Section - Always Visible Full Height */}
+      <div className="fixed right-6 top-24 bottom-8 w-[380px] z-40 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden animate-fade-in">
         {showPreview ? (
           <div className="h-full p-6 overflow-auto">
             <ExperiencePreview />
           </div>
         ) : (
           <div className="h-full flex items-center justify-center p-6">
-            <p className="text-muted-foreground text-center">Enable Live Preview to see your experience</p>
+            <p className="text-muted-foreground text-center text-sm">Enable Live Preview to see your experience</p>
           </div>
         )}
       </div>
