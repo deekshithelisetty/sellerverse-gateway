@@ -136,8 +136,8 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="space-y-6">
         <div className="flex justify-between items-start gap-4">
           <div>
-            <h3 className="text-2xl font-bold mb-2 flex items-center gap-1">
-              <svg className="inline-block animate-spin-slow" width="32" height="32" viewBox="0 0 40 40" style={{ margin: '0 2px' }}>
+            <h3 className="text-2xl mb-2 flex items-center gap-1">
+              <svg className="inline-block animate-spin-slow" width="26" height="26" viewBox="0 0 40 40" style={{ margin: '0 2px' }}>
                 <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
                 <g transform="translate(20, 20)">
                   {[...Array(24)].map((_, i) => {
@@ -161,9 +161,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                   <circle cx="0" cy="0" r="3" fill="#001F8D" />
                 </g>
               </svg>
-              <span className="bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(34, 197, 94, 0.3)' }}>
-                NDC Registration
+              <span className="font-bold bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(34, 197, 94, 0.3)' }}>
+                NDC
               </span>
+              <span className="font-bold text-green-500">Registration</span>
             </h3>
             <p className="text-muted-foreground text-sm">
               Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
