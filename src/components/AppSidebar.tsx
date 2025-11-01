@@ -53,12 +53,8 @@ export function AppSidebar({
                   }`
                 }
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${
-                  collapsed 
-                    ? 'bg-transparent' 
-                    : `bg-gradient-to-br ${item.gradient} shadow-md`
-                }`}>
-                  <item.icon className={`h-5 w-5 ${collapsed ? 'text-foreground' : 'text-white'}`} />
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
+                  <item.icon className="h-4 w-4 text-white" />
                 </div>
                 {!collapsed && (
                   <span className="text-xs font-semibold whitespace-nowrap">{item.title}</span>
