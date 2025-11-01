@@ -1,6 +1,25 @@
 import { Plus, Grid3x3, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
+import { ExperiencePreview } from '@/components/ExperiencePreview';
+import { useState } from 'react';
+
+export interface ExperienceData {
+  name: string;
+  description: string;
+  aspectRatio: string;
+  contentType: string;
+  city: string;
+  state: string;
+  fullAddress: string;
+  mapLink: string;
+  schedule: { day: number; timing: string; plan: string }[];
+  inclusions: string[];
+  exclusions: string[];
+  tags: string[];
+  faqs: { question: string; answer: string }[];
+  price: string;
+}
 
 export default function Experiences({ 
   showPreview, 
@@ -13,6 +32,22 @@ export default function Experiences({
   showForm: boolean;
   setShowForm: (show: boolean) => void;
 }) {
+  const [experienceData, setExperienceData] = useState<ExperienceData>({
+    name: '',
+    description: '',
+    aspectRatio: 'square',
+    contentType: 'image',
+    city: '',
+    state: '',
+    fullAddress: '',
+    mapLink: '',
+    schedule: [{ day: 1, timing: '', plan: '' }],
+    inclusions: [''],
+    exclusions: [''],
+    tags: [''],
+    faqs: [{ question: '', answer: '' }],
+    price: '',
+  });
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -43,14 +78,24 @@ export default function Experiences({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden">
-        {showForm ? (
-          <div className="h-full p-6 overflow-auto animate-fade-in">
-            <ExperienceForm />
-          </div>
-        ) : (
-          <div className="h-full flex items-center justify-center">
-            <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
+      <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden flex gap-4">
+        {/* Form Section */}
+        <div className={`${showPreview ? 'w-1/2' : 'w-full'} h-full transition-all`}>
+          {showForm ? (
+            <div className="h-full p-6 overflow-auto animate-fade-in">
+              <ExperienceForm data={experienceData} onChange={setExperienceData} />
+            </div>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
+            </div>
+          )}
+        </div>
+
+        {/* Preview Section */}
+        {showPreview && (
+          <div className="w-1/2 h-full border-l border-white/10 overflow-auto animate-fade-in">
+            <ExperiencePreview data={experienceData} />
           </div>
         )}
       </div>

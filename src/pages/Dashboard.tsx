@@ -5,7 +5,6 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import { ONDCBenefits } from '@/components/ONDCBenefits';
-import { ExperiencePreview } from '@/components/ExperiencePreview';
 import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -341,16 +340,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Right Section - Preview Panels */}
-              {location.pathname.includes('/experiences') && showPreview && (
-                <aside className="w-[420px] flex-shrink-0">
-                  <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                    <div className="h-full p-6 overflow-auto animate-fade-in">
-                      <ExperiencePreview />
-                    </div>
-                  </div>
-                </aside>
-              )}
+              {/* Right Section - Preview Panels - Handled by Experiences page itself */}
 
               {/* Right Section - ONDC Benefits */}
               {location.pathname.includes('/ondc') && showONDCBenefits && (

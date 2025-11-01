@@ -5,34 +5,58 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Trash2, Upload, FolderUp } from 'lucide-react';
-import { useState } from 'react';
+import { ExperienceData } from '@/pages/Experiences';
 
-export function ExperienceForm() {
-  const [scheduleEntries, setScheduleEntries] = useState([{ day: 1, timing: '', plan: '' }]);
-  const [inclusions, setInclusions] = useState(['']);
-  const [exclusions, setExclusions] = useState(['']);
-  const [tags, setTags] = useState(['']);
-  const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+export function ExperienceForm({ data, onChange }: { data: ExperienceData; onChange: (data: ExperienceData) => void }) {
+  const updateField = (field: keyof ExperienceData, value: any) => {
+    onChange({ ...data, [field]: value });
+  };
 
   const addScheduleEntry = () => {
-    setScheduleEntries([...scheduleEntries, { day: scheduleEntries.length + 1, timing: '', plan: '' }]);
+    updateField('schedule', [...data.schedule, { day: data.schedule.length + 1, timing: '', plan: '' }]);
   };
 
   const removeScheduleEntry = (index: number) => {
-    setScheduleEntries(scheduleEntries.filter((_, i) => i !== index));
+    updateField('schedule', data.schedule.filter((_, i) => i !== index));
   };
 
-  const addInclusion = () => setInclusions([...inclusions, '']);
-  const removeInclusion = (index: number) => setInclusions(inclusions.filter((_, i) => i !== index));
+  const updateScheduleEntry = (index: number, field: 'timing' | 'plan', value: string) => {
+    const newSchedule = [...data.schedule];
+    newSchedule[index] = { ...newSchedule[index], [field]: value };
+    updateField('schedule', newSchedule);
+  };
 
-  const addExclusion = () => setExclusions([...exclusions, '']);
-  const removeExclusion = (index: number) => setExclusions(exclusions.filter((_, i) => i !== index));
+  const addInclusion = () => updateField('inclusions', [...data.inclusions, '']);
+  const removeInclusion = (index: number) => updateField('inclusions', data.inclusions.filter((_, i) => i !== index));
+  const updateInclusion = (index: number, value: string) => {
+    const newInclusions = [...data.inclusions];
+    newInclusions[index] = value;
+    updateField('inclusions', newInclusions);
+  };
 
-  const addTag = () => setTags([...tags, '']);
-  const removeTag = (index: number) => setTags(tags.filter((_, i) => i !== index));
+  const addExclusion = () => updateField('exclusions', [...data.exclusions, '']);
+  const removeExclusion = (index: number) => updateField('exclusions', data.exclusions.filter((_, i) => i !== index));
+  const updateExclusion = (index: number, value: string) => {
+    const newExclusions = [...data.exclusions];
+    newExclusions[index] = value;
+    updateField('exclusions', newExclusions);
+  };
 
-  const addFaq = () => setFaqs([...faqs, { question: '', answer: '' }]);
-  const removeFaq = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
+  const addTag = () => updateField('tags', [...data.tags, '']);
+  const removeTag = (index: number) => updateField('tags', data.tags.filter((_, i) => i !== index));
+  const updateTag = (index: number, value: string) => {
+    const newTags = [...data.tags];
+    newTags[index] = value;
+    updateField('tags', newTags);
+  };
+
+  const addFaq = () => updateField('faqs', [...data.faqs, { question: '', answer: '' }]);
+  const removeFaq = (index: number) => updateField('faqs', data.faqs.filter((_, i) => i !== index));
+  const updateFaq = (index: number, field: 'question' | 'answer', value: string) => {
+    const newFaqs = [...data.faqs];
+    newFaqs[index] = { ...newFaqs[index], [field]: value };
+    updateField('faqs', newFaqs);
+  };
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -48,7 +72,12 @@ export function ExperienceForm() {
         
         <div className="space-y-2">
           <Label htmlFor="name">Experience Name</Label>
-          <Input id="name" placeholder="Enter experience name" />
+          <Input 
+            id="name" 
+            placeholder="Enter experience name" 
+            value={data.name}
+            onChange={(e) => updateField('name', e.target.value)}
+          />
         </div>
 
         <div className="space-y-2">
@@ -58,12 +87,14 @@ export function ExperienceForm() {
             placeholder="Enter detailed description of the experience..." 
             rows={6}
             className="min-h-[150px]"
+            value={data.description}
+            onChange={(e) => updateField('description', e.target.value)}
           />
         </div>
 
         <div className="space-y-3">
           <Label>Aspect Ratio</Label>
-          <RadioGroup defaultValue="square">
+          <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="square" id="square" />
               <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
@@ -81,7 +112,7 @@ export function ExperienceForm() {
 
         <div className="space-y-3">
           <Label>Content Type</Label>
-          <RadioGroup defaultValue="image">
+          <RadioGroup value={data.contentType} onValueChange={(value) => updateField('contentType', value)}>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="image" id="image" />
               <Label htmlFor="image" className="font-normal cursor-pointer">Image</Label>
@@ -133,22 +164,53 @@ export function ExperienceForm() {
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
-            <Input id="city" placeholder="Enter city" />
+            <Input 
+              id="city" 
+              placeholder="Enter city" 
+              value={data.city}
+              onChange={(e) => updateField('city', e.target.value)}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
-            <Input id="state" placeholder="Enter state" />
+            <Input 
+              id="state" 
+              placeholder="Enter state" 
+              value={data.state}
+              onChange={(e) => updateField('state', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="fullAddress">Full Address</Label>
-          <Textarea id="fullAddress" placeholder="Enter complete address..." rows={3} />
+          <Textarea 
+            id="fullAddress" 
+            placeholder="Enter complete address..." 
+            rows={3}
+            value={data.fullAddress}
+            onChange={(e) => updateField('fullAddress', e.target.value)}
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="mapLink">Google Maps Link</Label>
-          <Input id="mapLink" placeholder="https://maps.google.com/..." />
+          <Input 
+            id="mapLink" 
+            placeholder="https://maps.google.com/..." 
+            value={data.mapLink}
+            onChange={(e) => updateField('mapLink', e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="price">Price (₹)</Label>
+          <Input 
+            id="price" 
+            placeholder="Enter price" 
+            value={data.price}
+            onChange={(e) => updateField('price', e.target.value)}
+          />
         </div>
       </div>
 
@@ -164,11 +226,11 @@ export function ExperienceForm() {
         <Separator />
         
         <div className="space-y-4">
-          {scheduleEntries.map((entry, index) => (
+          {data.schedule.map((entry, index) => (
             <div key={index} className="border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="font-semibold">Day {entry.day}</Label>
-                {scheduleEntries.length > 1 && (
+                {data.schedule.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -181,7 +243,12 @@ export function ExperienceForm() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`timing-${index}`}>Timing</Label>
-                <Input id={`timing-${index}`} placeholder="e.g., 9:00 AM - 6:00 PM" />
+                <Input 
+                  id={`timing-${index}`} 
+                  placeholder="e.g., 9:00 AM - 6:00 PM" 
+                  value={entry.timing}
+                  onChange={(e) => updateScheduleEntry(index, 'timing', e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
@@ -189,6 +256,8 @@ export function ExperienceForm() {
                   id={`plan-${index}`} 
                   placeholder="Enter detailed plan for this day..." 
                   rows={4}
+                  value={entry.plan}
+                  onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}
                 />
               </div>
             </div>
@@ -210,13 +279,15 @@ export function ExperienceForm() {
                 Add
               </Button>
             </div>
-            {inclusions.map((_, index) => (
+            {data.inclusions.map((inclusion, index) => (
               <div key={index} className="flex gap-2">
                 <Input 
                   placeholder="Enter inclusion..." 
                   className="flex-1"
+                  value={inclusion}
+                  onChange={(e) => updateInclusion(index, e.target.value)}
                 />
-                {inclusions.length > 1 && (
+                {data.inclusions.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -238,13 +309,15 @@ export function ExperienceForm() {
                 Add
               </Button>
             </div>
-            {exclusions.map((_, index) => (
+            {data.exclusions.map((exclusion, index) => (
               <div key={index} className="flex gap-2">
                 <Input 
                   placeholder="Enter exclusion..." 
                   className="flex-1"
+                  value={exclusion}
+                  onChange={(e) => updateExclusion(index, e.target.value)}
                 />
-                {exclusions.length > 1 && (
+                {data.exclusions.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -274,13 +347,15 @@ export function ExperienceForm() {
                 Add Tag
               </Button>
             </div>
-            {tags.map((_, index) => (
+            {data.tags.map((tag, index) => (
               <div key={index} className="flex gap-2">
                 <Input 
                   placeholder="Enter tag..." 
                   className="flex-1"
+                  value={tag}
+                  onChange={(e) => updateTag(index, e.target.value)}
                 />
-                {tags.length > 1 && (
+                {data.tags.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -302,11 +377,11 @@ export function ExperienceForm() {
                 Add FAQ
               </Button>
             </div>
-            {faqs.map((_, index) => (
+            {data.faqs.map((faq, index) => (
               <div key={index} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <Label className="font-medium">FAQ {index + 1}</Label>
-                  {faqs.length > 1 && (
+                  {data.faqs.length > 1 && (
                     <Button
                       type="button"
                       variant="ghost"
@@ -322,6 +397,8 @@ export function ExperienceForm() {
                   <Input 
                     id={`faq-question-${index}`}
                     placeholder="Enter question..." 
+                    value={faq.question}
+                    onChange={(e) => updateFaq(index, 'question', e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -330,6 +407,8 @@ export function ExperienceForm() {
                     id={`faq-answer-${index}`}
                     placeholder="Enter answer..." 
                     rows={3}
+                    value={faq.answer}
+                    onChange={(e) => updateFaq(index, 'answer', e.target.value)}
                   />
                 </div>
               </div>
