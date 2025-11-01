@@ -218,6 +218,7 @@ export default function Dashboard() {
   const location = useLocation();
   const [showPreview, setShowPreview] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showONDCBenefits, setShowONDCBenefits] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   useEffect(() => {
@@ -311,23 +312,16 @@ export default function Dashboard() {
               </aside>
 
               {/* Center Section - Main Content */}
-              <div className={`flex-1 min-w-0 ${location.pathname.includes('/experiences') ? '' : 'mr-0'}`}>
+              <div className="flex-1 min-w-0">
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
                   <main className="h-full overflow-auto p-6">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                          {/* Left Section - Registration Form */}
-                          <div className="overflow-auto">
-                            <ONDCRegistrationForm />
-                          </div>
-                          
-                          {/* Right Section - Benefits & Videos */}
-                          <div className="overflow-auto">
-                            <ONDCBenefits />
-                          </div>
-                        </div>
+                        <ONDCRegistrationForm 
+                          showBenefits={showONDCBenefits}
+                          setShowBenefits={setShowONDCBenefits}
+                        />
                       } />
                       <Route path="experiences" element={
                         <Experiences 
@@ -347,12 +341,23 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Right Section - Preview (only show when Live Preview is active) */}
+              {/* Right Section - Preview Panels */}
               {location.pathname.includes('/experiences') && showPreview && (
                 <aside className="w-[420px] flex-shrink-0">
                   <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
                     <div className="h-full p-6 overflow-auto animate-fade-in">
                       <ExperiencePreview />
+                    </div>
+                  </div>
+                </aside>
+              )}
+
+              {/* Right Section - ONDC Benefits */}
+              {location.pathname.includes('/ondc') && showONDCBenefits && (
+                <aside className="w-[420px] flex-shrink-0">
+                  <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
+                    <div className="h-full p-6 overflow-auto animate-fade-in">
+                      <ONDCBenefits />
                     </div>
                   </div>
                 </aside>

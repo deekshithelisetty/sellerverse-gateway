@@ -78,7 +78,12 @@ const STEPS = [
   { title: 'Location Information', fields: ['city', 'state', 'zip', 'stdCode', 'country'] },
 ];
 
-export function ONDCRegistrationForm() {
+interface ONDCRegistrationFormProps {
+  showBenefits?: boolean;
+  setShowBenefits?: (show: boolean) => void;
+}
+
+export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegistrationFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
