@@ -164,20 +164,6 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               </Card>
             )}
 
-            {/* Tags */}
-            {data.tags.filter(t => t).length > 0 && (
-              <div className="space-y-2">
-                <h2 className="text-lg font-semibold">Tags</h2>
-                <div className="flex flex-wrap gap-2">
-                  {data.tags.filter(t => t).map((tag, i) => (
-                    <Badge key={i} variant="secondary" className="text-xs px-3 py-1">
-                      #{tag.toUpperCase()}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Images */}
             {data.uploadedImages && data.uploadedImages.length > 0 && (
               <div className="space-y-3">
@@ -190,6 +176,20 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                         alt={`Experience image ${i + 1}`} 
                         className="w-full h-full object-cover"
                       />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tags */}
+            {data.tags.filter(t => t).length > 0 && (
+              <div className="space-y-3">
+                <h2 className="text-lg font-semibold">Tags</h2>
+                <div className="bg-card border border-border rounded-lg p-4 space-y-1.5">
+                  {data.tags.filter(t => t).map((tag, i) => (
+                    <div key={i} className="text-sm font-semibold text-primary">
+                      #{tag.toUpperCase()}
                     </div>
                   ))}
                 </div>

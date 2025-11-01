@@ -2,6 +2,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Trash2, Upload, FolderUp, X } from 'lucide-react';
@@ -469,33 +470,38 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
         
         <div className="space-y-4">
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="font-medium">Tags</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addTag}>
-                <Plus className="w-4 h-4" />
-                Add Tag
-              </Button>
-            </div>
-            {data.tags.map((tag, index) => (
-              <div key={index} className="flex gap-2">
-                <Input 
-                  placeholder="Enter tag..." 
-                  className="flex-1"
-                  value={tag}
-                  onChange={(e) => updateTag(index, e.target.value)}
-                />
-                {data.tags.length > 1 && (
+            <Label className="font-medium">Tags</Label>
+            <div className="flex flex-wrap gap-2 min-h-[40px] p-2 border rounded-md bg-background">
+              {data.tags.filter(t => t).map((tag, index) => (
+                <Badge key={index} variant="secondary" className="gap-1 pr-1 h-7">
+                  #{tag}
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
+                    className="h-4 w-4 p-0 hover:bg-transparent"
                     onClick={() => removeTag(index)}
                   >
-                    <Trash2 className="w-4 h-4 text-destructive" />
+                    <X className="w-3 h-3" />
                   </Button>
-                )}
-              </div>
-            ))}
+                </Badge>
+              ))}
+            </div>
+            <Input
+              placeholder="Type and press Enter or Tab to add tags"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === 'Tab') {
+                  e.preventDefault();
+                  const value = e.currentTarget.value.trim();
+                  if (value) {
+                    const newTags = data.tags.filter(t => t);
+                    newTags.push(value);
+                    updateField('tags', newTags);
+                    e.currentTarget.value = '';
+                  }
+                }
+              }}
+            />
           </div>
 
           <div className="space-y-3">
