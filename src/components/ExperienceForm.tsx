@@ -4,10 +4,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Trash2, Upload, FolderUp } from 'lucide-react';
+import { Plus, Trash2, Upload, FolderUp, X } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
+import { useState, useRef } from 'react';
 
 export function ExperienceForm({ data, onChange }: { data: ExperienceData; onChange: (data: ExperienceData) => void }) {
+  const [uploadedMedia, setUploadedMedia] = useState<{ file: File; preview: string }[]>([]);
+  const [sourceMedia, setSourceMedia] = useState<'upload' | 'bulk'>('upload');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const updateField = (field: keyof ExperienceData, value: any) => {
     onChange({ ...data, [field]: value });
   };
@@ -58,6 +62,32 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     updateField('faqs', newFaqs);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    
+    const newMedia: { file: File; preview: string }[] = [];
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+        const preview = URL.createObjectURL(file);
+        newMedia.push({ file, preview });
+      }
+    });
+    
+    setUploadedMedia(prev => [...prev, ...newMedia]);
+  };
+
+  const removeMedia = (index: number) => {
+    setUploadedMedia(prev => {
+      URL.revokeObjectURL(prev[index].preview);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="space-y-8 max-w-4xl">
       <div>
@@ -92,67 +122,113 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
           />
         </div>
 
-        <div className="space-y-3">
-          <Label>Aspect Ratio</Label>
-          <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="square" id="square" />
-              <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="portrait" id="portrait" />
-              <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="landscape" id="landscape" />
-              <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
-            </div>
-          </RadioGroup>
+        {/* Three Column Layout for Aspect Ratio, Content Type, Source Media */}
+        <div className="grid grid-cols-3 gap-6">
+          {/* Aspect Ratio */}
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Aspect Ratio</Label>
+            <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="square" id="square" />
+                <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="portrait" id="portrait" />
+                <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="landscape" id="landscape" />
+                <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Content Type */}
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Content Type</Label>
+            <RadioGroup value={data.contentType} onValueChange={(value) => updateField('contentType', value)}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="image" id="image" />
+                <Label htmlFor="image" className="font-normal cursor-pointer">Image</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="video" id="video" />
+                <Label htmlFor="video" className="font-normal cursor-pointer">Video</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Source Media */}
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Source Media</Label>
+            <RadioGroup value={sourceMedia} onValueChange={(value: 'upload' | 'bulk') => setSourceMedia(value)}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="upload" id="upload" />
+                <Label htmlFor="upload" className="font-normal cursor-pointer flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Upload Files
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="bulk" id="bulk" />
+                <Label htmlFor="bulk" className="font-normal cursor-pointer flex items-center gap-2">
+                  <FolderUp className="w-4 h-4" />
+                  Bulk Upload
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <Label>Content Type</Label>
-          <RadioGroup value={data.contentType} onValueChange={(value) => updateField('contentType', value)}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="image" id="image" />
-              <Label htmlFor="image" className="font-normal cursor-pointer">Image</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="video" id="video" />
-              <Label htmlFor="video" className="font-normal cursor-pointer">Video</Label>
-            </div>
-          </RadioGroup>
-        </div>
-      </div>
+        {/* Upload Area */}
+        <div className="space-y-4">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*,video/*"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          <div 
+            onClick={triggerFileUpload}
+            className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
+          >
+            <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+            <p className="text-xs text-muted-foreground mt-1">PNG, JPG, MP4 up to 50MB</p>
+          </div>
 
-      {/* Section 2: Source Media */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Source Media</h4>
-        <Separator />
-        
-        <div className="space-y-3">
-          <RadioGroup defaultValue="upload">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="upload" id="upload" />
-              <Label htmlFor="upload" className="font-normal cursor-pointer flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                Upload Files
-              </Label>
+          {/* Media Preview */}
+          {uploadedMedia.length > 0 && (
+            <div className="grid grid-cols-4 gap-4">
+              {uploadedMedia.map((media, index) => (
+                <div key={index} className="relative group rounded-lg overflow-hidden border border-border">
+                  {media.file.type.startsWith('image/') ? (
+                    <img 
+                      src={media.preview} 
+                      alt={`Upload ${index + 1}`} 
+                      className="w-full h-32 object-cover"
+                    />
+                  ) : (
+                    <video 
+                      src={media.preview} 
+                      className="w-full h-32 object-cover"
+                    />
+                  )}
+                  <button
+                    onClick={() => removeMedia(index)}
+                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
+                    {media.file.name}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="bulk" id="bulk" />
-              <Label htmlFor="bulk" className="font-normal cursor-pointer flex items-center gap-2">
-                <FolderUp className="w-4 h-4" />
-                Bulk Upload
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
-          <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
-          <p className="text-xs text-muted-foreground mt-1">PNG, JPG, MP4 up to 50MB</p>
+          )}
         </div>
       </div>
 
