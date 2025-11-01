@@ -31,14 +31,14 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   return (
-    <div className="flex justify-center h-full p-6 pt-8">
+    <div className="flex justify-center p-6 pt-8 pb-12">
       {/* Phone Mockup */}
-      <div className="relative w-[380px] h-[750px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl overflow-hidden">
+      <div className="relative w-[380px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl overflow-hidden">
         {/* Phone Notch */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-foreground/10 rounded-b-2xl z-10" />
         
         {/* Phone Screen Content */}
-        <div className="h-full overflow-y-auto bg-background">
+        <div className="bg-background">
           {/* Top Header Bar */}
           <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20">
             <Button variant="ghost" size="icon" className="h-8 w-8">
