@@ -283,7 +283,7 @@ export default function Dashboard() {
 
       {/* Main Content Area with minimal padding */}
       <div className="relative z-10 pt-20 px-6 pb-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           <div className="glass-card rounded-[3rem] p-4 relative overflow-hidden border border-white/20">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-5" style={{
@@ -292,7 +292,7 @@ export default function Dashboard() {
           }}></div>
 
             {/* Two Section Layout: Left Menu + Right Content */}
-            <div className="relative flex gap-6 h-[calc(100vh-200px)]">
+            <div className="relative flex gap-6 h-[calc(100vh-140px)]">
               {/* Left Section - Menu */}
               <aside className="w-[200px] flex-shrink-0">
                 <AppSidebar />
