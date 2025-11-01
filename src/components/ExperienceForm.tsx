@@ -73,6 +73,7 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     
     const preview = URL.createObjectURL(file);
     setThumbnailImage({ file, preview });
+    updateField('thumbnailImage', preview);
   };
 
   const removeThumbnail = () => {
@@ -83,6 +84,7 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     if (thumbnailInputRef.current) {
       thumbnailInputRef.current.value = '';
     }
+    updateField('thumbnailImage', undefined);
   };
 
   const handleImagesUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,13 +102,19 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
       }
     });
     
-    setUploadedImages(prev => [...prev, ...newImages]);
+    setUploadedImages(prev => {
+      const updated = [...prev, ...newImages];
+      updateField('uploadedImages', updated.map(img => img.preview));
+      return updated;
+    });
   };
 
   const removeImage = (index: number) => {
     setUploadedImages(prev => {
       URL.revokeObjectURL(prev[index].preview);
-      return prev.filter((_, i) => i !== index);
+      const updated = prev.filter((_, i) => i !== index);
+      updateField('uploadedImages', updated.map(img => img.preview));
+      return updated;
     });
   };
 

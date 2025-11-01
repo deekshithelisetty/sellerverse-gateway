@@ -52,12 +52,20 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
 
           {/* Hero Image */}
           <div className="relative h-64 bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center space-y-2 text-muted-foreground/40">
-                <MapPin className="w-16 h-16 mx-auto" />
-                <p className="text-xs">Experience Image</p>
+            {data.thumbnailImage ? (
+              <img 
+                src={data.thumbnailImage} 
+                alt={data.name || 'Experience'} 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center space-y-2 text-muted-foreground/40">
+                  <MapPin className="w-16 h-16 mx-auto" />
+                  <p className="text-xs">Experience Image</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Content */}
@@ -165,6 +173,24 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                     <Badge key={i} variant="secondary" className="text-xs px-3 py-1">
                       #{tag.toUpperCase()}
                     </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Images */}
+            {data.uploadedImages && data.uploadedImages.length > 0 && (
+              <div className="space-y-3">
+                <h2 className="text-lg font-semibold">Images</h2>
+                <div className="grid grid-cols-2 gap-2">
+                  {data.uploadedImages.map((image, i) => (
+                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                      <img 
+                        src={image} 
+                        alt={`Experience image ${i + 1}`} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   ))}
                 </div>
               </div>

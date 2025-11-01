@@ -19,6 +19,8 @@ export interface ExperienceData {
   tags: string[];
   faqs: { question: string; answer: string }[];
   price: string;
+  thumbnailImage?: string;
+  uploadedImages?: string[];
 }
 
 export default function Experiences({ 
@@ -44,6 +46,8 @@ export default function Experiences({
     tags: [''],
     faqs: [{ question: '', answer: '' }],
     price: '',
+    thumbnailImage: undefined,
+    uploadedImages: [],
   });
 
   return (
