@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
+import { ExperiencePreview } from '@/components/ExperiencePreview';
 import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -213,6 +214,10 @@ export default function Dashboard() {
   } = useAuth();
   const { brandLogo } = useSettings();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showPreview, setShowPreview] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  
   useEffect(() => {
     if (!user) {
       navigate('/');
@@ -291,22 +296,29 @@ export default function Dashboard() {
             backgroundSize: '40px 40px'
           }}></div>
 
-            {/* Two Section Layout: Left Menu + Right Content */}
+            {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
             <div className="relative flex gap-6 flex-1 min-h-0">
               {/* Left Section - Menu */}
               <aside className="w-[200px] flex-shrink-0">
                 <AppSidebar />
               </aside>
 
-              {/* Right Section - Content */}
+              {/* Center Section - Main Content */}
               <div className="flex-1 min-w-0 overflow-auto">
-                  <main className="pr-4 h-full">
+                  <main className="h-full">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={<div>
                         <ONDCRegistrationForm />
                       </div>} />
-                      <Route path="experiences" element={<Experiences />} />
+                      <Route path="experiences" element={
+                        <Experiences 
+                          showPreview={showPreview} 
+                          setShowPreview={setShowPreview}
+                          showForm={showForm}
+                          setShowForm={setShowForm}
+                        />
+                      } />
                       <Route path="retail" element={<div>
                         <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
                         <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
@@ -315,6 +327,23 @@ export default function Dashboard() {
                     </Routes>
                   </main>
               </div>
+
+              {/* Right Section - Preview (only show on experiences route) */}
+              {location.pathname.includes('/experiences') && (
+                <aside className="w-[420px] flex-shrink-0">
+                  <div className="h-full rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden">
+                    {showPreview ? (
+                      <div className="h-full p-6 overflow-auto animate-fade-in">
+                        <ExperiencePreview />
+                      </div>
+                    ) : (
+                      <div className="h-full flex items-center justify-center p-6">
+                        <p className="text-muted-foreground text-center text-sm">Enable Live Preview to see your experience</p>
+                      </div>
+                    )}
+                  </div>
+                </aside>
+              )}
             </div>
           </div>
         </div>
