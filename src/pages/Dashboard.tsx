@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import Experiences from '@/pages/Experiences';
+import Settings from '@/pages/Settings';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,6 +17,7 @@ export default function Dashboard() {
     user,
     signOut
   } = useAuth();
+  const { brandLogo } = useSettings();
   const navigate = useNavigate();
   useEffect(() => {
     if (!user) {
@@ -45,8 +48,10 @@ export default function Dashboard() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
         <div className="max-w-7xl mx-auto">
           <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
-            <div className="flex items-center gap-2">
-              
+            <div className="flex items-center gap-3">
+              {brandLogo ? (
+                <img src={brandLogo} alt="Brand Logo" className="h-8 w-auto object-contain" />
+              ) : null}
               <h1 className="text-2xl font-bold tracking-tight">TABHI</h1>
             </div>
             
@@ -135,10 +140,7 @@ export default function Dashboard() {
                       <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
                       <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
                     </div>} />
-                  <Route path="settings" element={<div>
-                      <h2 className="text-3xl font-bold mb-6">Settings</h2>
-                      <p className="text-muted-foreground">Configure your account and preferences.</p>
-                    </div>} />
+                  <Route path="settings" element={<Settings />} />
                   </Routes>
                 </main>
               </ScrollArea>
