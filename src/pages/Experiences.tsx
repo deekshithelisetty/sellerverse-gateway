@@ -1,45 +1,45 @@
+import { useState } from 'react';
 import { Plus, Grid3x3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ExperienceForm } from '@/components/ExperienceForm';
-import { ExperiencePreview } from '@/components/ExperiencePreview';
+
 export default function Experiences() {
-  return <div className="fixed inset-0 top-24" style={{
-    left: '280px'
-  }}>
-      <ResizablePanelGroup direction="horizontal">
-        {/* Left Panel - Form with Header */}
-        <ResizablePanel defaultSize={50} minSize={30}>
-          <div className="h-full overflow-auto p-6">
-            {/* Header with icons */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Experiences</h2>
-                <p className="text-muted-foreground">Create and manage customer experiences.</p>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Grid3x3 className="w-4 h-4" />
-                  View All
-                </Button>
-                <Button size="sm" className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create
-                </Button>
-              </div>
+  const [showForm, setShowForm] = useState(false);
+
+  return (
+    <div className="h-full p-8">
+      <div className="h-full flex flex-col gap-8">
+        {/* Header Section */}
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold">Experiences</h1>
+            <p className="text-muted-foreground">Create and manage customer experiences.</p>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="outline" className="gap-2 bg-background/80 backdrop-blur-sm">
+              <Grid3x3 className="w-4 h-4" />
+              View All
+            </Button>
+            <Button className="gap-2" onClick={() => setShowForm(true)}>
+              <Plus className="w-4 h-4" />
+              Create
+            </Button>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden">
+          {showForm ? (
+            <div className="h-full p-8 overflow-auto animate-fade-in">
+              <ExperienceForm />
             </div>
-            
-          </div>
-        </ResizablePanel>
-        
-        <ResizableHandle withHandle />
-        
-        {/* Right Panel - Full Height Preview */}
-        <ResizablePanel defaultSize={50} minSize={30}>
-          <div className="h-full bg-muted/10">
-            <ExperiencePreview />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>;
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
