@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
+import { ONDCBenefits } from '@/components/ONDCBenefits';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
 import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
@@ -315,9 +316,19 @@ export default function Dashboard() {
                   <main className="h-full overflow-auto p-6">
                     <Routes>
                       <Route index element={<DashboardContent />} />
-                      <Route path="ondc" element={<div>
-                        <ONDCRegistrationForm />
-                      </div>} />
+                      <Route path="ondc" element={
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+                          {/* Left Section - Registration Form */}
+                          <div className="overflow-auto">
+                            <ONDCRegistrationForm />
+                          </div>
+                          
+                          {/* Right Section - Benefits & Videos */}
+                          <div className="overflow-auto">
+                            <ONDCBenefits />
+                          </div>
+                        </div>
+                      } />
                       <Route path="experiences" element={
                         <Experiences 
                           showPreview={showPreview} 
