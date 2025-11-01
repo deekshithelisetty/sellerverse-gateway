@@ -3,43 +3,52 @@ import { Badge } from '@/components/ui/badge';
 
 export function ExperiencePreview() {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-xl font-semibold mb-2">Live Preview</h3>
-        <p className="text-sm text-muted-foreground">See how your experience will look.</p>
-      </div>
-
-      <div className="glass-card rounded-2xl overflow-hidden border-white/20">
-        {/* Preview Image */}
-        <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
-          <p className="text-white/60 text-sm">Experience Image</p>
-        </div>
-
-        {/* Preview Content */}
-        <div className="p-6 space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <h4 className="text-2xl font-bold mb-2">Experience Title</h4>
-              <Badge className="mb-3">Category</Badge>
+    <div className="flex items-center justify-center h-full">
+      {/* Phone Mockup */}
+      <div className="relative w-[380px] h-[750px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl overflow-hidden">
+        {/* Phone Notch */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-foreground/10 rounded-b-2xl z-10" />
+        
+        {/* Phone Screen Content */}
+        <div className="h-full overflow-y-auto">
+          {/* Header Image */}
+          <div className="h-48 bg-gradient-to-br from-blue-500 to-blue-600 relative">
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+              <div className="w-32 h-32 rounded-full bg-blue-500 border-4 border-background flex items-center justify-center">
+                <span className="text-5xl font-bold text-white">N</span>
+              </div>
             </div>
           </div>
 
-          <p className="text-muted-foreground">
-            Your experience description will appear here. It will show all the details you enter in the form.
-          </p>
+          {/* Profile Content */}
+          <div className="pt-20 px-6 pb-6">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-1">Experience Title</h2>
+              <p className="text-muted-foreground">@username</p>
+            </div>
 
-          <div className="flex flex-wrap gap-4 pt-2">
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
-              <span>Location</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span>Duration</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm font-semibold">
-              <IndianRupee className="w-4 h-4" />
-              <span>Price</span>
+            {/* Experience Details Card */}
+            <div className="bg-muted/20 rounded-2xl p-6 space-y-4">
+              <Badge className="mb-2">Category</Badge>
+              
+              <p className="text-sm text-muted-foreground">
+                Your experience description will appear here with all the details you enter in the form.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 pt-4">
+                <div className="flex items-center gap-2 text-xs">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <span>Location</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span>Duration</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-semibold col-span-2">
+                  <IndianRupee className="w-4 h-4" />
+                  <span>Price</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
