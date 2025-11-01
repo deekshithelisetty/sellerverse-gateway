@@ -9,9 +9,9 @@ export default function Experiences() {
   const [showPreview, setShowPreview] = useState(false);
 
   return (
-    <div className="h-full flex gap-4">
+    <>
       {/* Main Content Section */}
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="h-full flex flex-col gap-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -52,10 +52,10 @@ export default function Experiences() {
         </div>
       </div>
 
-      {/* Right Side Section */}
-      <div className="w-[380px] rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3">
+      {/* Right Side Section - Positioned Outside */}
+      <div className="fixed right-6 top-[104px] bottom-8 w-[380px] z-40 rounded-3xl border bg-background/40 backdrop-blur-xl shadow-xl overflow-hidden pt-3 animate-fade-in">
         {showPreview ? (
-          <div className="h-full p-6 overflow-auto animate-fade-in">
+          <div className="h-full p-6 overflow-auto">
             <ExperiencePreview />
           </div>
         ) : (
@@ -64,6 +64,6 @@ export default function Experiences() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
