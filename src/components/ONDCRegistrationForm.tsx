@@ -136,7 +136,35 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="space-y-6">
         <div className="flex justify-between items-start gap-4">
           <div>
-            <h3 className="text-2xl font-bold mb-2">ONDC Registration</h3>
+            <h3 className="text-2xl font-bold mb-2 flex items-center gap-1">
+              <svg className="inline-block animate-spin-slow" width="32" height="32" viewBox="0 0 40 40" style={{ margin: '0 2px' }}>
+                <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
+                <g transform="translate(20, 20)">
+                  {[...Array(24)].map((_, i) => {
+                    const angle = (i * 15 * Math.PI) / 180;
+                    const x1 = 0;
+                    const y1 = 0;
+                    const x2 = Math.cos(angle) * 16;
+                    const y2 = Math.sin(angle) * 16;
+                    return (
+                      <line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke="#001F8D"
+                        strokeWidth="1.5"
+                      />
+                    );
+                  })}
+                  <circle cx="0" cy="0" r="3" fill="#001F8D" />
+                </g>
+              </svg>
+              <span className="bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(34, 197, 94, 0.3)' }}>
+                NDC Registration
+              </span>
+            </h3>
             <p className="text-muted-foreground text-sm">
               Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
             </p>
@@ -149,16 +177,17 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             </span>
             <div className="relative w-full h-4 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
               <div 
-                className="h-full transition-all duration-500 ease-out rounded-full"
+                className="h-full transition-all duration-500 ease-out rounded-full relative"
                 style={{ 
                   width: `${calculateProgress()}%`,
                   background: `linear-gradient(90deg, 
-                    hsl(25, 95%, 53%) 0%, 
-                    hsl(45, 93%, 47%) 25%,
-                    hsl(84, 81%, 44%) 50%,
-                    hsl(120, 100%, 40%) 75%,
-                    hsl(142, 76%, 36%) 100%)`,
-                  boxShadow: calculateProgress() > 0 ? '0 0 20px rgba(255, 127, 0, 0.5), 0 0 40px rgba(34, 197, 94, 0.3)' : 'none'
+                    #FF9933 0%, 
+                    #FF9933 33%, 
+                    #FFFFFF 33%, 
+                    #FFFFFF 66%, 
+                    #138808 66%, 
+                    #138808 100%)`,
+                  boxShadow: calculateProgress() > 0 ? '0 0 20px rgba(255, 153, 51, 0.6), 0 0 30px rgba(19, 136, 8, 0.4), 0 0 40px rgba(255, 255, 255, 0.3)' : 'none'
                 }}
               />
             </div>
@@ -539,4 +568,20 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
     </div>
   );
+}
+
+// Add keyframe animation for Ashoka Chakra spinning
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+`;
+if (typeof document !== 'undefined' && !document.head.querySelector('style[data-ondc-animations]')) {
+  style.setAttribute('data-ondc-animations', 'true');
+  document.head.appendChild(style);
 }
