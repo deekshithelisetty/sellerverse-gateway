@@ -161,10 +161,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                   <circle cx="0" cy="0" r="3" fill="#001F8D" />
                 </g>
               </svg>
-              <span className="font-bold bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(34, 197, 94, 0.3)' }}>
+              <span className="font-bold text-orange-500" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6), 0 0 40px rgba(249, 115, 22, 0.4)' }}>
                 NDC
               </span>
-              <span className="font-bold text-green-500">Registration</span>
+              <span className="font-bold text-green-500" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(34, 197, 94, 0.4)' }}>Registration</span>
             </h3>
             <p className="text-muted-foreground text-sm">
               Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
