@@ -215,7 +215,6 @@ export default function Dashboard() {
   const { brandLogo } = useSettings();
   const navigate = useNavigate();
   const location = useLocation();
-  const [showPreview, setShowPreview] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showONDCBenefits, setShowONDCBenefits] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -324,8 +323,6 @@ export default function Dashboard() {
                       } />
                       <Route path="experiences" element={
                         <Experiences 
-                          showPreview={showPreview} 
-                          setShowPreview={setShowPreview}
                           showForm={showForm}
                           setShowForm={setShowForm}
                         />

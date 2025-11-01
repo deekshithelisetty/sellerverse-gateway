@@ -1,4 +1,4 @@
-import { Plus, Grid3x3, Monitor } from 'lucide-react';
+import { Plus, Grid3x3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
@@ -22,13 +22,9 @@ export interface ExperienceData {
 }
 
 export default function Experiences({ 
-  showPreview, 
-  setShowPreview,
   showForm,
   setShowForm 
 }: { 
-  showPreview: boolean; 
-  setShowPreview: (show: boolean) => void;
   showForm: boolean;
   setShowForm: (show: boolean) => void;
 }) {
@@ -58,14 +54,6 @@ export default function Experiences({
           <p className="text-muted-foreground">Create and manage customer experiences.</p>
         </div>
         <div className="flex gap-3">
-          <Button 
-            variant={showPreview ? "default" : "outline"}
-            className="gap-2"
-            onClick={() => setShowPreview(!showPreview)}
-          >
-            <Monitor className="w-4 h-4" />
-            Live Preview
-          </Button>
           <Button variant="outline" className="gap-2">
             <Grid3x3 className="w-4 h-4" />
             View All
@@ -77,10 +65,10 @@ export default function Experiences({
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden flex gap-4">
-        {/* Form Section */}
-        <div className={`${showPreview ? 'w-1/2' : 'w-full'} h-full transition-all`}>
+      {/* Main Content Area - Two Column Layout */}
+      <div className="flex-1 flex gap-4">
+        {/* Center - Form Section */}
+        <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden">
           {showForm ? (
             <div className="h-full p-6 overflow-auto animate-fade-in">
               <ExperienceForm data={experienceData} onChange={setExperienceData} />
@@ -92,12 +80,12 @@ export default function Experiences({
           )}
         </div>
 
-        {/* Preview Section */}
-        {showPreview && (
-          <div className="w-1/2 h-full border-l border-white/10 overflow-auto animate-fade-in">
+        {/* Right - Preview Panel */}
+        <div className="w-[420px] rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg">
+          <div className="h-full overflow-auto">
             <ExperiencePreview data={experienceData} />
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
