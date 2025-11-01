@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { AppSidebar } from '@/components/AppSidebar';
 import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
+import Experiences from '@/pages/Experiences';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -129,10 +130,7 @@ export default function Dashboard() {
                   <Route path="ondc" element={<div>
                       <ONDCRegistrationForm />
                     </div>} />
-                  <Route path="experiences" element={<div>
-                      <h2 className="text-3xl font-bold mb-6">Experiences</h2>
-                      <p className="text-muted-foreground">Create and manage customer experiences.</p>
-                    </div>} />
+                  <Route path="experiences" element={<Experiences />} />
                   <Route path="retail" element={<div>
                       <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
                       <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
