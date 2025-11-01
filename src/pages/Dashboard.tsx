@@ -225,7 +225,7 @@ export default function Dashboard() {
   if (!user) {
     return null;
   }
-  return <div className="h-screen overflow-hidden">
+  return <div className="min-h-screen">
       {/* Ultra bright vibrant gradient background - same as hero */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
       
@@ -282,9 +282,9 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Content Area with minimal padding */}
-      <div className="relative z-10 pt-20 px-6 h-full">
-        <div className="max-w-[1600px] mx-auto h-full pb-6">
-          <div className="glass-card rounded-[3rem] p-4 relative overflow-hidden border border-white/20 h-full">
+      <div className="relative z-10 pt-20 px-6">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="glass-card rounded-[3rem] p-4 relative overflow-hidden border border-white/20">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-5" style={{
             backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
@@ -292,15 +292,16 @@ export default function Dashboard() {
           }}></div>
 
             {/* Two Section Layout: Left Menu + Right Content */}
-            <div className="relative flex gap-6 h-full">
+            <div className="relative flex gap-6 h-[calc(100vh-140px)]">
               {/* Left Section - Menu */}
               <aside className="w-[200px] flex-shrink-0">
                 <AppSidebar />
               </aside>
 
               {/* Right Section - Content */}
-              <div className="flex-1 min-w-0 overflow-auto">
-                <main className="pr-4 h-full">
+              <div className="flex-1 min-w-0">
+                <ScrollArea className="h-full">
+                  <main className="pr-4">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={<div>
@@ -314,6 +315,7 @@ export default function Dashboard() {
                       <Route path="settings" element={<Settings />} />
                     </Routes>
                   </main>
+                </ScrollArea>
               </div>
             </div>
           </div>
