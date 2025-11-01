@@ -291,30 +291,32 @@ export default function Dashboard() {
             backgroundSize: '40px 40px'
           }}></div>
 
-            {/* Content Grid: Left Sidebar + Right Content */}
-            <div className="relative grid lg:grid-cols-[200px_1fr] gap-6">
-              {/* Left Sidebar - Menu */}
-              <aside className="space-y-2">
+            {/* Two Section Layout: Left Menu + Right Content */}
+            <div className="relative flex gap-6 h-[calc(100vh-200px)]">
+              {/* Left Section - Menu */}
+              <aside className="w-[200px] flex-shrink-0">
                 <AppSidebar />
               </aside>
 
-              {/* Right Content Area with Scroll */}
-              <ScrollArea className="h-[calc(100vh-200px)]">
-                <main className="pr-4">
-                  <Routes>
-                  <Route index element={<DashboardContent />} />
-                  <Route path="ondc" element={<div>
-                      <ONDCRegistrationForm />
-                    </div>} />
-                  <Route path="experiences" element={<Experiences />} />
-                  <Route path="retail" element={<div>
-                      <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
-                      <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
-                    </div>} />
-                  <Route path="settings" element={<Settings />} />
-                  </Routes>
-                </main>
-              </ScrollArea>
+              {/* Right Section - Content */}
+              <div className="flex-1 min-w-0">
+                <ScrollArea className="h-full">
+                  <main className="pr-4">
+                    <Routes>
+                      <Route index element={<DashboardContent />} />
+                      <Route path="ondc" element={<div>
+                        <ONDCRegistrationForm />
+                      </div>} />
+                      <Route path="experiences" element={<Experiences />} />
+                      <Route path="retail" element={<div>
+                        <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
+                        <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
+                      </div>} />
+                      <Route path="settings" element={<Settings />} />
+                    </Routes>
+                  </main>
+                </ScrollArea>
+              </div>
             </div>
           </div>
         </div>
