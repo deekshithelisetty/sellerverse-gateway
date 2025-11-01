@@ -217,6 +217,7 @@ export default function Dashboard() {
   const location = useLocation();
   const [showPreview, setShowPreview] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   useEffect(() => {
     if (!user) {
@@ -299,9 +300,12 @@ export default function Dashboard() {
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
             <div className="relative flex gap-4 flex-1 min-h-0">
               {/* Left Section - Menu */}
-              <aside className="w-[240px] flex-shrink-0">
+              <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300`}>
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4">
-                  <AppSidebar />
+                  <AppSidebar 
+                    collapsed={sidebarCollapsed} 
+                    onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+                  />
                 </div>
               </aside>
 
