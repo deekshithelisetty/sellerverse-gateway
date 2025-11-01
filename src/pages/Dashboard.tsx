@@ -9,10 +9,11 @@ import Settings from '@/pages/Settings';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity } from 'lucide-react';
+import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity, Menu } from 'lucide-react';
 import { Bar, BarChart, Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Routes, Route } from 'react-router-dom';
 
@@ -225,101 +226,104 @@ export default function Dashboard() {
   if (!user) {
     return null;
   }
-  return <div className="min-h-screen">
-      {/* Ultra bright vibrant gradient background - same as hero */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
-      
-      {/* Luminous animated gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{
-      animationDelay: '1s'
-    }}></div>
-      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{
-      animationDelay: '2s'
-    }}></div>
-      
-      {/* Fixed Header - Same as hero page */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
-            <div className="flex items-center gap-3">
-              {brandLogo ? (
-                <img src={brandLogo} alt="Brand Logo" className="h-8 w-auto object-contain" />
-              ) : null}
-              <h1 className="text-2xl font-bold tracking-tight">TABHI</h1>
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen w-full">
+        {/* Ultra bright vibrant gradient background - same as hero */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
+        
+        {/* Luminous animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{
+          animationDelay: '1s'
+        }}></div>
+        <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{
+          animationDelay: '2s'
+        }}></div>
+        
+        {/* Fixed Header - Same as hero page */}
+        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
+          <div className="max-w-7xl mx-auto">
+            <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
+              <div className="flex items-center gap-3">
+                <SidebarTrigger className="hover:bg-white/10 rounded-lg p-2 transition-colors">
+                  <Menu className="h-5 w-5" />
+                </SidebarTrigger>
+                {brandLogo ? (
+                  <img src={brandLogo} alt="Brand Logo" className="h-8 w-auto object-contain" />
+                ) : null}
+                <h1 className="text-2xl font-bold tracking-tight">TABHI</h1>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/10">
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">{user.email || user.phone}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 glass-card border-white/20">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">Seller Account</p>
+                      <p className="text-xs text-muted-foreground">{user.email || user.phone}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-            
-            
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/10">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">{user.email || user.phone}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass-card border-white/20">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">Seller Account</p>
-                    <p className="text-xs text-muted-foreground">{user.email || user.phone}</p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Main Content Area with padding */}
-      <div className="relative z-10 pt-24 px-6 pb-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-[3rem] p-8 relative overflow-hidden border border-white/20">
-            {/* Subtle grid pattern overlay */}
-            <div className="absolute inset-0 opacity-5" style={{
-            backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
-            backgroundSize: '40px 40px'
-          }}></div>
+        {/* Main Content Area with Sidebar */}
+        <div className="flex w-full">
+          <AppSidebar />
+          
+          <SidebarInset className="flex-1">
+            <div className="relative z-10 pt-24 px-6 pb-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="glass-card rounded-[3rem] p-8 relative overflow-hidden border border-white/20">
+                  {/* Subtle grid pattern overlay */}
+                  <div className="absolute inset-0 opacity-5" style={{
+                    backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}></div>
 
-            {/* Two Section Layout: Left Menu + Right Content */}
-            <div className="relative flex gap-6 h-[calc(100vh-200px)]">
-              {/* Left Section - Menu */}
-              <aside className="w-[200px] flex-shrink-0">
-                <AppSidebar />
-              </aside>
-
-              {/* Right Section - Content */}
-              <div className="flex-1 min-w-0">
-                <ScrollArea className="h-full">
-                  <main className="pr-4">
-                    <Routes>
-                      <Route index element={<DashboardContent />} />
-                      <Route path="ondc" element={<div>
-                        <ONDCRegistrationForm />
-                      </div>} />
-                      <Route path="experiences" element={<Experiences />} />
-                      <Route path="retail" element={<div>
-                        <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
-                        <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
-                      </div>} />
-                      <Route path="settings" element={<Settings />} />
-                    </Routes>
-                  </main>
-                </ScrollArea>
+                  {/* Content Area */}
+                  <div className="relative">
+                    <ScrollArea className="h-[calc(100vh-200px)]">
+                      <main className="pr-4">
+                        <Routes>
+                          <Route index element={<DashboardContent />} />
+                          <Route path="ondc" element={<div>
+                            <ONDCRegistrationForm />
+                          </div>} />
+                          <Route path="experiences" element={<Experiences />} />
+                          <Route path="retail" element={<div>
+                            <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
+                            <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
+                          </div>} />
+                          <Route path="settings" element={<Settings />} />
+                        </Routes>
+                      </main>
+                    </ScrollArea>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </SidebarInset>
         </div>
       </div>
-    </div>;
+    </SidebarProvider>
+  );
 }
