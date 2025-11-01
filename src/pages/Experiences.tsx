@@ -1,4 +1,4 @@
-import { Plus, Grid3x3 } from 'lucide-react';
+import { Plus, Grid3x3, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
@@ -28,6 +28,7 @@ export default function Experiences({
   showForm: boolean;
   setShowForm: (show: boolean) => void;
 }) {
+  const [showPreview, setShowPreview] = useState(false);
   const [experienceData, setExperienceData] = useState<ExperienceData>({
     name: '',
     description: '',
@@ -54,6 +55,14 @@ export default function Experiences({
           <p className="text-muted-foreground">Create and manage customer experiences.</p>
         </div>
         <div className="flex gap-3">
+          <Button 
+            variant={showPreview ? "default" : "outline"}
+            className="gap-2"
+            onClick={() => setShowPreview(!showPreview)}
+          >
+            <Monitor className="w-4 h-4" />
+            Live Preview
+          </Button>
           <Button variant="outline" className="gap-2">
             <Grid3x3 className="w-4 h-4" />
             View All
@@ -81,11 +90,13 @@ export default function Experiences({
         </div>
 
         {/* Right - Preview Panel */}
-        <div className="w-[420px] rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg">
-          <div className="h-full overflow-auto">
-            <ExperiencePreview data={experienceData} />
+        {showPreview && (
+          <div className="w-[420px] rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg animate-fade-in">
+            <div className="h-full overflow-auto">
+              <ExperiencePreview data={experienceData} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

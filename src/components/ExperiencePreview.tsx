@@ -21,7 +21,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   return (
-    <div className="flex items-center justify-center h-full p-6">
+    <div className="flex justify-center h-full p-6 pt-8">
       {/* Phone Mockup */}
       <div className="relative w-[380px] h-[750px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl overflow-hidden">
         {/* Phone Notch */}
