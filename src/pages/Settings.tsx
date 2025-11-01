@@ -54,152 +54,154 @@ export default function Settings() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold mb-2">Settings</h2>
-        <p className="text-muted-foreground">Configure your dashboard preferences</p>
+        <h2 className="text-3xl font-bold mb-1">Settings</h2>
+        <p className="text-sm text-muted-foreground">Configure your dashboard preferences</p>
       </div>
 
-      {/* Font Settings */}
-      <Card className="glass-card border-white/20">
-        <CardHeader>
-          <CardTitle>Font Settings</CardTitle>
-          <CardDescription>Customize the appearance of text</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fontSize">Font Size</Label>
-            <Select value={fontSize} onValueChange={setFontSize}>
-              <SelectTrigger id="fontSize">
-                <SelectValue placeholder="Select font size" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Font Settings */}
+        <Card className="glass-card border-white/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Font Settings</CardTitle>
+            <CardDescription className="text-xs">Customize text appearance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="fontSize" className="text-sm">Font Size</Label>
+              <Select value={fontSize} onValueChange={setFontSize}>
+                <SelectTrigger id="fontSize" className="h-9">
+                  <SelectValue placeholder="Select font size" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fontSizes.map((size) => (
+                    <SelectItem key={size} value={size}>
+                      {size}px
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="fontName" className="text-sm">Font Family</Label>
+              <Select value={fontName} onValueChange={setFontName}>
+                <SelectTrigger id="fontName" className="h-9">
+                  <SelectValue placeholder="Select font" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fontNames.map((font) => (
+                    <SelectItem key={font} value={font}>
+                      <span style={{ fontFamily: font }}>{font}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Language Settings */}
+        <Card className="glass-card border-white/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Language</CardTitle>
+            <CardDescription className="text-xs">Select your preferred language</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Select value={language} onValueChange={(value) => {
+              setLanguage(value);
+              toast.success('Language changed successfully');
+            }}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Select language" />
               </SelectTrigger>
               <SelectContent>
-                {fontSizes.map((size) => (
-                  <SelectItem key={size} value={size}>
-                    {size}px
+                {languages.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {lang.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="space-y-2">
-            <Label htmlFor="fontName">Font Family</Label>
-            <Select value={fontName} onValueChange={setFontName}>
-              <SelectTrigger id="fontName">
-                <SelectValue placeholder="Select font" />
-              </SelectTrigger>
-              <SelectContent>
-                {fontNames.map((font) => (
-                  <SelectItem key={font} value={font}>
-                    <span style={{ fontFamily: font }}>{font}</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Theme Settings */}
-      <Card className="glass-card border-white/20">
-        <CardHeader>
-          <CardTitle>Theme</CardTitle>
-          <CardDescription>Choose a color theme for your dashboard</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {themes.map((themeOption) => (
-              <button
-                key={themeOption.id}
-                onClick={() => {
-                  setTheme(themeOption.id);
-                  toast.success(`Theme changed to ${themeOption.name}`);
-                }}
-                className={`glass-card p-4 rounded-xl border-2 transition-all hover:scale-105 ${
-                  theme === themeOption.id ? 'border-primary shadow-lg' : 'border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold">{themeOption.name}</span>
-                  {theme === themeOption.id && <Check className="h-5 w-5 text-primary" />}
-                </div>
-                <div className="flex gap-2">
-                  <div
-                    className="h-8 flex-1 rounded"
-                    style={{ backgroundColor: `hsl(${themeOption.primary})` }}
-                  />
-                  <div
-                    className="h-8 flex-1 rounded"
-                    style={{ backgroundColor: `hsl(${themeOption.secondary})` }}
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Brand Logo */}
-      <Card className="glass-card border-white/20">
-        <CardHeader>
-          <CardTitle>Brand Logo</CardTitle>
-          <CardDescription>Upload your brand logo for the dashboard header</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {brandLogo ? (
-            <div className="space-y-4">
-              <div className="glass-card p-4 rounded-xl border-white/20 flex items-center justify-center">
-                <img src={brandLogo} alt="Brand Logo" className="max-h-16 object-contain" />
-              </div>
-              <Button onClick={handleRemoveLogo} variant="outline" className="w-full">
-                Remove Logo
-              </Button>
-            </div>
-          ) : (
-            <div className="glass-card p-8 rounded-xl border-2 border-dashed border-white/20 text-center">
-              <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <Label htmlFor="logo-upload" className="cursor-pointer">
-                <span className="text-primary font-semibold">Click to upload</span>
-                <span className="text-muted-foreground"> or drag and drop</span>
-                <p className="text-xs text-muted-foreground mt-2">PNG, JPG up to 2MB</p>
-              </Label>
-              <Input
-                id="logo-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleLogoUpload}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Language Settings */}
-      <Card className="glass-card border-white/20">
-        <CardHeader>
-          <CardTitle>Language</CardTitle>
-          <CardDescription>Select your preferred dashboard language</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Select value={language} onValueChange={(value) => {
-            setLanguage(value);
-            toast.success('Language changed successfully');
-          }}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select language" />
-            </SelectTrigger>
-            <SelectContent>
-              {languages.map((lang) => (
-                <SelectItem key={lang.code} value={lang.code}>
-                  {lang.name}
-                </SelectItem>
+        {/* Theme Settings - Spans 2 columns */}
+        <Card className="glass-card border-white/20 lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Theme</CardTitle>
+            <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+              {themes.map((themeOption) => (
+                <button
+                  key={themeOption.id}
+                  onClick={() => {
+                    setTheme(themeOption.id);
+                    toast.success(`Theme changed to ${themeOption.name}`);
+                  }}
+                  className={`glass-card p-3 rounded-lg border transition-all hover:scale-105 ${
+                    theme === themeOption.id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold truncate">{themeOption.name}</span>
+                    {theme === themeOption.id && <Check className="h-3.5 w-3.5 text-primary flex-shrink-0 ml-1" />}
+                  </div>
+                  <div className="flex gap-1.5">
+                    <div
+                      className="h-6 flex-1 rounded"
+                      style={{ backgroundColor: `hsl(${themeOption.primary})` }}
+                    />
+                    <div
+                      className="h-6 flex-1 rounded"
+                      style={{ backgroundColor: `hsl(${themeOption.secondary})` }}
+                    />
+                  </div>
+                </button>
               ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Brand Logo - Spans 2 columns */}
+        <Card className="glass-card border-white/20 lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Brand Logo</CardTitle>
+            <CardDescription className="text-xs">Upload your brand logo for the dashboard header</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {brandLogo ? (
+              <div className="flex items-center gap-4">
+                <div className="glass-card p-3 rounded-lg border-white/20 flex items-center justify-center flex-1">
+                  <img src={brandLogo} alt="Brand Logo" className="max-h-12 object-contain" />
+                </div>
+                <Button onClick={handleRemoveLogo} variant="outline" size="sm" className="h-9">
+                  Remove Logo
+                </Button>
+              </div>
+            ) : (
+              <div className="glass-card p-6 rounded-lg border-2 border-dashed border-white/20 text-center">
+                <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                <Label htmlFor="logo-upload" className="cursor-pointer">
+                  <span className="text-sm text-primary font-semibold">Click to upload</span>
+                  <span className="text-sm text-muted-foreground"> or drag and drop</span>
+                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 2MB</p>
+                </Label>
+                <Input
+                  id="logo-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
