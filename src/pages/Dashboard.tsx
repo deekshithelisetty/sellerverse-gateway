@@ -127,16 +127,16 @@ function DashboardContent() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
         {/* Bar Chart */}
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 min-w-0">
           <CardHeader>
             <CardTitle>Sales & Orders Overview</CardTitle>
             <CardDescription>Monthly sales and order statistics</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
-              <BarChart data={barChartData}>
+          <CardContent className="overflow-hidden">
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <BarChart data={barChartData} width={undefined} height={undefined}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="month" className="text-xs" />
                 <YAxis className="text-xs" />
@@ -149,14 +149,14 @@ function DashboardContent() {
         </Card>
 
         {/* Line Chart */}
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 min-w-0">
           <CardHeader>
             <CardTitle>Visitor Analytics</CardTitle>
             <CardDescription>Weekly visitor trends</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
-              <LineChart data={lineChartData}>
+          <CardContent className="overflow-hidden">
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <LineChart data={lineChartData} width={undefined} height={undefined}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="day" className="text-xs" />
                 <YAxis className="text-xs" />
