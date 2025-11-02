@@ -13,18 +13,59 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { CheckCircle2, XCircle, Circle } from 'lucide-react';
 import { toast } from 'sonner';
 
+// List of major Indian banks
+const INDIAN_BANKS = [
+  'State Bank of India',
+  'HDFC Bank',
+  'ICICI Bank',
+  'Axis Bank',
+  'Kotak Mahindra Bank',
+  'Punjab National Bank',
+  'Bank of Baroda',
+  'Canara Bank',
+  'Union Bank of India',
+  'Bank of India',
+  'Indian Bank',
+  'Central Bank of India',
+  'IDBI Bank',
+  'UCO Bank',
+  'Yes Bank',
+  'IndusInd Bank',
+  'Federal Bank',
+  'IDFC First Bank',
+  'RBL Bank',
+  'South Indian Bank',
+  'Karur Vysya Bank',
+  'City Union Bank',
+  'Jammu & Kashmir Bank',
+  'DCB Bank',
+  'Bandhan Bank',
+  'HSBC Bank',
+  'Citibank',
+  'Deutsche Bank',
+  'Standard Chartered Bank',
+  'Barclays Bank',
+].sort();
+
 const nocaFormSchema = z.object({
-  bankName1: z.string().min(2, 'Bank name is required'),
-  accountName1: z.string().min(2, 'Account name is required'),
-  accountNumber1: z.string().min(5, 'Account number is required'),
-  ifsCode1: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFS Code format'),
-  bankName2: z.string().min(2, 'Bank name is required'),
-  accountName2: z.string().min(2, 'Account name is required'),
-  accountNumber2: z.string().min(5, 'Account number is required'),
-  ifsCode2: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFS Code format'),
+  companyBankName: z.string().min(1, 'Bank name is required'),
+  companyAccountName: z.string().min(2, 'Account name is required').max(200, 'Account name is too long'),
+  companyAccountNumber: z.string().min(8, 'Account number must be at least 8 digits').max(18, 'Account number is too long'),
+  companyIfsCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFS Code format (e.g., SBIN0001234)'),
+  nocaBankName: z.string().min(1, 'Bank name is required'),
+  nocaAccountName: z.string().min(2, 'Account name is required').max(200, 'Account name is too long'),
+  nocaAccountNumber: z.string().min(8, 'Account number must be at least 8 digits').max(18, 'Account number is too long'),
+  nocaIfsCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFS Code format (e.g., SBIN0001234)'),
 });
 
 type NOCAFormValues = z.infer<typeof nocaFormSchema>;
@@ -75,14 +116,14 @@ export function NBBLRegistrationForm() {
   const form = useForm<NOCAFormValues>({
     resolver: zodResolver(nocaFormSchema),
     defaultValues: {
-      bankName1: 'Axis Bank',
-      accountName1: 'AARNA XP PRIVATE LIMITED ONDC SELLER NP ACCOUNT',
-      accountNumber1: '925020000743',
-      ifsCode1: 'UTIB0000743',
-      bankName2: 'ICICI Bank',
-      accountName2: 'AARNA XP PRIVATE LIMITED',
-      accountNumber2: '059805756992',
-      ifsCode2: 'KKBK0000568',
+      companyBankName: '',
+      companyAccountName: '',
+      companyAccountNumber: '',
+      companyIfsCode: '',
+      nocaBankName: '',
+      nocaAccountName: '',
+      nocaAccountNumber: '',
+      nocaIfsCode: '',
     },
   });
 
@@ -165,10 +206,10 @@ export function NBBLRegistrationForm() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          NOCA (Nodal Account) Details
+          NOCA (Nodel) Account Registration
         </h2>
         <p className="text-muted-foreground">
-          Enter your bank account details for NBBL settlement
+          Enter your company and nodal account details for NBBL settlement
         </p>
       </div>
 
@@ -177,18 +218,43 @@ export function NBBLRegistrationForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ScrollArea className="h-[calc(100vh-300px)] pr-4">
             <div className="space-y-8">
-              {/* Account 1 */}
+              {/* Company Account Information */}
               <div className="glass-card rounded-2xl p-6 border border-white/20 space-y-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">Account 1</h3>
+                <h3 className="text-xl font-semibold mb-4 text-primary">Company Account Information</h3>
                 
                 <FormField
                   control={form.control}
-                  name="bankName1"
+                  name="companyBankName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bank Name</FormLabel>
+                      <FormLabel>Bank Name <span className="text-destructive">*</span></FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select bank name" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-[200px]">
+                          {INDIAN_BANKS.map((bank) => (
+                            <SelectItem key={bank} value={bank}>
+                              {bank}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="companyAccountName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter bank name" {...field} />
+                        <Input placeholder="Enter account holder name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,24 +263,10 @@ export function NBBLRegistrationForm() {
 
                 <FormField
                   control={form.control}
-                  name="accountName1"
+                  name="companyAccountNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name as per Bank Account</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter account name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="accountNumber1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account Number</FormLabel>
+                      <FormLabel>Account Number <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account number" {...field} />
                       </FormControl>
@@ -225,12 +277,16 @@ export function NBBLRegistrationForm() {
 
                 <FormField
                   control={form.control}
-                  name="ifsCode1"
+                  name="companyIfsCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>IFS Code</FormLabel>
+                      <FormLabel>IFS Code <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter IFS code" {...field} />
+                        <Input 
+                          placeholder="e.g., SBIN0001234" 
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -238,18 +294,43 @@ export function NBBLRegistrationForm() {
                 />
               </div>
 
-              {/* Account 2 */}
+              {/* NOCA (Nodel) Account Information */}
               <div className="glass-card rounded-2xl p-6 border border-white/20 space-y-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">Account 2</h3>
+                <h3 className="text-xl font-semibold mb-4 text-primary">NOCA (Nodel) Account Information</h3>
                 
                 <FormField
                   control={form.control}
-                  name="bankName2"
+                  name="nocaBankName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bank Name</FormLabel>
+                      <FormLabel>Bank Name <span className="text-destructive">*</span></FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select bank name" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-[200px]">
+                          {INDIAN_BANKS.map((bank) => (
+                            <SelectItem key={bank} value={bank}>
+                              {bank}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="nocaAccountName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter bank name" {...field} />
+                        <Input placeholder="Enter account holder name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -258,24 +339,10 @@ export function NBBLRegistrationForm() {
 
                 <FormField
                   control={form.control}
-                  name="accountName2"
+                  name="nocaAccountNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name as per Bank Account</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter account name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="accountNumber2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account Number</FormLabel>
+                      <FormLabel>Account Number <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account number" {...field} />
                       </FormControl>
@@ -286,12 +353,16 @@ export function NBBLRegistrationForm() {
 
                 <FormField
                   control={form.control}
-                  name="ifsCode2"
+                  name="nocaIfsCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>IFS Code</FormLabel>
+                      <FormLabel>IFS Code <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter IFS code" {...field} />
+                        <Input 
+                          placeholder="e.g., SBIN0001234" 
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
