@@ -83,8 +83,8 @@ export default function Experiences({
         {/* Center - Form Section */}
         <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden">
           {showForm ? (
-            <div className="h-full p-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              <ExperienceForm data={experienceData} onChange={setExperienceData} />
+            <div className="h-full pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+              <ExperienceForm data={experienceData} onChange={setExperienceData} onClose={() => setShowForm(false)} />
             </div>
           ) : (
             <div className="h-full flex items-center justify-center">

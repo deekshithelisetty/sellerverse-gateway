@@ -21,7 +21,7 @@ import { Plus, Trash2, Upload, FolderUp, X, ChevronDown } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef } from 'react';
 
-export function ExperienceForm({ data, onChange }: { data: ExperienceData; onChange: (data: ExperienceData) => void }) {
+export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceData; onChange: (data: ExperienceData) => void; onClose: () => void }) {
   const [thumbnailImage, setThumbnailImage] = useState<{ file: File; preview: string } | null>(null);
   const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
@@ -233,10 +233,15 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <h3 className="text-2xl font-semibold mb-2">Create Experience</h3>
-        <p className="text-sm text-muted-foreground">Fill in the details to create a comprehensive experience.</p>
+    <div className="space-y-6 max-w-6xl">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-semibold mb-2">Create Experience</h3>
+          <p className="text-sm text-muted-foreground">Fill in the details to create a comprehensive experience.</p>
+        </div>
+        <Button variant="ghost" size="icon" onClick={onClose}>
+          <X className="w-5 h-5" />
+        </Button>
       </div>
 
       <Accordion type="multiple" defaultValue={["basic", "media", "location", "schedule", "booking", "tags"]} className="space-y-4">
@@ -276,6 +281,69 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
             Source Media
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
+            {/* Content Type - Moved to top */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Content Type</Label>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="content-image"
+                    checked={data.contentType.includes('image')}
+                    onCheckedChange={(checked) => {
+                      const newContentType = checked 
+                        ? [...data.contentType, 'image']
+                        : data.contentType.filter(type => type !== 'image');
+                      updateField('contentType', newContentType);
+                    }}
+                  />
+                  <Label htmlFor="content-image" className="font-normal cursor-pointer">Image</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="content-video"
+                    checked={data.contentType.includes('video')}
+                    onCheckedChange={(checked) => {
+                      const newContentType = checked 
+                        ? [...data.contentType, 'video']
+                        : data.contentType.filter(type => type !== 'video');
+                      updateField('contentType', newContentType);
+                    }}
+                  />
+                  <Label htmlFor="content-video" className="font-normal cursor-pointer">Video</Label>
+                </div>
+                
+                {/* Aspect Ratio - Show in same row when Video is selected */}
+                {data.contentType.includes('video') && (
+                  <>
+                    <Separator orientation="vertical" className="h-6" />
+                    <div className="flex items-center gap-4">
+                      <Label className="text-sm font-semibold">Aspect Ratio:</Label>
+                      <RadioGroup 
+                        value={data.aspectRatio} 
+                        onValueChange={(value) => updateField('aspectRatio', value)}
+                        className="flex items-center gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="square" id="square" />
+                          <Label htmlFor="square" className="font-normal cursor-pointer text-sm">Square (1:1)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="portrait" id="portrait" />
+                          <Label htmlFor="portrait" className="font-normal cursor-pointer text-sm">Portrait (9:16)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="landscape" id="landscape" />
+                          <Label htmlFor="landscape" className="font-normal cursor-pointer text-sm">Landscape (16:9)</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
             {/* Thumbnail Image */}
             <div className="space-y-2">
               <Label className="text-base font-semibold">Thumbnail Image</Label>
@@ -364,60 +432,6 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
                 )}
               </div>
             </div>
-
-            {/* Content Type */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">Content Type</Label>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="content-image"
-                    checked={data.contentType.includes('image')}
-                    onCheckedChange={(checked) => {
-                      const newContentType = checked 
-                        ? [...data.contentType, 'image']
-                        : data.contentType.filter(type => type !== 'image');
-                      updateField('contentType', newContentType);
-                    }}
-                  />
-                  <Label htmlFor="content-image" className="font-normal cursor-pointer">Image</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="content-video"
-                    checked={data.contentType.includes('video')}
-                    onCheckedChange={(checked) => {
-                      const newContentType = checked 
-                        ? [...data.contentType, 'video']
-                        : data.contentType.filter(type => type !== 'video');
-                      updateField('contentType', newContentType);
-                    }}
-                  />
-                  <Label htmlFor="content-video" className="font-normal cursor-pointer">Video</Label>
-                </div>
-              </div>
-            </div>
-
-            {/* Aspect Ratio - Show only when Video is selected */}
-            {data.contentType.includes('video') && (
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">Aspect Ratio</Label>
-                <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="square" id="square" />
-                    <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="portrait" id="portrait" />
-                    <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="landscape" id="landscape" />
-                    <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -488,9 +502,8 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="flex justify-end">
-              <Button type="button" variant="outline" size="sm" onClick={addDayEntry}>
-                <Plus className="w-4 h-4" />
-                Add Day
+              <Button type="button" variant="secondary" size="sm" onClick={addDayEntry} className="gap-1.5 font-semibold">
+                Days - 1+
               </Button>
             </div>
             
@@ -498,17 +511,19 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
               {Object.entries(getScheduleByDay()).sort(([a], [b]) => Number(a) - Number(b)).map(([day, entries]) => (
                 <div key={day} className="space-y-3 border rounded-lg p-4 bg-background/50">
                   <div className="flex items-center justify-between">
-                    <h5 className="text-base font-semibold">Day {day}</h5>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => addScheduleEntry(Number(day))}
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Section
-                    </Button>
+                    <h5 className="text-base font-semibold">Day -∞ {day}</h5>
                   </div>
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => addScheduleEntry(Number(day))}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Section
+                  </Button>
                   
                   <div className="space-y-3">
                     {entries.map((entry, entryIndex) => {
@@ -665,13 +680,13 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
                       <div className="px-4 pb-4 space-y-3">
                         <Button 
                           type="button" 
-                          variant="outline" 
+                          variant="secondary" 
                           size="sm" 
                           onClick={() => addBookingSection(category)}
-                          className="w-full"
+                          className="gap-1.5 rounded-full text-xs h-8 px-4"
                         >
-                          <Plus className="w-4 h-4" />
-                          Add Sub-Section
+                          <Plus className="w-3 h-3" />
+                          Add {category}
                         </Button>
 
                         {/* Sub-sections as nested collapsibles */}
