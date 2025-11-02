@@ -175,7 +175,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({ 1: true });
   const [openTagsSection, setOpenTagsSection] = useState(true);
   const [openFaqsSection, setOpenFaqsSection] = useState(true);
-  const [openItineraries, setOpenItineraries] = useState<{ [key: string]: boolean }>({});
+  const [openItineraries, setOpenItineraries] = useState<{ [key: string]: boolean }>({ "1-0": true });
 
   const toggleCategory = (category: string) => {
     if (!selectedBookingCategories.includes(category)) {
@@ -321,7 +321,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
         </Button>
       </div>
 
-      <Accordion type="multiple" defaultValue={["basic", "media", "location", "schedule", "booking", "tags"]} className="space-y-4">
+      <Accordion type="multiple" defaultValue={[]} className="space-y-4">
         {/* Section 1: Basic Information */}
         <AccordionItem value="basic" className="border rounded-lg px-4 bg-card/50">
           <AccordionTrigger className="text-lg font-semibold hover:no-underline">

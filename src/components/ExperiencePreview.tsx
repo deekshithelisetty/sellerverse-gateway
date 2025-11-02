@@ -308,9 +308,8 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                         <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
                           {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
                             const entries = periods[period];
-                            // Always show Morning and Afternoon, hide others if empty
-                            const shouldShow = period === 'Morning' || period === 'Afternoon' || (entries && entries.length > 0);
-                            if (!shouldShow) return null;
+                            // Only show periods that have actual data
+                            if (!entries || entries.length === 0) return null;
 
                             return (
                               <div key={period} className="space-y-3">
@@ -323,39 +322,33 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                 )}
 
                                 {/* Entries for this time period */}
-                                {entries && entries.length > 0 ? (
-                                  entries.map((entry, idx) => (
-                                    entry.heading || entry.timing || entry.plan ? (
-                                      <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
-                                        {/* Heading */}
-                                        {entry.heading && (
-                                          <h4 className="text-sm font-semibold">{entry.heading}</h4>
-                                        )}
-                                        
-                                        {/* Timing Badge */}
-                                        {entry.timing && (
-                                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                            <Clock className="w-3 h-3" />
-                                            <span className="text-xs font-medium text-primary">
-                                              {entry.timing}
-                                            </span>
-                                          </div>
-                                        )}
-                                        
-                                        {/* Activity Details */}
-                                        {entry.plan && (
-                                          <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
-                                            {formatTextWithBullets(entry.plan)}
-                                          </div>
-                                        )}
-                                      </div>
-                                    ) : null
-                                  ))
-                                ) : (
-                                  <div className="text-sm text-muted-foreground/60 italic py-2">
-                                    No itinerary added yet
-                                  </div>
-                                )}
+                                {entries.map((entry, idx) => (
+                                  entry.heading || entry.timing || entry.plan ? (
+                                    <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
+                                      {/* Heading */}
+                                      {entry.heading && (
+                                        <h4 className="text-sm font-semibold">{entry.heading}</h4>
+                                      )}
+                                      
+                                      {/* Timing Badge */}
+                                      {entry.timing && (
+                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                                          <Clock className="w-3 h-3" />
+                                          <span className="text-xs font-medium text-primary">
+                                            {entry.timing}
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Activity Details */}
+                                      {entry.plan && (
+                                        <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                          {formatTextWithBullets(entry.plan)}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : null
+                                ))}
                               </div>
                             );
                           })}
