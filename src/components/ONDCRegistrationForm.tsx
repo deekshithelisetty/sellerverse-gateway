@@ -278,9 +278,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   if (!showForm && !isSubmitted) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="text-center space-y-6 max-w-md">
+        <div className="text-center space-y-6 max-w-3xl">
           <div className="space-y-2">
-            <h2 className="text-5xl font-bold flex items-center justify-center gap-3 flex-wrap">
+            <h2 className="text-5xl font-bold flex items-center justify-center gap-3 whitespace-nowrap">
               <span className="text-[#FF9933]" style={{ filter: 'drop-shadow(0 0 12px rgba(255, 153, 51, 0.8))' }}>
                 Onboard
               </span>
@@ -365,14 +365,38 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
           {/* Success message */}
           <div className="text-center space-y-6 max-w-2xl px-8 z-10">
             <div className="mb-8">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#FF9933] via-white to-[#22C55E] flex items-center justify-center animate-pulse">
-                <CheckCircle2 className="w-16 h-16 text-white" />
+              {/* Rotating Ashoka Chakra */}
+              <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                <svg className="animate-spin-slow w-24 h-24" viewBox="0 0 40 40">
+                  <circle cx="20" cy="20" r="18" fill="white" stroke="#22C55E" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 20px rgba(34, 197, 94, 0.8))' }} />
+                  <g transform="translate(20, 20)">
+                    {[...Array(24)].map((_, i) => {
+                      const angle = (i * 15 * Math.PI) / 180;
+                      const x1 = 0;
+                      const y1 = 0;
+                      const x2 = Math.cos(angle) * 16;
+                      const y2 = Math.sin(angle) * 16;
+                      return (
+                        <line
+                          key={i}
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="#22C55E"
+                          strokeWidth="1.5"
+                        />
+                      );
+                    })}
+                    <circle cx="0" cy="0" r="3" fill="#22C55E" />
+                  </g>
+                </svg>
               </div>
-              <h2 className="text-4xl font-bold mb-4">
+              <h2 className="text-5xl font-bold mb-4">
                 <span 
-                  className="inline-block bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent animate-gradient-flow"
+                  className="text-[#22C55E] animate-pulse"
                   style={{ 
-                    backgroundSize: '200% 100%',
+                    filter: 'drop-shadow(0 0 20px rgba(34, 197, 94, 0.9))',
                   }}
                 >
                   Congratulations!
