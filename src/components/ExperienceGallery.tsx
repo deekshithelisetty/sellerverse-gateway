@@ -45,7 +45,7 @@ export const ExperienceGallery = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center p-8 overflow-hidden gap-16">
+    <div className="h-full w-full flex flex-col items-center justify-start pt-16 pb-8 px-8 overflow-hidden gap-16">
       <div className="relative w-full flex items-center justify-center">
         <div className="relative w-full max-w-5xl h-96">
           {mockExperiences.map((experience, index) => {
