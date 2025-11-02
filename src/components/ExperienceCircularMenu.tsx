@@ -76,43 +76,77 @@ export function ExperienceCircularMenu() {
 
   // If a menu is selected, show the category view with cards
   if (selectedMenu) {
+    const selectedMenuItem = menuItems.find(item => item.id === selectedMenu);
+    
     return (
       <div className="h-full flex flex-col bg-background p-6">
-        {/* Header Section with Categories */}
+        {/* Header Section with Menu Items */}
         <div className="flex items-center justify-between mb-8 animate-fade-in">
-          <div className="space-y-1">
-            <h1 className="text-4xl font-bold">Experience Categories</h1>
-            <p className="text-muted-foreground">Browse and manage your experiences</p>
+          <div className="space-y-3">
+            <h2 className="text-2xl font-semibold">{selectedMenuItem?.title}</h2>
+            <div className="w-64 h-0.5 bg-gradient-to-r from-orange-500 via-pink-500 via-purple-500 to-blue-500 animate-fade-in rounded-full" />
           </div>
           
-          {/* Category Buttons */}
+          {/* Menu Items */}
           <div className="flex gap-3">
-            {categoryButtons.map((category, index) => {
-              const Icon = category.icon;
+            {menuItems.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = item.id === selectedMenu;
+              
               return (
                 <button
-                  key={category.id}
-                  className="group relative w-12 h-12 rounded-full flex items-center justify-center
-                           bg-muted/20 hover:bg-muted/40 border border-border
-                           transition-all duration-300 ease-in-out
-                           hover:scale-110 hover:shadow-lg
-                           animate-card-fade-in"
+                  key={item.id}
+                  onClick={() => setSelectedMenu(item.id)}
+                  className="group relative overflow-hidden rounded-full 
+                           w-[50px] h-[50px] hover:w-[160px]
+                           transition-all duration-500 ease-in-out
+                           flex items-center justify-center
+                           bg-muted/20 hover:bg-transparent
+                           border-2 border-border hover:border-transparent
+                           shadow-lg hover:shadow-2xl
+                           animate-card-fade-in
+                           cursor-pointer"
                   style={{
                     animationDelay: `${index * 50}ms`,
                   }}
-                  title={category.name}
                 >
-                  <Icon 
-                    className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
-                    style={{ color: category.color }}
+                  {/* Gradient Background on Hover */}
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 
+                             transition-opacity duration-500 ease-in-out"
+                    style={{
+                      background: `linear-gradient(135deg, ${item.gradientFrom}, ${item.gradientTo})`,
+                    }}
                   />
-                  
-                  {/* Tooltip */}
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 
-                                 text-xs font-medium text-muted-foreground
-                                 opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                                 whitespace-nowrap pointer-events-none">
-                    {category.name}
+
+                  {/* Gradient Glow Blur */}
+                  <div 
+                    className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-60 
+                             transition-opacity duration-500 ease-in-out -z-10"
+                    style={{
+                      background: `linear-gradient(135deg, ${item.gradientFrom}, ${item.gradientTo})`,
+                    }}
+                  />
+
+                  {/* Icon - Hidden on Hover */}
+                  <Icon 
+                    className="w-6 h-6
+                             opacity-100 scale-100 
+                             group-hover:opacity-0 group-hover:scale-0
+                             transition-all duration-300 ease-in-out
+                             relative z-10"
+                    style={{ color: item.gradientFrom }}
+                  />
+
+                  {/* Text - Shown on Hover */}
+                  <span 
+                    className="absolute text-xs font-bold text-white tracking-wider
+                             opacity-0 scale-0 
+                             group-hover:opacity-100 group-hover:scale-100
+                             transition-all duration-500 ease-in-out delay-100
+                             z-10"
+                  >
+                    {item.title}
                   </span>
                 </button>
               );
