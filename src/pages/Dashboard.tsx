@@ -225,15 +225,6 @@ export default function Dashboard() {
     }
   }, [user, navigate]);
 
-  // Auto-collapse ONDC benefits panel after 5 seconds on initial screen
-  useEffect(() => {
-    if (location.pathname.includes('/ondc') && showONDCBenefits) {
-      const timer = setTimeout(() => {
-        setShowONDCBenefits(false);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [location.pathname, showONDCBenefits]);
   const handleSignOut = () => {
     signOut();
     navigate('/');

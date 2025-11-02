@@ -881,8 +881,8 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         </ScrollArea>
       </div>
 
-      {/* Fixed Bottom Navigation */}
-      <div className="absolute bottom-4 right-4 flex items-center gap-2">
+      {/* Bottom Navigation - Near Form */}
+      <div className="pt-6 flex items-center justify-end gap-2 px-4">
         {currentStep > 0 && (
           <Button
             type="button"
