@@ -365,10 +365,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
           {/* Success message */}
           <div className="text-center space-y-6 max-w-2xl px-8 z-10">
             <div className="mb-8">
-              {/* Rotating Ashoka Chakra */}
+              {/* Rotating Ashoka Chakra - White and Blue */}
               <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
                 <svg className="animate-spin-slow w-24 h-24" viewBox="0 0 40 40">
-                  <circle cx="20" cy="20" r="18" fill="white" stroke="#22C55E" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 20px rgba(34, 197, 94, 0.8))' }} />
+                  <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 20px rgba(0, 31, 141, 0.8))' }} />
                   <g transform="translate(20, 20)">
                     {[...Array(24)].map((_, i) => {
                       const angle = (i * 15 * Math.PI) / 180;
@@ -383,12 +383,12 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                           y1={y1}
                           x2={x2}
                           y2={y2}
-                          stroke="#22C55E"
+                          stroke="#001F8D"
                           strokeWidth="1.5"
                         />
                       );
                     })}
-                    <circle cx="0" cy="0" r="3" fill="#22C55E" />
+                    <circle cx="0" cy="0" r="3" fill="#001F8D" />
                   </g>
                 </svg>
               </div>
