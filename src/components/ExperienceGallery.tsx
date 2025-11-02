@@ -45,9 +45,9 @@ export const ExperienceGallery = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center p-8 overflow-hidden gap-16">
+    <div className="h-full w-full flex flex-col items-center justify-center p-2 overflow-hidden gap-16">
       <div className="relative w-full flex items-center justify-center">
-        <div className="relative w-full max-w-5xl h-96">
+        <div className="relative w-full max-w-5xl h-[450px]">
           {mockExperiences.map((experience, index) => {
             const { x, y, rotation } = getCardPosition(index);
             

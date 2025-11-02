@@ -82,7 +82,7 @@ export default function Experiences({
       </div>
 
       {/* Main Content Area - Two Column Layout */}
-      <div className="flex-1 flex gap-4 overflow-hidden">
+      <div className="flex-1 flex gap-2 overflow-hidden">
         {/* Center - Form Section */}
         <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm flex flex-col overflow-hidden">
           {showForm ? (

@@ -290,7 +290,7 @@ export default function Dashboard() {
       {/* Main Content Area with minimal padding */}
       <div className="relative z-10 h-full pt-20 px-6 pb-6">
         <div className="max-w-[1600px] mx-auto h-full">
-          <div className="glass-card rounded-[3rem] p-4 relative overflow-hidden border border-white/20 h-full flex flex-col">
+          <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full flex flex-col">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-5" style={{
             backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
@@ -298,7 +298,7 @@ export default function Dashboard() {
           }}></div>
 
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
-            <div className="relative flex gap-4 flex-1 min-h-0">
+            <div className="relative flex gap-2 flex-1 min-h-0">
               {/* Left Section - Menu */}
               <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300`}>
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4">
@@ -312,7 +312,7 @@ export default function Dashboard() {
               {/* Center Section - Main Content */}
               <div className="flex-1 min-w-0">
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                  <main className="h-full overflow-auto p-6">
+                  <main className="h-full overflow-auto p-3">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={
