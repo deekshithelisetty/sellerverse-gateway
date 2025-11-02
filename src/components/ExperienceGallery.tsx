@@ -32,11 +32,11 @@ export const ExperienceGallery = () => {
     const angle = (startAngle + angleStep * index) * (Math.PI / 180);
     
     // Radius of the arc - adjusted for better visual balance
-    const radius = 320;
+    const radius = 300;
     
-    // Calculate x and y positions
-    const x = radius * Math.sin(angle);
-    const y = -radius * Math.cos(angle) + radius * 0.7;
+    // Calculate x and y positions - adjusted to move left and up
+    const x = radius * Math.sin(angle) - 30; // Move left by 30px
+    const y = -radius * Math.cos(angle) + radius * 0.6; // Move up
     
     // Rotation for card to follow the curve
     const rotation = angle * (180 / Math.PI);
@@ -62,8 +62,8 @@ export const ExperienceGallery = () => {
       </motion.div>
       
       {/* Middle Section - Curved Gallery */}
-      <div className="relative w-full flex items-center justify-center flex-shrink-0">
-        <div className="relative w-full max-w-6xl h-[420px]">
+      <div className="relative w-full flex items-center justify-center flex-shrink-0 py-4">
+        <div className="relative w-full max-w-6xl h-[360px]">
           {mockExperiences.map((experience, index) => {
             const { x, y, rotation } = getCardPosition(index);
             
