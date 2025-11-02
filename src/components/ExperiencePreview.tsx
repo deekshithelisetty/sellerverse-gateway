@@ -371,27 +371,41 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {Object.keys(data.bookingInfo).length > 0 && Object.values(data.bookingInfo).some(sections => sections.length > 0) && (
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold">What to Know Before You Book</h2>
-                {Object.entries(data.bookingInfo).map(([category, sections]) => (
-                  sections.length > 0 && (
-                    <div key={category} className="space-y-3">
-                      <h3 className="text-sm font-semibold text-primary">{category}</h3>
-                      {sections.map((section, idx) => (
-                        section.header || section.details ? (
-                          <div key={idx} className="space-y-2 border-l-2 border-primary/30 pl-3">
-                            {section.header && (
-                              <h4 className="text-sm font-semibold">{section.header}</h4>
-                            )}
-                            {section.details && (
-                              <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
-                                {formatTextWithBullets(section.details)}
-                              </div>
-                            )}
-                          </div>
-                        ) : null
-                      ))}
-                    </div>
-                  )
-                ))}
+                <Accordion type="single" collapsible className="w-full space-y-2">
+                  {Object.entries(data.bookingInfo).map(([category, sections]) => (
+                    sections.length > 0 && (
+                      <AccordionItem key={category} value={category} className="border rounded-lg px-1">
+                        <AccordionTrigger className="text-sm font-semibold text-primary hover:no-underline px-3">
+                          {category}
+                        </AccordionTrigger>
+                        <AccordionContent className="px-3 pb-3">
+                          <Accordion type="single" collapsible className="w-full space-y-2">
+                            {sections.map((section, idx) => (
+                              section.header || section.details ? (
+                                <AccordionItem 
+                                  key={idx} 
+                                  value={`${category}-${idx}`} 
+                                  className="border rounded-md bg-card/50"
+                                >
+                                  <AccordionTrigger className="text-xs font-semibold hover:no-underline px-3 py-2">
+                                    {section.header || `Section ${idx + 1}`}
+                                  </AccordionTrigger>
+                                  <AccordionContent className="px-3 pb-2">
+                                    {section.details && (
+                                      <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                        {formatTextWithBullets(section.details)}
+                                      </div>
+                                    )}
+                                  </AccordionContent>
+                                </AccordionItem>
+                              ) : null
+                            ))}
+                          </Accordion>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )
+                  ))}
+                </Accordion>
               </div>
             )}
 

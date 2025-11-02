@@ -6,7 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Trash2, Upload, FolderUp, X } from 'lucide-react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Plus, Trash2, Upload, FolderUp, X, ChevronDown } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef } from 'react';
 
@@ -100,7 +105,19 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     'Photographic Opportunities'
   ];
 
-  const [activeBookingCategory, setActiveBookingCategory] = useState<string | null>(null);
+  const [selectedBookingCategories, setSelectedBookingCategories] = useState<string[]>([]);
+  const [openCollapsibles, setOpenCollapsibles] = useState<{ [key: string]: boolean }>({});
+
+  const toggleCategory = (category: string) => {
+    if (!selectedBookingCategories.includes(category)) {
+      setSelectedBookingCategories([...selectedBookingCategories, category]);
+      setOpenCollapsibles({ ...openCollapsibles, [category]: true });
+    }
+  };
+
+  const toggleCollapsible = (category: string) => {
+    setOpenCollapsibles({ ...openCollapsibles, [category]: !openCollapsibles[category] });
+  };
 
   const addBookingSection = (category: string) => {
     const currentSections = data.bookingInfo[category] || [];
@@ -539,81 +556,134 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
         <Separator />
         
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {bookingCategories.map((category) => (
-              <Button
-                key={category}
-                type="button"
-                variant={activeBookingCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveBookingCategory(activeBookingCategory === category ? null : category)}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-
-          {activeBookingCategory && (
-            <div className="space-y-3 border rounded-lg p-4 bg-card">
-              <div className="flex items-center justify-between">
-                <Label className="font-semibold text-base">{activeBookingCategory}</Label>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => addBookingSection(activeBookingCategory)}
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Section
-                </Button>
-              </div>
-
-              {(data.bookingInfo[activeBookingCategory] || []).map((section, index) => (
-                <div key={index} className="border rounded-lg p-4 space-y-3 bg-background">
-                  <div className="flex items-center justify-between">
-                    <Label className="font-medium">Section {index + 1}</Label>
+          {/* Available category buttons */}
+          {bookingCategories.filter(cat => !selectedBookingCategories.includes(cat)).length > 0 && (
+            <div>
+              <Label className="text-sm text-muted-foreground mb-2 block">Select a category to add:</Label>
+              <div className="flex flex-wrap gap-2">
+                {bookingCategories
+                  .filter(cat => !selectedBookingCategories.includes(cat))
+                  .map((category) => (
                     <Button
+                      key={category}
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
-                      onClick={() => removeBookingSection(activeBookingCategory, index)}
+                      onClick={() => toggleCategory(category)}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Plus className="w-3 h-3 mr-1" />
+                      {category}
                     </Button>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`booking-header-${activeBookingCategory}-${index}`}>Header</Label>
-                    <Input 
-                      id={`booking-header-${activeBookingCategory}-${index}`}
-                      placeholder="Enter section header..." 
-                      value={section.header}
-                      onChange={(e) => updateBookingSection(activeBookingCategory, index, 'header', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`booking-details-${activeBookingCategory}-${index}`}>Details</Label>
-                    <Textarea 
-                      id={`booking-details-${activeBookingCategory}-${index}`}
-                      placeholder="Enter details...&#10;&#10;Tip: Use • for bullet points, **bold**, or *italic* for formatting" 
-                      rows={6}
-                      value={section.details}
-                      onChange={(e) => updateBookingSection(activeBookingCategory, index, 'details', e.target.value)}
-                      className="font-mono text-sm"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Supports: • or - for bullets, **bold**, *italic*
-                    </p>
-                  </div>
-                </div>
-              ))}
-
-              {(!data.bookingInfo[activeBookingCategory] || data.bookingInfo[activeBookingCategory].length === 0) && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No sections added yet. Click "Add Section" to get started.
-                </p>
-              )}
+                  ))}
+              </div>
             </div>
           )}
+
+          {/* Selected categories as collapsible panels */}
+          <div className="space-y-3">
+            {selectedBookingCategories.map((category) => {
+              const sections = data.bookingInfo[category] || [];
+              const sectionCount = sections.length;
+              
+              return (
+                <Collapsible 
+                  key={category} 
+                  open={openCollapsibles[category]}
+                  onOpenChange={() => toggleCollapsible(category)}
+                  className="border rounded-lg bg-card"
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <div className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <ChevronDown className={`w-4 h-4 transition-transform ${openCollapsibles[category] ? 'rotate-180' : ''}`} />
+                        <span className="font-semibold text-base">{category}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="px-4 pb-4 space-y-3">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => addBookingSection(category)}
+                        className="w-full"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Sub-Section
+                      </Button>
+
+                      {/* Sub-sections as nested collapsibles */}
+                      <div className="space-y-2">
+                        {sections.map((section, index) => (
+                          <Collapsible key={index} defaultOpen className="border rounded-lg bg-background">
+                            <CollapsibleTrigger className="w-full">
+                              <div className="flex items-center justify-between p-3 hover:bg-accent/50 transition-colors rounded-t-lg">
+                                <div className="flex items-center gap-2">
+                                  <ChevronDown className="w-3 h-3 transition-transform" />
+                                  <span className="text-sm font-medium">
+                                    {section.header || `Sub-section ${index + 1}`}
+                                  </span>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-6 w-6"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeBookingSection(category, index);
+                                  }}
+                                >
+                                  <Trash2 className="w-3 h-3 text-destructive" />
+                                </Button>
+                              </div>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <div className="p-3 pt-0 space-y-3">
+                                <div className="space-y-2">
+                                  <Label htmlFor={`booking-header-${category}-${index}`}>Header</Label>
+                                  <Input 
+                                    id={`booking-header-${category}-${index}`}
+                                    placeholder="Enter section header..." 
+                                    value={section.header}
+                                    onChange={(e) => updateBookingSection(category, index, 'header', e.target.value)}
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor={`booking-details-${category}-${index}`}>Details</Label>
+                                  <Textarea 
+                                    id={`booking-details-${category}-${index}`}
+                                    placeholder="Enter details...&#10;&#10;Tip: Use • for bullet points, **bold**, or *italic* for formatting" 
+                                    rows={6}
+                                    value={section.details}
+                                    onChange={(e) => updateBookingSection(category, index, 'details', e.target.value)}
+                                    className="font-mono text-sm"
+                                  />
+                                  <p className="text-xs text-muted-foreground">
+                                    Supports: • or - for bullets, **bold**, *italic*
+                                  </p>
+                                </div>
+                              </div>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        ))}
+                      </div>
+
+                      {sections.length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          No sub-sections added yet. Click "Add Sub-Section" to get started.
+                        </p>
+                      )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+          </div>
         </div>
       </div>
 
