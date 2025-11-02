@@ -342,32 +342,30 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
           <div className="text-center space-y-6 max-w-2xl px-8 z-10">
             <div className="mb-8">
               {/* Rotating Ashoka Chakra - White and Blue */}
-              <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                <svg className="animate-spin-slow w-24 h-24" viewBox="0 0 40 40">
-                  <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 20px rgba(0, 31, 141, 0.8))' }} />
-                  <g transform="translate(20, 20)">
-                    {[...Array(24)].map((_, i) => {
-                      const angle = (i * 15 * Math.PI) / 180;
-                      const x1 = 0;
-                      const y1 = 0;
-                      const x2 = Math.cos(angle) * 16;
-                      const y2 = Math.sin(angle) * 16;
-                      return (
-                        <line
-                          key={i}
-                          x1={x1}
-                          y1={y1}
-                          x2={x2}
-                          y2={y2}
-                          stroke="#001F8D"
-                          strokeWidth="1.5"
-                        />
-                      );
-                    })}
-                    <circle cx="0" cy="0" r="3" fill="#001F8D" />
-                  </g>
-                </svg>
-              </div>
+              <svg className="animate-spin-slow w-24 h-24 mx-auto mb-6" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
+                <g transform="translate(20, 20)">
+                  {[...Array(24)].map((_, i) => {
+                    const angle = (i * 15 * Math.PI) / 180;
+                    const x1 = 0;
+                    const y1 = 0;
+                    const x2 = Math.cos(angle) * 16;
+                    const y2 = Math.sin(angle) * 16;
+                    return (
+                      <line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke="#001F8D"
+                        strokeWidth="1.5"
+                      />
+                    );
+                  })}
+                  <circle cx="0" cy="0" r="3" fill="#001F8D" />
+                </g>
+              </svg>
               <h2 className="text-5xl font-bold mb-4">
                 <span 
                   className="text-[#22C55E] animate-pulse"
@@ -441,7 +439,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         <ScrollArea className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pr-4">
             {progressSections.map((section, idx) => (
-              <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4 indian-flag-border">
+              <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
                 <h3 className="text-lg font-bold mb-4">
                   {showGradientAnimation ? (
                     <span 
@@ -546,7 +544,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             <form className="space-y-6 pb-20">
               {/* Step 1: Personal Information */}
               {currentStep === 0 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
                   <h4 className="font-semibold text-lg">{STEPS[0].title}</h4>
                 
                   <div className="grid grid-cols-2 gap-4">
@@ -612,7 +610,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 2: Business Information */}
               {currentStep === 1 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
                   <h4 className="font-semibold text-lg">{STEPS[1].title}</h4>
 
                   <FormField
@@ -746,7 +744,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 3: Network Configuration */}
               {currentStep === 2 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
                   <h4 className="font-semibold text-lg">{STEPS[2].title}</h4>
 
                   <FormField
@@ -799,7 +797,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 4: Location Information */}
               {currentStep === 3 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
                   <h4 className="font-semibold text-lg">{STEPS[3].title}</h4>
 
                   <div className="grid grid-cols-2 gap-4">
