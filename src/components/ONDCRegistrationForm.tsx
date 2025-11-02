@@ -122,11 +122,24 @@ const progressSections = [
 const StatusIcon = ({ status }: { status: string }) => {
   switch (status) {
     case 'completed':
-      return <CheckCircle2 className="w-5 h-5 text-green-500" />;
+      return (
+        <div className="w-8 h-8 rounded-full bg-[#22C55E] flex items-center justify-center animate-pulse">
+          <CheckCircle2 className="w-5 h-5 text-white" />
+        </div>
+      );
     case 'in-progress':
-      return <Circle className="w-5 h-5 text-orange-500 fill-orange-500" />;
+      return (
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF9933] to-[#FF6B9D] flex items-center justify-center relative">
+          <div className="absolute w-2 h-2 rounded-full bg-white animate-ping" style={{ animationDuration: '1.5s' }}></div>
+          <div className="w-2 h-2 rounded-full bg-white" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))' }}></div>
+        </div>
+      );
     case 'rejected':
-      return <XCircle className="w-5 h-5 text-red-500" />;
+      return (
+        <div className="w-8 h-8 rounded-full bg-[#EF4444] flex items-center justify-center animate-pulse">
+          <XCircle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))' }} />
+        </div>
+      );
     default:
       return <Circle className="w-5 h-5 text-muted-foreground" />;
   }
@@ -213,8 +226,41 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="h-full flex items-center justify-center">
         <div className="text-center space-y-6 max-w-md">
           <div className="space-y-2">
-            <h2 className="text-4xl font-bold text-foreground">
-              Onboard with ONDC
+            <h2 className="text-5xl font-bold flex items-center justify-center gap-3 flex-wrap">
+              <span className="text-[#FF9933]" style={{ filter: 'drop-shadow(0 0 12px rgba(255, 153, 51, 0.8))' }}>
+                Onboard
+              </span>
+              {/* Ashoka Chakra Icon with Rotation */}
+              <svg className="animate-spin-slow" width="32" height="32" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
+                <g transform="translate(20, 20)">
+                  {[...Array(24)].map((_, i) => {
+                    const angle = (i * 15 * Math.PI) / 180;
+                    const x1 = 0;
+                    const y1 = 0;
+                    const x2 = Math.cos(angle) * 16;
+                    const y2 = Math.sin(angle) * 16;
+                    return (
+                      <line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke="#001F8D"
+                        strokeWidth="1.5"
+                      />
+                    );
+                  })}
+                  <circle cx="0" cy="0" r="3" fill="#001F8D" />
+                </g>
+              </svg>
+              <span className="text-white" style={{ filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.9))' }}>
+                with
+              </span>
+              <span className="text-[#22C55E]" style={{ filter: 'drop-shadow(0 0 12px rgba(34, 197, 94, 0.8))' }}>
+                ONDC
+              </span>
             </h2>
             <p className="text-sm text-muted-foreground">
               empowering Indian businesses, strengthening 'Made in India'
@@ -236,33 +282,37 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   if (isSubmitted) {
     return (
       <div className="h-full flex flex-col">
-        {/* Progress bar at top right */}
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">ONDC Onboarding Progress Tracking</h2>
-            <p className="text-muted-foreground">Track your progress across different environments</p>
-          </div>
-          <div className="w-64 h-8 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
-            <div 
-              className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+        {/* Header with animated gradient text - no progress bar */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold mb-2">
+            <span 
+              className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
               style={{ 
-                width: `${calculateProgress()}%`,
-                backgroundColor: getCurrentColor(),
-                boxShadow: getGlowColor()
+                backgroundSize: '200% 100%',
+                animation: 'gradient-flow 3s linear infinite'
               }}
             >
-              <span className="text-xs font-bold text-background px-2">
-                {Math.round(calculateProgress())}%
-              </span>
-            </div>
-          </div>
+              ONDC Onboarding Progress Tracking
+            </span>
+          </h2>
+          <p className="text-muted-foreground">Track your progress across different environments</p>
         </div>
 
         <ScrollArea className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pr-4">
             {progressSections.map((section, idx) => (
               <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
-                <h3 className="text-lg font-bold mb-4">{section.title}</h3>
+                <h3 className="text-lg font-bold mb-4">
+                  <span 
+                    className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
+                    style={{ 
+                      backgroundSize: '200% 100%',
+                      animation: 'gradient-flow 3s linear infinite'
+                    }}
+                  >
+                    {section.title}
+                  </span>
+                </h3>
                 <div className="space-y-3">
                   {section.items.map((item, itemIdx) => (
                     <div key={itemIdx} className="flex items-center gap-3">

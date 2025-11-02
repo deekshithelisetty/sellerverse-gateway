@@ -103,6 +103,25 @@ export default {
             transform: "translateY(0) scale(1)",
           },
         },
+        "gradient-flow": {
+          "0%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+          },
+        },
+        "spin-slow": {
+          "0%": {
+            transform: "rotate(0deg)",
+          },
+          "100%": {
+            transform: "rotate(360deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -110,6 +129,8 @@ export default {
         "fade-in-top": "fade-in-top 0.7s ease-out",
         "fade-in-top-delayed": "fade-in-top 0.7s ease-out 0.2s both",
         "card-fade-in": "card-fade-in 0.7s ease-out both",
+        "gradient-flow": "gradient-flow 3s linear infinite",
+        "spin-slow": "spin-slow 8s linear infinite",
       },
     },
   },
