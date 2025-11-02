@@ -2,6 +2,7 @@ import { Plus, Grid3x3, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
+import { ExperienceGallery } from '@/components/ExperienceGallery';
 import { useState } from 'react';
 
 export interface ExperienceData {
@@ -89,9 +90,7 @@ export default function Experiences({
               <ExperienceForm data={experienceData} onChange={setExperienceData} onClose={() => setShowForm(false)} />
             </div>
           ) : (
-            <div className="h-full flex items-center justify-center">
-              <p className="text-muted-foreground text-lg">Click "Create" to start building an experience</p>
-            </div>
+            <ExperienceGallery />
           )}
         </div>
 
