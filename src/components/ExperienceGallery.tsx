@@ -31,12 +31,12 @@ export const ExperienceGallery = () => {
     const angleStep = (endAngle - startAngle) / (totalCards - 1);
     const angle = (startAngle + angleStep * index) * (Math.PI / 180);
     
-    // Radius of the arc - reduced for better fit
-    const radius = 300;
+    // Radius of the arc - adjusted for better visual balance
+    const radius = 320;
     
     // Calculate x and y positions
     const x = radius * Math.sin(angle);
-    const y = -radius * Math.cos(angle) + radius * 0.75; // Adjusted to raise the curve
+    const y = -radius * Math.cos(angle) + radius * 0.7;
     
     // Rotation for card to follow the curve
     const rotation = angle * (180 / Math.PI);
@@ -45,13 +45,25 @@ export const ExperienceGallery = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-2 overflow-hidden">
-      {/* Top spacing */}
-      <div className="flex-1" />
+    <div className="h-full w-full flex flex-col items-center justify-between p-8 overflow-hidden">
+      {/* Top Section - Title */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-center max-w-3xl"
+      >
+        <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Rediscover Your Memories
+        </h2>
+        <p className="text-lg text-muted-foreground">
+          Our intelligent platform finds, organizes, and brings your most cherished moments back to life.
+        </p>
+      </motion.div>
       
-      {/* Centered curve section */}
+      {/* Middle Section - Curved Gallery */}
       <div className="relative w-full flex items-center justify-center flex-shrink-0">
-        <div className="relative w-full max-w-5xl h-[380px]">
+        <div className="relative w-full max-w-6xl h-[420px]">
           {mockExperiences.map((experience, index) => {
             const { x, y, rotation } = getCardPosition(index);
             
@@ -78,12 +90,12 @@ export const ExperienceGallery = () => {
                 }}
                 className="cursor-pointer absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                 style={{
-                  width: '160px',
+                  width: '170px',
                 }}
               >
-                <Card className="overflow-hidden border-primary/20 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-colors shadow-lg p-2">
+                <Card className="overflow-hidden border-primary/30 bg-gradient-to-br from-background/80 to-background/50 backdrop-blur-md hover:border-primary/60 transition-all shadow-xl hover:shadow-2xl p-2.5">
                   <motion.div
-                    className="aspect-square relative overflow-hidden"
+                    className="aspect-square relative overflow-hidden rounded-lg"
                     initial={{ rotate: rotation }}
                     whileHover={{ rotate: 0 }}
                     transition={{ duration: 0.3 }}
@@ -93,8 +105,8 @@ export const ExperienceGallery = () => {
                       alt={experience.name}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
-                      <p className="text-xs font-semibold text-center px-2">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-3">
+                      <p className="text-xs font-semibold text-white text-center px-2">
                         {experience.name}
                       </p>
                     </div>
@@ -106,21 +118,26 @@ export const ExperienceGallery = () => {
         </div>
       </div>
 
-      {/* Text section at bottom */}
+      {/* Bottom Section - Description & CTA */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-center max-w-3xl mt-12 mb-8"
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="text-center max-w-2xl space-y-6"
       >
-        <h2 className="text-5xl font-bold mb-4">Rediscover Your Memories</h2>
-        <p className="text-lg text-muted-foreground">
-          Our intelligent platform finds, organizes, and brings your most cherished moments back to life.
-        </p>
+        <div className="glass-card rounded-2xl p-6 border border-white/10">
+          <p className="text-base text-muted-foreground leading-relaxed">
+            Browse through our curated collection of experiences. Each memory has been carefully crafted to deliver unforgettable moments. Hover over any card to explore more details, or click to dive deeper into the experience.
+          </p>
+        </div>
+        
+        <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            <span>{mockExperiences.length} Experiences Available</span>
+          </div>
+        </div>
       </motion.div>
-      
-      {/* Bottom spacing */}
-      <div className="flex-1" />
     </div>
   );
 };
