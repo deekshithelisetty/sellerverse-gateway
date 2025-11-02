@@ -41,9 +41,6 @@ const ondcFormSchema = z.object({
     required_error: 'Please select transaction type',
   }),
   subscriberId: z.string().min(5, 'Subscriber ID is required').regex(/^[a-z0-9.-]+$/, 'Invalid format'),
-  environment: z.enum(['staging', 'preprod', 'prod'], {
-    required_error: 'Please select environment',
-  }),
   gstNo: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST number format'),
   city: z.string().min(2, 'City is required'),
   state: z.string().min(2, 'State is required'),
@@ -70,7 +67,7 @@ const ondcDomains = [
 const STEPS = [
   { title: 'Personal Information', fields: ['firstName', 'lastName', 'mobile', 'email'] },
   { title: 'Business Information', fields: ['entityName', 'role', 'ondcDomain', 'productDomains', 'transactionType', 'gstNo'] },
-  { title: 'Network Configuration', fields: ['subscriberId', 'environment'] },
+  { title: 'Network Configuration', fields: ['subscriberId'] },
   { title: 'Location Information', fields: ['city', 'state', 'zip', 'stdCode', 'country'] },
 ];
 
@@ -218,7 +215,6 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       productDomains: 'Electronics, Home Appliances',
       transactionType: 'B2C',
       subscriberId: 'kumar-enterprises-001',
-      environment: 'staging',
       gstNo: '29ABCDE1234F1Z5',
       city: 'Bangalore',
       state: 'Karnataka',
@@ -757,37 +753,6 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                           <Input {...field} className="glass border-white/20" />
                         </FormControl>
                         <FormDescription>Lowercase letters, numbers, dots, and hyphens only</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="environment"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Environment</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex gap-4"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="staging" id="staging" />
-                              <Label htmlFor="staging">Staging</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="preprod" id="preprod" />
-                              <Label htmlFor="preprod">Pre-Production</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="prod" id="prod" />
-                              <Label htmlFor="prod">Production</Label>
-                            </div>
-                          </RadioGroup>
-                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
