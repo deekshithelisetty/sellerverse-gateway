@@ -166,11 +166,11 @@ export function ExperienceCircularMenu() {
   return (
     <div className="h-full flex flex-col items-center justify-center bg-background">
       {/* Header Section */}
-      <div className="mb-16 space-y-2 text-center animate-fade-in-top">
-        <h1 className="text-5xl font-bold">Experience Categories</h1>
-        <p className="text-muted-foreground text-lg animate-fade-in-top-delayed">
-          Select a category to manage your experiences
-        </p>
+      <div className="mb-16 space-y-4 text-center animate-fade-in-top">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-500 via-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+          Experience Categories
+        </h1>
+        <div className="w-48 h-0.5 bg-gradient-to-r from-orange-500 via-pink-500 via-purple-500 to-blue-500 animate-fade-in rounded-full mx-auto" />
       </div>
 
       {/* Circular Menu */}
@@ -195,6 +195,14 @@ export function ExperienceCircularMenu() {
                 animationDelay: `${index * 100}ms`,
               }}
             >
+              {/* Background Color (always visible) */}
+              <div 
+                className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                style={{
+                  background: item.gradientFrom,
+                }}
+              />
+
               {/* Gradient Background on Hover */}
               <div 
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 
@@ -215,12 +223,11 @@ export function ExperienceCircularMenu() {
 
               {/* Icon - Hidden on Hover */}
               <Icon 
-                className="w-7 h-7
+                className="w-7 h-7 text-white
                          opacity-100 scale-100 
                          group-hover:opacity-0 group-hover:scale-0
                          transition-all duration-300 ease-in-out
                          relative z-10"
-                style={{ color: item.gradientFrom }}
               />
 
               {/* Text - Shown on Hover */}
@@ -238,12 +245,6 @@ export function ExperienceCircularMenu() {
         })}
       </div>
 
-      {/* Instruction Text */}
-      <div className="mt-16 text-center animate-fade-in-top-delayed">
-        <p className="text-muted-foreground text-sm">
-          Click on any category to explore experiences
-        </p>
-      </div>
     </div>
   );
 }
