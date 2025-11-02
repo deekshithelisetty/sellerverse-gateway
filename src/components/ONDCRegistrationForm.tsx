@@ -105,15 +105,6 @@ const initialProgressSections = [
       { name: 'Public Launch', status: 'pending' },
     ],
   },
-  {
-    title: 'NBBL Network Progress',
-    items: [
-      { name: 'NBBL Registration', status: 'completed' },
-      { name: 'API Key Generation', status: 'in-progress' },
-      { name: 'Connectivity Testing', status: 'rejected' },
-      { name: 'Certification', status: 'pending' },
-    ],
-  },
 ];
 
 const StatusIcon = ({ status }: { status: string }) => {

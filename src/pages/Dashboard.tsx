@@ -7,6 +7,7 @@ import { ONDCRegistrationForm } from '@/components/ONDCRegistrationForm';
 import { ONDCBenefits } from '@/components/ONDCBenefits';
 import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
+import NBBLSettlement from '@/pages/NBBLSettlement';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -322,6 +323,7 @@ export default function Dashboard() {
                           setShowBenefits={setShowONDCBenefits}
                         />
                       } />
+                      <Route path="nbbl" element={<NBBLSettlement />} />
                       <Route path="experiences" element={
                         <Experiences 
                           showForm={showForm}
