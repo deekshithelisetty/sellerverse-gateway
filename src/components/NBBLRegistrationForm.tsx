@@ -110,6 +110,7 @@ const StatusIcon = ({ status }: { status: string }) => {
 };
 
 export function NBBLRegistrationForm() {
+  const [showIntro, setShowIntro] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showGradientAnimation, setShowGradientAnimation] = useState(true);
 
@@ -136,6 +137,33 @@ export function NBBLRegistrationForm() {
     setIsSubmitted(true);
     toast.success('NOCA Details submitted successfully!');
   };
+
+  if (showIntro) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <div className="max-w-2xl mx-auto text-center space-y-6 p-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            NBBL Settlement Agency
+          </h1>
+          <div className="space-y-4 text-muted-foreground text-lg">
+            <p>
+              NBBL (National Banking and Bill Payments Layer) Settlement Agency manages the settlement and reconciliation of payments across the ONDC network.
+            </p>
+            <p>
+              Register your Nodal Account (NOCA) details to enable seamless payment settlements and ensure secure transaction processing for your business operations.
+            </p>
+          </div>
+          <Button
+            size="lg"
+            onClick={() => setShowIntro(false)}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 mt-8"
+          >
+            Start NBBL Onboarding
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isSubmitted) {
     setTimeout(() => setShowGradientAnimation(false), 100);
@@ -206,7 +234,7 @@ export function NBBLRegistrationForm() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          NOCA (Nodel) Account Registration
+          NOCA (Nodal) Account Registration
         </h2>
         <p className="text-muted-foreground">
           Enter your company and nodal account details for NBBL settlement
@@ -294,9 +322,9 @@ export function NBBLRegistrationForm() {
                 />
               </div>
 
-              {/* NOCA (Nodel) Account Information */}
+              {/* NOCA (Nodal) Account Information */}
               <div className="glass-card rounded-2xl p-6 border border-white/20 space-y-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">NOCA (Nodel) Account Information</h3>
+                <h3 className="text-xl font-semibold mb-4 text-primary">NOCA (Nodal) Account Information</h3>
                 
                 <FormField
                   control={form.control}
