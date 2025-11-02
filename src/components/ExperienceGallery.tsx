@@ -22,52 +22,75 @@ const mockExperiences: Experience[] = [
 ];
 
 export const ExperienceGallery = () => {
+  // Calculate position along a rainbow arc for each card
+  const getCardPosition = (index: number) => {
+    const totalCards = mockExperiences.length;
+    // Arc spans from -60 to 60 degrees (120 degree arc)
+    const startAngle = -60;
+    const endAngle = 60;
+    const angleStep = (endAngle - startAngle) / (totalCards - 1);
+    const angle = (startAngle + angleStep * index) * (Math.PI / 180);
+    
+    // Radius of the arc
+    const radius = 350;
+    
+    // Calculate x and y positions
+    const x = radius * Math.sin(angle);
+    const y = -radius * Math.cos(angle) + radius;
+    
+    // Rotation for card to follow the curve
+    const rotation = angle * (180 / Math.PI);
+    
+    return { x, y, rotation };
+  };
+
   return (
     <div className="h-full w-full flex items-center justify-center p-8 overflow-hidden">
-      <div className="relative w-full max-w-6xl">
+      <div className="relative w-full h-full flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="absolute top-8 left-1/2 -translate-x-1/2 text-center z-10"
         >
           <h2 className="text-3xl font-bold mb-2">Your Experiences</h2>
           <p className="text-muted-foreground">Click on any experience to edit or view details</p>
         </motion.div>
 
-        <div className="grid grid-cols-5 gap-6 relative">
+        <div className="relative w-full max-w-5xl h-96">
           {mockExperiences.map((experience, index) => {
-            // Create curved/diagonal layout effect
-            const row = Math.floor(index / 5);
-            const col = index % 5;
-            const offsetY = row % 2 === 0 ? 0 : 20;
-            const rotation = (col - 2) * 2; // Slight rotation for curve effect
+            const { x, y, rotation } = getCardPosition(index);
             
             return (
               <motion.div
                 key={experience.id}
-                initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.5, y: 100 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  x: x,
+                  y: y,
+                }}
                 transition={{
-                  duration: 0.5,
-                  delay: index * 0.1,
+                  duration: 0.8,
+                  delay: index * 0.08,
                   ease: [0.25, 0.4, 0.25, 1]
                 }}
                 whileHover={{ 
-                  scale: 1.05, 
-                  y: -10,
-                  zIndex: 10,
+                  scale: 1.15, 
+                  y: y - 20,
+                  zIndex: 50,
                   transition: { duration: 0.2 }
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                 style={{
-                  transform: `translateY(${offsetY}px)`,
+                  width: '140px',
                 }}
               >
-                <Card className="overflow-hidden border-primary/20 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-colors">
+                <Card className="overflow-hidden border-primary/20 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-colors shadow-lg">
                   <motion.div
                     className="aspect-square relative overflow-hidden"
-                    style={{ rotate: rotation }}
+                    initial={{ rotate: rotation }}
                     whileHover={{ rotate: 0 }}
                     transition={{ duration: 0.3 }}
                   >
@@ -76,13 +99,12 @@ export const ExperienceGallery = () => {
                       alt={experience.name}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
+                      <p className="text-xs font-semibold text-center px-2">
+                        {experience.name}
+                      </p>
+                    </div>
                   </motion.div>
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm line-clamp-2 text-center">
-                      {experience.name}
-                    </h3>
-                  </div>
                 </Card>
               </motion.div>
             );
