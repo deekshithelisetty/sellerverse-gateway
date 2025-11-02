@@ -54,7 +54,7 @@ export function AppSidebar({
                   }`
                 }
               >
-                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
+                <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
                   <item.icon className="h-4 w-4 text-white" />
                 </div>
                 {!collapsed && (
