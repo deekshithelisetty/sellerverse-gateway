@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -150,6 +150,30 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(0);
+  const [showGradientAnimation, setShowGradientAnimation] = useState(true);
+
+  // Timer to stop gradient animation after 3 seconds
+  useEffect(() => {
+    if (isSubmitted) {
+      const timer = setTimeout(() => {
+        setShowGradientAnimation(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSubmitted]);
+
+  // Calculate overall progress from all sections
+  const calculateOverallProgress = () => {
+    const totalItems = progressSections.reduce((sum, section) => sum + section.items.length, 0);
+    const completedItems = progressSections.reduce(
+      (sum, section) => sum + section.items.filter(item => item.status === 'completed').length,
+      0
+    );
+    return (completedItems / totalItems) * 100;
+  };
+
+  const overallProgress = calculateOverallProgress();
+  const isFullyCompleted = overallProgress === 100;
 
   const form = useForm<ONDCFormValues>({
     resolver: zodResolver(ondcFormSchema),
@@ -278,24 +302,110 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     );
   }
 
-  // After submission - Progress Tracking
+  // After submission - Progress Tracking or Completion Screen
   if (isSubmitted) {
+    // Show completion screen if 100% complete
+    if (isFullyCompleted) {
+      return (
+        <div className="h-full flex items-center justify-center relative overflow-hidden">
+          {/* Floating paper confetti animation */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-float-paper"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `-${Math.random() * 20}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 4}s`,
+                }}
+              >
+                <div
+                  className="w-3 h-3 rotate-45"
+                  style={{
+                    background: ['#FF9933', '#FFFFFF', '#22C55E'][Math.floor(Math.random() * 3)],
+                    opacity: 0.7,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Success message */}
+          <div className="text-center space-y-6 max-w-2xl px-8 z-10">
+            <div className="mb-8">
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#FF9933] via-white to-[#22C55E] flex items-center justify-center animate-pulse">
+                <CheckCircle2 className="w-16 h-16 text-white" />
+              </div>
+              <h2 className="text-4xl font-bold mb-4">
+                <span 
+                  className="inline-block bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent animate-gradient-flow"
+                  style={{ 
+                    backgroundSize: '200% 100%',
+                  }}
+                >
+                  Congratulations!
+                </span>
+              </h2>
+            </div>
+            <p className="text-xl leading-relaxed">
+              <span className="font-bold text-[#FF9933]">You have successfully subscribed to ONDC!</span>
+              <br />
+              <span className="text-muted-foreground">
+                All your catalogs will now be published automatically on the ONDC network.
+              </span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // Progress tracking screen
     return (
       <div className="h-full flex flex-col">
-        {/* Header with animated gradient text - no progress bar */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">
-            <span 
-              className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
-              style={{ 
-                backgroundSize: '200% 100%',
-                animation: 'gradient-flow 3s linear infinite'
-              }}
-            >
-              ONDC Onboarding Progress Tracking
-            </span>
-          </h2>
-          <p className="text-muted-foreground">Track your progress across different environments</p>
+        {/* Header with progress bar */}
+        <div className="mb-6 flex justify-between items-start gap-4">
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold mb-2">
+              {showGradientAnimation ? (
+                <span 
+                  className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
+                  style={{ 
+                    backgroundSize: '200% 100%',
+                  }}
+                >
+                  ONDC Onboarding Progress Tracking
+                </span>
+              ) : (
+                <>
+                  <span className="text-[#FF9933]">ONDC</span>{' '}
+                  <span className="text-white">Onboarding</span>{' '}
+                  <span className="text-[#22C55E]">Progress Tracking</span>
+                </>
+              )}
+            </h2>
+            <p className="text-muted-foreground">Track your progress across different environments</p>
+          </div>
+
+          {/* Progress bar - top right */}
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            <span className="text-xs font-medium text-muted-foreground">Onboarding Progress</span>
+            <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
+              <div 
+                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+                style={{ 
+                  width: `${overallProgress}%`,
+                  background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #22C55E 100%)',
+                  boxShadow: '0 0 20px rgba(255, 153, 51, 0.4)'
+                }}
+              >
+                <span className="text-sm font-bold text-gray-800 px-2 drop-shadow-sm">
+                  {Math.round(overallProgress)}%
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <ScrollArea className="flex-1">
@@ -303,15 +413,22 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             {progressSections.map((section, idx) => (
               <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
                 <h3 className="text-lg font-bold mb-4">
-                  <span 
-                    className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
-                    style={{ 
-                      backgroundSize: '200% 100%',
-                      animation: 'gradient-flow 3s linear infinite'
-                    }}
-                  >
-                    {section.title}
-                  </span>
+                  {showGradientAnimation ? (
+                    <span 
+                      className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
+                      style={{ 
+                        backgroundSize: '200% 100%',
+                      }}
+                    >
+                      {section.title}
+                    </span>
+                  ) : (
+                    <>
+                      <span className="text-[#FF9933]">{section.title.split(' ')[0]}</span>{' '}
+                      <span className="text-white">{section.title.split(' ').slice(1, -1).join(' ')}</span>{' '}
+                      <span className="text-[#22C55E]">{section.title.split(' ').slice(-1)}</span>
+                    </>
+                  )}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item, itemIdx) => (
@@ -765,6 +882,25 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         }
         .animate-spin-slow {
           animation: spin-slow 8s linear infinite;
+        }
+        @keyframes float-paper {
+          0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.7;
+          }
+          90% {
+            opacity: 0.7;
+          }
+          100% {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+        .animate-float-paper {
+          animation: float-paper 5s ease-in infinite;
         }
       `}</style>
     </div>
