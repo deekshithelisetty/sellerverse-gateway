@@ -45,8 +45,12 @@ export const ExperienceGallery = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center p-2 overflow-hidden gap-24">
-      <div className="relative w-full flex items-center justify-center pt-8">
+    <div className="h-full w-full flex flex-col items-center p-2 overflow-hidden">
+      {/* Top spacing */}
+      <div className="flex-1" />
+      
+      {/* Centered curve section */}
+      <div className="relative w-full flex items-center justify-center flex-shrink-0">
         <div className="relative w-full max-w-5xl h-[380px]">
           {mockExperiences.map((experience, index) => {
             const { x, y, rotation } = getCardPosition(index);
@@ -102,17 +106,21 @@ export const ExperienceGallery = () => {
         </div>
       </div>
 
+      {/* Text section at bottom */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-center max-w-3xl"
+        className="text-center max-w-3xl mt-12 mb-8"
       >
         <h2 className="text-5xl font-bold mb-4">Rediscover Your Memories</h2>
         <p className="text-lg text-muted-foreground">
           Our intelligent platform finds, organizes, and brings your most cherished moments back to life.
         </p>
       </motion.div>
+      
+      {/* Bottom spacing */}
+      <div className="flex-1" />
     </div>
   );
 };
