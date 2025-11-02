@@ -45,8 +45,18 @@ export const ExperienceGallery = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center p-8 overflow-hidden gap-16">
-      <div className="relative w-full flex items-center justify-center">
+    <div className="h-full w-full flex items-center justify-center p-8 overflow-hidden">
+      <div className="relative w-full h-full flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute top-8 left-1/2 -translate-x-1/2 text-center z-10"
+        >
+          <h2 className="text-3xl font-bold mb-2">Your Experiences</h2>
+          <p className="text-muted-foreground">Click on any experience to edit or view details</p>
+        </motion.div>
+
         <div className="relative w-full max-w-5xl h-96">
           {mockExperiences.map((experience, index) => {
             const { x, y, rotation } = getCardPosition(index);
@@ -74,10 +84,10 @@ export const ExperienceGallery = () => {
                 }}
                 className="cursor-pointer absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                 style={{
-                  width: '160px',
+                  width: '140px',
                 }}
               >
-                <Card className="overflow-hidden border-primary/20 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-colors shadow-lg p-2">
+                <Card className="overflow-hidden border-primary/20 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-colors shadow-lg">
                   <motion.div
                     className="aspect-square relative overflow-hidden"
                     initial={{ rotate: rotation }}
@@ -101,18 +111,6 @@ export const ExperienceGallery = () => {
           })}
         </div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-center max-w-3xl"
-      >
-        <h2 className="text-5xl font-bold mb-4">Rediscover Your Memories</h2>
-        <p className="text-lg text-muted-foreground">
-          Our intelligent platform finds, organizes, and brings your most cherished moments back to life.
-        </p>
-      </motion.div>
     </div>
   );
 };
