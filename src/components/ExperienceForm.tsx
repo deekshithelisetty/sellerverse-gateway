@@ -88,20 +88,44 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     updateField('schedule', [...data.schedule, { day: maxDay + 1, heading: '', timing: '', plan: '' }]);
   };
 
-  const addInclusion = () => updateField('inclusions', [...data.inclusions, '']);
-  const removeInclusion = (index: number) => updateField('inclusions', data.inclusions.filter((_, i) => i !== index));
-  const updateInclusion = (index: number, value: string) => {
-    const newInclusions = [...data.inclusions];
-    newInclusions[index] = value;
-    updateField('inclusions', newInclusions);
+  const bookingCategories = [
+    'Key Insights',
+    'Tips',
+    'Flexible Exploration — Extra Ideas',
+    'Trip Logistics',
+    'Transportation & Accessibility',
+    'Packing Essentials',
+    'Safety Tips & Seasonal Suitability',
+    'Food Options',
+    'Photographic Opportunities'
+  ];
+
+  const [activeBookingCategory, setActiveBookingCategory] = useState<string | null>(null);
+
+  const addBookingSection = (category: string) => {
+    const currentSections = data.bookingInfo[category] || [];
+    updateField('bookingInfo', {
+      ...data.bookingInfo,
+      [category]: [...currentSections, { header: '', details: '' }]
+    });
   };
 
-  const addExclusion = () => updateField('exclusions', [...data.exclusions, '']);
-  const removeExclusion = (index: number) => updateField('exclusions', data.exclusions.filter((_, i) => i !== index));
-  const updateExclusion = (index: number, value: string) => {
-    const newExclusions = [...data.exclusions];
-    newExclusions[index] = value;
-    updateField('exclusions', newExclusions);
+  const removeBookingSection = (category: string, index: number) => {
+    const currentSections = data.bookingInfo[category] || [];
+    updateField('bookingInfo', {
+      ...data.bookingInfo,
+      [category]: currentSections.filter((_, i) => i !== index)
+    });
+  };
+
+  const updateBookingSection = (category: string, index: number, field: 'header' | 'details', value: string) => {
+    const currentSections = data.bookingInfo[category] || [];
+    const newSections = [...currentSections];
+    newSections[index] = { ...newSections[index], [field]: value };
+    updateField('bookingInfo', {
+      ...data.bookingInfo,
+      [category]: newSections
+    });
   };
 
   const addTag = () => updateField('tags', [...data.tags, '']);
@@ -509,71 +533,87 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
         </div>
       </div>
 
-      {/* Section 5: Inclusions/Exclusions */}
+      {/* Section 5: What to Know Before You Book */}
       <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Inclusions & Exclusions</h4>
+        <h4 className="text-lg font-semibold">What to Know Before You Book</h4>
         <Separator />
         
         <div className="space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="font-medium">Inclusions</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addInclusion}>
-                <Plus className="w-4 h-4" />
-                Add
+          <div className="flex flex-wrap gap-2">
+            {bookingCategories.map((category) => (
+              <Button
+                key={category}
+                type="button"
+                variant={activeBookingCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveBookingCategory(activeBookingCategory === category ? null : category)}
+              >
+                {category}
               </Button>
-            </div>
-            {data.inclusions.map((inclusion, index) => (
-              <div key={index} className="flex gap-2">
-                <Input 
-                  placeholder="Enter inclusion..." 
-                  className="flex-1"
-                  value={inclusion}
-                  onChange={(e) => updateInclusion(index, e.target.value)}
-                />
-                {data.inclusions.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeInclusion(index)}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                )}
-              </div>
             ))}
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="font-medium">Exclusions</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addExclusion}>
-                <Plus className="w-4 h-4" />
-                Add
-              </Button>
-            </div>
-            {data.exclusions.map((exclusion, index) => (
-              <div key={index} className="flex gap-2">
-                <Input 
-                  placeholder="Enter exclusion..." 
-                  className="flex-1"
-                  value={exclusion}
-                  onChange={(e) => updateExclusion(index, e.target.value)}
-                />
-                {data.exclusions.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeExclusion(index)}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                )}
+          {activeBookingCategory && (
+            <div className="space-y-3 border rounded-lg p-4 bg-card">
+              <div className="flex items-center justify-between">
+                <Label className="font-semibold text-base">{activeBookingCategory}</Label>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => addBookingSection(activeBookingCategory)}
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Section
+                </Button>
               </div>
-            ))}
-          </div>
+
+              {(data.bookingInfo[activeBookingCategory] || []).map((section, index) => (
+                <div key={index} className="border rounded-lg p-4 space-y-3 bg-background">
+                  <div className="flex items-center justify-between">
+                    <Label className="font-medium">Section {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeBookingSection(activeBookingCategory, index)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`booking-header-${activeBookingCategory}-${index}`}>Header</Label>
+                    <Input 
+                      id={`booking-header-${activeBookingCategory}-${index}`}
+                      placeholder="Enter section header..." 
+                      value={section.header}
+                      onChange={(e) => updateBookingSection(activeBookingCategory, index, 'header', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`booking-details-${activeBookingCategory}-${index}`}>Details</Label>
+                    <Textarea 
+                      id={`booking-details-${activeBookingCategory}-${index}`}
+                      placeholder="Enter details...&#10;&#10;Tip: Use • for bullet points, **bold**, or *italic* for formatting" 
+                      rows={6}
+                      value={section.details}
+                      onChange={(e) => updateBookingSection(activeBookingCategory, index, 'details', e.target.value)}
+                      className="font-mono text-sm"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Supports: • or - for bullets, **bold**, *italic*
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {(!data.bookingInfo[activeBookingCategory] || data.bookingInfo[activeBookingCategory].length === 0) && (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No sections added yet. Click "Add Section" to get started.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

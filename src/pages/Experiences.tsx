@@ -14,8 +14,9 @@ export interface ExperienceData {
   fullAddress: string;
   mapLink: string;
   schedule: { day: number; heading: string; timing: string; plan: string }[];
-  inclusions: string[];
-  exclusions: string[];
+  bookingInfo: {
+    [category: string]: { header: string; details: string }[];
+  };
   tags: string[];
   faqs: { question: string; answer: string }[];
   price: string;
@@ -41,8 +42,7 @@ export default function Experiences({
     fullAddress: '',
     mapLink: '',
     schedule: [{ day: 1, heading: '', timing: '', plan: '' }],
-    inclusions: [''],
-    exclusions: [''],
+    bookingInfo: {},
     tags: [''],
     faqs: [{ question: '', answer: '' }],
     price: '',

@@ -34,6 +34,42 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   const formatTextWithBullets = (text: string) => {
+    const formatRichText = (content: string) => {
+      const parts: React.ReactNode[] = [];
+      let remaining = content;
+      let key = 0;
+
+      while (remaining.length > 0) {
+        // Check for **bold**
+        const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+        if (boldMatch && boldMatch.index !== undefined) {
+          if (boldMatch.index > 0) {
+            parts.push(remaining.substring(0, boldMatch.index));
+          }
+          parts.push(<strong key={key++} className="font-bold">{boldMatch[1]}</strong>);
+          remaining = remaining.substring(boldMatch.index + boldMatch[0].length);
+          continue;
+        }
+
+        // Check for *italic*
+        const italicMatch = remaining.match(/\*(.+?)\*/);
+        if (italicMatch && italicMatch.index !== undefined) {
+          if (italicMatch.index > 0) {
+            parts.push(remaining.substring(0, italicMatch.index));
+          }
+          parts.push(<em key={key++} className="italic">{italicMatch[1]}</em>);
+          remaining = remaining.substring(italicMatch.index + italicMatch[0].length);
+          continue;
+        }
+
+        // No more formatting found
+        parts.push(remaining);
+        break;
+      }
+
+      return parts;
+    };
+
     const lines = text.split('\n');
     return lines.map((line, idx) => {
       const trimmed = line.trim();
@@ -43,12 +79,12 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
         return (
           <div key={idx} className="flex items-start gap-2 ml-2">
             <span className="text-primary mt-0.5">•</span>
-            <span>{content}</span>
+            <span>{formatRichText(content)}</span>
           </div>
         );
       }
       // Regular line
-      return trimmed ? <p key={idx}>{trimmed}</p> : <br key={idx} />;
+      return trimmed ? <p key={idx}>{formatRichText(trimmed)}</p> : <br key={idx} />;
     });
   };
 
@@ -331,42 +367,31 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               </div>
             )}
 
-            {/* Inclusions & Exclusions */}
-            {(data.inclusions.some(i => i) || data.exclusions.some(e => e)) && (
+            {/* What to Know Before You Book */}
+            {Object.keys(data.bookingInfo).length > 0 && Object.values(data.bookingInfo).some(sections => sections.length > 0) && (
               <div className="space-y-4">
-                {data.inclusions.some(i => i) && (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                      What's Included
-                    </h3>
-                    <ul className="space-y-1.5 ml-6">
-                      {data.inclusions.filter(i => i).map((item, i) => (
-                        <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
-                          <span className="text-green-500 mt-0.5">✓</span>
-                          <span>{item}</span>
-                        </li>
+                <h2 className="text-lg font-semibold">What to Know Before You Book</h2>
+                {Object.entries(data.bookingInfo).map(([category, sections]) => (
+                  sections.length > 0 && (
+                    <div key={category} className="space-y-3">
+                      <h3 className="text-sm font-semibold text-primary">{category}</h3>
+                      {sections.map((section, idx) => (
+                        section.header || section.details ? (
+                          <div key={idx} className="space-y-2 border-l-2 border-primary/30 pl-3">
+                            {section.header && (
+                              <h4 className="text-sm font-semibold">{section.header}</h4>
+                            )}
+                            {section.details && (
+                              <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                {formatTextWithBullets(section.details)}
+                              </div>
+                            )}
+                          </div>
+                        ) : null
                       ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {data.exclusions.some(e => e) && (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold flex items-center gap-2">
-                      <XCircle className="w-4 h-4 text-destructive" />
-                      What's Not Included
-                    </h3>
-                    <ul className="space-y-1.5 ml-6">
-                      {data.exclusions.filter(e => e).map((item, i) => (
-                        <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
-                          <span className="text-destructive mt-0.5">✗</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                    </div>
+                  )
+                ))}
               </div>
             )}
 
