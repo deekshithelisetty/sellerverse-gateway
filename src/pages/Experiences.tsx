@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
 import { ExperienceGallery } from '@/components/ExperienceGallery';
-import { ExperienceCardSelector } from '@/components/ExperienceCardSelector';
+import { ExperienceCircularMenu } from '@/components/ExperienceCircularMenu';
 import { useState } from 'react';
 
 export interface ExperienceData {
@@ -98,7 +98,7 @@ export default function Experiences({
         <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm flex flex-col overflow-hidden">
           {showCardSelector ? (
             <div className="flex-1 overflow-hidden">
-              <ExperienceCardSelector />
+              <ExperienceCircularMenu />
             </div>
           ) : showForm ? (
             <div className="flex-1 pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
