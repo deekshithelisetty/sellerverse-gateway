@@ -80,15 +80,17 @@ export function ExperienceCircularMenu() {
     
     return (
       <div className="h-full flex flex-col bg-background p-6">
-        {/* Header Section with Menu Items */}
+        {/* Header Section with Menu Items and Category Buttons */}
         <div className="flex items-center justify-between mb-8 animate-fade-in">
+          {/* Left: Selected Menu Title and Divider */}
           <div className="space-y-3">
             <h2 className="text-2xl font-semibold">{selectedMenuItem?.title}</h2>
             <div className="w-64 h-0.5 bg-gradient-to-r from-orange-500 via-pink-500 via-purple-500 to-blue-500 animate-fade-in rounded-full" />
           </div>
           
-          {/* Menu Items */}
+          {/* Right: Menu Items + Category Buttons */}
           <div className="flex gap-3">
+            {/* Menu Items (Published, Draft, Rejected, Media, Services, Stays) */}
             {menuItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = item.id === selectedMenu;
@@ -110,6 +112,14 @@ export function ExperienceCircularMenu() {
                     animationDelay: `${index * 50}ms`,
                   }}
                 >
+                  {/* Background Color (always visible) */}
+                  <div 
+                    className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                    style={{
+                      background: item.gradientFrom,
+                    }}
+                  />
+
                   {/* Gradient Background on Hover */}
                   <div 
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 
@@ -130,12 +140,11 @@ export function ExperienceCircularMenu() {
 
                   {/* Icon - Hidden on Hover */}
                   <Icon 
-                    className="w-6 h-6
+                    className="w-6 h-6 text-white
                              opacity-100 scale-100 
                              group-hover:opacity-0 group-hover:scale-0
                              transition-all duration-300 ease-in-out
                              relative z-10"
-                    style={{ color: item.gradientFrom }}
                   />
 
                   {/* Text - Shown on Hover */}
@@ -147,6 +156,66 @@ export function ExperienceCircularMenu() {
                              z-10"
                   >
                     {item.title}
+                  </span>
+                </button>
+              );
+            })}
+            
+            {/* Category Buttons (Adventure, Culture, Food, Nature, Urban, Wellness) */}
+            {categoryButtons.map((category, index) => {
+              const CategoryIcon = category.icon;
+              
+              return (
+                <button
+                  key={category.id}
+                  className="group relative overflow-hidden rounded-full 
+                           w-[50px] h-[50px] hover:w-[160px]
+                           transition-all duration-500 ease-in-out
+                           flex items-center justify-center
+                           bg-muted/20 hover:bg-transparent
+                           border-2 border-border hover:border-transparent
+                           shadow-lg hover:shadow-2xl
+                           animate-card-fade-in
+                           cursor-pointer"
+                  style={{
+                    animationDelay: `${(menuItems.length + index) * 50}ms`,
+                  }}
+                >
+                  {/* Background Color (always visible) */}
+                  <div 
+                    className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                    style={{
+                      background: category.color,
+                    }}
+                  />
+
+                  {/* Gradient Glow Blur */}
+                  <div 
+                    className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-60 
+                             transition-opacity duration-500 ease-in-out -z-10"
+                    style={{
+                      background: category.color,
+                    }}
+                  />
+
+                  {/* Icon - Hidden on Hover */}
+                  <CategoryIcon 
+                    className="w-6 h-6 text-white
+                             opacity-100 scale-100 
+                             group-hover:opacity-0 group-hover:scale-0
+                             transition-all duration-300 ease-in-out
+                             relative z-10"
+                  />
+
+                  {/* Text - Shown on Hover */}
+                  <span 
+                    className="absolute text-xs font-bold text-white tracking-wider
+                             opacity-0 scale-0 
+                             group-hover:opacity-100 group-hover:scale-100
+                             transition-all duration-500 ease-in-out delay-100
+                             z-10"
+                  >
+                    {category.name}
                   </span>
                 </button>
               );
