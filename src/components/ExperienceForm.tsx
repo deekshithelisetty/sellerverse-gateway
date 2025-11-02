@@ -20,17 +20,23 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
   };
 
   const addScheduleEntry = () => {
-    updateField('schedule', [...data.schedule, { day: data.schedule.length + 1, timing: '', plan: '' }]);
+    const lastDay = data.schedule.length > 0 ? data.schedule[data.schedule.length - 1].day : 0;
+    updateField('schedule', [...data.schedule, { day: lastDay, heading: '', timing: '', plan: '' }]);
   };
 
   const removeScheduleEntry = (index: number) => {
     updateField('schedule', data.schedule.filter((_, i) => i !== index));
   };
 
-  const updateScheduleEntry = (index: number, field: 'timing' | 'plan', value: string) => {
+  const updateScheduleEntry = (index: number, field: 'heading' | 'timing' | 'plan', value: string) => {
     const newSchedule = [...data.schedule];
     newSchedule[index] = { ...newSchedule[index], [field]: value };
     updateField('schedule', newSchedule);
+  };
+
+  const addDayEntry = () => {
+    const maxDay = Math.max(...data.schedule.map(s => s.day));
+    updateField('schedule', [...data.schedule, { day: maxDay + 1, heading: '', timing: '', plan: '' }]);
   };
 
   const addInclusion = () => updateField('inclusions', [...data.inclusions, '']);
@@ -366,10 +372,16 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h4 className="text-lg font-semibold">Schedule</h4>
-          <Button type="button" variant="outline" size="sm" onClick={addScheduleEntry}>
-            <Plus className="w-4 h-4" />
-            Add Day
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={addScheduleEntry}>
+              <Plus className="w-4 h-4" />
+              Add Section
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={addDayEntry}>
+              <Plus className="w-4 h-4" />
+              Add Day
+            </Button>
+          </div>
         </div>
         <Separator />
         
@@ -390,10 +402,19 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor={`timing-${index}`}>Timing</Label>
+                <Label htmlFor={`heading-${index}`}>Heading</Label>
+                <Input 
+                  id={`heading-${index}`} 
+                  placeholder="Enter section heading..." 
+                  value={entry.heading}
+                  onChange={(e) => updateScheduleEntry(index, 'heading', e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`timing-${index}`}>Time</Label>
                 <Input 
                   id={`timing-${index}`} 
-                  placeholder="e.g., 9:00 AM - 6:00 PM" 
+                  placeholder="e.g., 9:00 AM - 11:59 AM" 
                   value={entry.timing}
                   onChange={(e) => updateScheduleEntry(index, 'timing', e.target.value)}
                 />
@@ -402,7 +423,7 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
                 <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
                 <Textarea 
                   id={`plan-${index}`} 
-                  placeholder="Enter detailed plan for this day..." 
+                  placeholder="Enter detailed plan for this section..." 
                   rows={4}
                   value={entry.plan}
                   onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}

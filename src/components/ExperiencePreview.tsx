@@ -24,12 +24,55 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
       .slice(0, 2) || 'BT';
   };
 
-  const getTimeIcon = (timing: string) => {
-    const time = timing.toLowerCase();
-    if (time.includes('morning')) return <Sunrise className="w-4 h-4" />;
-    if (time.includes('afternoon')) return <Sun className="w-4 h-4" />;
-    if (time.includes('evening') || time.includes('night')) return <Moon className="w-4 h-4" />;
-    return <Clock className="w-4 h-4" />;
+  const parseTimeToHour = (timeStr: string): number | null => {
+    // Extract hour from time strings like "9:00 AM", "10 AM", "9:30 PM"
+    const match = timeStr.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)/i);
+    if (!match) return null;
+    
+    let hour = parseInt(match[1]);
+    const period = match[3].toUpperCase();
+    
+    if (period === 'PM' && hour !== 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+    
+    return hour;
+  };
+
+  const getTimePeriod = (timeStr: string): string => {
+    const startTime = timeStr.split('-')[0].trim();
+    const hour = parseTimeToHour(startTime);
+    
+    if (hour === null) return 'Other';
+    
+    if (hour >= 5 && hour < 12) return 'Morning';
+    if (hour >= 12 && hour < 17) return 'Afternoon';
+    if (hour >= 17 && hour < 22) return 'Evening';
+    return 'Night';
+  };
+
+  const getTimePeriodIcon = (period: string) => {
+    switch (period) {
+      case 'Morning': return <Sunrise className="w-4 h-4" />;
+      case 'Afternoon': return <Sun className="w-4 h-4" />;
+      case 'Evening':
+      case 'Night': return <Moon className="w-4 h-4" />;
+      default: return <Clock className="w-4 h-4" />;
+    }
+  };
+
+  const groupScheduleByDayAndTime = () => {
+    const grouped: { [key: number]: { [key: string]: typeof data.schedule } } = {};
+    
+    data.schedule.forEach(entry => {
+      if (!grouped[entry.day]) {
+        grouped[entry.day] = { Morning: [], Afternoon: [], Evening: [], Night: [], Other: [] };
+      }
+      
+      const period = entry.timing ? getTimePeriod(entry.timing) : 'Other';
+      grouped[entry.day][period].push(entry);
+    });
+    
+    return grouped;
   };
 
   return (
@@ -204,46 +247,75 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             )}
 
             {/* Itinerary */}
-            {data.schedule.some(s => s.timing || s.plan) && (
+            {data.schedule.some(s => s.heading || s.timing || s.plan) && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold">Itinerary</h2>
-                <div className="space-y-4">
-                  {data.schedule.map((day, i) => (
-                    day.timing || day.plan ? (
-                      <div key={i} className="space-y-3">
-                        {/* Day Header */}
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-primary">{day.day}</span>
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold">Day {day.day}</p>
-                          </div>
+                <h2 className="text-lg font-semibold">Day Planning</h2>
+                <div className="space-y-6">
+                  {Object.entries(groupScheduleByDayAndTime()).map(([day, periods]) => (
+                    <div key={day} className="space-y-3">
+                      {/* Day Header */}
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-primary">{day}</span>
                         </div>
-
-                        {/* Day Activities */}
-                        <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-3">
-                          <div className="space-y-2">
-                            {/* Timing Badge */}
-                            {day.timing && (
-                              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                {getTimeIcon(day.timing)}
-                                <span className="text-xs font-medium text-primary uppercase">
-                                  {day.timing}
-                                </span>
-                              </div>
-                            )}
-                            
-                            {/* Activity Details */}
-                            {day.plan && (
-                              <div className="space-y-2">
-                                <p className="text-sm leading-relaxed">{day.plan}</p>
-                              </div>
-                            )}
-                          </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">Day {day}</p>
                         </div>
                       </div>
-                    ) : null
+
+                      {/* Day Activities grouped by time period */}
+                      <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
+                        {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
+                          const entries = periods[period];
+                          if (!entries || entries.length === 0) return null;
+
+                          return (
+                            <div key={period} className="space-y-3">
+                              {/* Time Period Header */}
+                              {period !== 'Other' && (
+                                <div className="flex items-center gap-2 mb-2">
+                                  {getTimePeriodIcon(period)}
+                                  <span className="text-sm font-semibold text-primary">{period}</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {period === 'Morning' && '(5 AM - 11:59 AM)'}
+                                    {period === 'Afternoon' && '(12 PM - 4:59 PM)'}
+                                    {period === 'Evening' && '(5 PM - 9:59 PM)'}
+                                    {period === 'Night' && '(10 PM - 4:59 AM)'}
+                                  </span>
+                                </div>
+                              )}
+
+                              {/* Entries for this time period */}
+                              {entries.map((entry, idx) => (
+                                entry.heading || entry.timing || entry.plan ? (
+                                  <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
+                                    {/* Heading */}
+                                    {entry.heading && (
+                                      <h4 className="text-sm font-semibold">{entry.heading}</h4>
+                                    )}
+                                    
+                                    {/* Timing Badge */}
+                                    {entry.timing && (
+                                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                                        <Clock className="w-3 h-3" />
+                                        <span className="text-xs font-medium text-primary">
+                                          {entry.timing}
+                                        </span>
+                                      </div>
+                                    )}
+                                    
+                                    {/* Activity Details */}
+                                    {entry.plan && (
+                                      <p className="text-sm leading-relaxed text-muted-foreground">{entry.plan}</p>
+                                    )}
+                                  </div>
+                                ) : null
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

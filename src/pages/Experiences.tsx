@@ -13,7 +13,7 @@ export interface ExperienceData {
   state: string;
   fullAddress: string;
   mapLink: string;
-  schedule: { day: number; timing: string; plan: string }[];
+  schedule: { day: number; heading: string; timing: string; plan: string }[];
   inclusions: string[];
   exclusions: string[];
   tags: string[];
@@ -40,7 +40,7 @@ export default function Experiences({
     state: '',
     fullAddress: '',
     mapLink: '',
-    schedule: [{ day: 1, timing: '', plan: '' }],
+    schedule: [{ day: 1, heading: '', timing: '', plan: '' }],
     inclusions: [''],
     exclusions: [''],
     tags: [''],
