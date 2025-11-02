@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
 import { ExperienceGallery } from '@/components/ExperienceGallery';
+import { ExperienceCardSelector } from '@/components/ExperienceCardSelector';
 import { useState } from 'react';
 
 export interface ExperienceData {
@@ -34,6 +35,7 @@ export default function Experiences({
   setShowForm: (show: boolean) => void;
 }) {
   const [showPreview, setShowPreview] = useState(false);
+  const [showCardSelector, setShowCardSelector] = useState(false);
   const [experienceData, setExperienceData] = useState<ExperienceData>({
     name: '',
     description: '',
@@ -70,7 +72,16 @@ export default function Experiences({
             <Monitor className="w-4 h-4" />
             Live Preview
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant={showCardSelector ? "default" : "outline"} 
+            className="gap-2"
+            onClick={() => {
+              setShowCardSelector(!showCardSelector);
+              if (!showCardSelector) {
+                setShowForm(false);
+              }
+            }}
+          >
             <Grid3x3 className="w-4 h-4" />
             View All
           </Button>
@@ -83,9 +94,13 @@ export default function Experiences({
 
       {/* Main Content Area - Two Column Layout */}
       <div className="flex-1 flex gap-2 overflow-hidden">
-        {/* Center - Form Section */}
+        {/* Center - Form/Gallery/Card Selector Section */}
         <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm flex flex-col overflow-hidden">
-          {showForm ? (
+          {showCardSelector ? (
+            <div className="flex-1 overflow-hidden">
+              <ExperienceCardSelector />
+            </div>
+          ) : showForm ? (
             <div className="flex-1 pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <ExperienceForm data={experienceData} onChange={setExperienceData} onClose={() => setShowForm(false)} />
             </div>
