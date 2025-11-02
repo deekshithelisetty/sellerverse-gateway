@@ -300,70 +300,70 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {data.schedule.some(s => s.heading || s.timing || s.plan) && (
               <div className="space-y-3">
                 <h2 className="text-lg font-semibold">Day Planning</h2>
-                <div className="space-y-6">
+                <Accordion type="multiple" className="w-full space-y-2">
                   {Object.entries(groupScheduleByDayAndTime()).map(([day, periods]) => (
-                    <div key={day} className="space-y-3">
-                      {/* Day Header */}
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-bold text-primary">{day}</span>
+                    <AccordionItem key={day} value={`day-${day}`} className="border rounded-lg px-1">
+                      <AccordionTrigger className="text-sm font-semibold text-primary hover:no-underline px-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-bold text-primary">{day}</span>
+                          </div>
+                          Day {day}
                         </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold">Day {day}</p>
-                        </div>
-                      </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-3 pb-3">
+                        {/* Day Activities grouped by time period */}
+                        <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
+                          {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
+                            const entries = periods[period];
+                            if (!entries || entries.length === 0) return null;
 
-                      {/* Day Activities grouped by time period */}
-                      <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
-                        {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
-                          const entries = periods[period];
-                          if (!entries || entries.length === 0) return null;
-
-                          return (
-                            <div key={period} className="space-y-3">
-                              {/* Time Period Header */}
-                              {period !== 'Other' && (
-                                <div className="flex items-center gap-2 mb-2">
-                                  {getTimePeriodIcon(period)}
-                                  <span className="text-sm font-semibold text-primary">{period}</span>
-                                </div>
-                              )}
-
-                              {/* Entries for this time period */}
-                              {entries.map((entry, idx) => (
-                                entry.heading || entry.timing || entry.plan ? (
-                                  <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
-                                    {/* Heading */}
-                                    {entry.heading && (
-                                      <h4 className="text-sm font-semibold">{entry.heading}</h4>
-                                    )}
-                                    
-                                    {/* Timing Badge */}
-                                    {entry.timing && (
-                                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                        <Clock className="w-3 h-3" />
-                                        <span className="text-xs font-medium text-primary">
-                                          {entry.timing}
-                                        </span>
-                                      </div>
-                                    )}
-                                    
-                                    {/* Activity Details */}
-                                    {entry.plan && (
-                                      <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
-                                        {formatTextWithBullets(entry.plan)}
-                                      </div>
-                                    )}
+                            return (
+                              <div key={period} className="space-y-3">
+                                {/* Time Period Header */}
+                                {period !== 'Other' && (
+                                  <div className="flex items-center gap-2 mb-2">
+                                    {getTimePeriodIcon(period)}
+                                    <span className="text-sm font-semibold text-primary">{period}</span>
                                   </div>
-                                ) : null
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                                )}
+
+                                {/* Entries for this time period */}
+                                {entries.map((entry, idx) => (
+                                  entry.heading || entry.timing || entry.plan ? (
+                                    <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
+                                      {/* Heading */}
+                                      {entry.heading && (
+                                        <h4 className="text-sm font-semibold">{entry.heading}</h4>
+                                      )}
+                                      
+                                      {/* Timing Badge */}
+                                      {entry.timing && (
+                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                                          <Clock className="w-3 h-3" />
+                                          <span className="text-xs font-medium text-primary">
+                                            {entry.timing}
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Activity Details */}
+                                      {entry.plan && (
+                                        <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                          {formatTextWithBullets(entry.plan)}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : null
+                                ))}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                   ))}
-                </div>
+                </Accordion>
               </div>
             )}
 

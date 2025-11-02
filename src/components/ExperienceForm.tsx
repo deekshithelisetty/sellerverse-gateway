@@ -11,6 +11,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Plus, Trash2, Upload, FolderUp, X, ChevronDown } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef } from 'react';
@@ -24,9 +30,8 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     onChange({ ...data, [field]: value });
   };
 
-  const addScheduleEntry = () => {
-    const lastDay = data.schedule.length > 0 ? data.schedule[data.schedule.length - 1].day : 0;
-    updateField('schedule', [...data.schedule, { day: lastDay, heading: '', timing: '', plan: '' }]);
+  const addScheduleEntry = (day: number) => {
+    updateField('schedule', [...data.schedule, { day, heading: '', timing: '', plan: '' }]);
   };
 
   const removeScheduleEntry = (index: number) => {
@@ -216,565 +221,619 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     });
   };
 
+  const getScheduleByDay = () => {
+    const byDay: { [key: number]: typeof data.schedule } = {};
+    data.schedule.forEach(entry => {
+      if (!byDay[entry.day]) {
+        byDay[entry.day] = [];
+      }
+      byDay[entry.day].push(entry);
+    });
+    return byDay;
+  };
+
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
       <div>
         <h3 className="text-2xl font-semibold mb-2">Create Experience</h3>
         <p className="text-sm text-muted-foreground">Fill in the details to create a comprehensive experience.</p>
       </div>
 
-      {/* Section 1: Basic Information */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Basic Information</h4>
-        <Separator />
-        
-        <div className="space-y-2">
-          <Label htmlFor="name">Experience Name</Label>
-          <Input 
-            id="name" 
-            placeholder="Enter experience name" 
-            value={data.name}
-            onChange={(e) => updateField('name', e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">Experience Description</Label>
-          <Textarea 
-            id="description" 
-            placeholder="Enter detailed description of the experience..." 
-            rows={6}
-            className="min-h-[150px]"
-            value={data.description}
-            onChange={(e) => updateField('description', e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Section 2: Source Media */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Source Media</h4>
-        <Separator />
-        
-        {/* Thumbnail Image */}
-        <div className="space-y-2">
-          <Label className="text-base font-semibold">Thumbnail Image</Label>
-          <input
-            ref={thumbnailInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleThumbnailUpload}
-            className="hidden"
-          />
-          <div className="flex items-center gap-4">
-            {thumbnailImage ? (
-              <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
-                <img 
-                  src={thumbnailImage.preview} 
-                  alt="Thumbnail" 
-                  className="w-full h-full object-cover"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2 h-6 w-6"
-                  onClick={removeThumbnail}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-32 h-32"
-                onClick={() => thumbnailInputRef.current?.click()}
-              >
-                <Upload className="w-6 h-6" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Upload Images (up to 10) */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label className="text-base font-semibold">Upload Images</Label>
-            <span className="text-sm text-muted-foreground">{uploadedImages.length} / 10</span>
-          </div>
-          <input
-            ref={imagesInputRef}
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImagesUpload}
-            className="hidden"
-          />
-          
-          <div className="grid grid-cols-5 gap-4">
-            {uploadedImages.map((image, index) => (
-              <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
-                <img 
-                  src={image.preview} 
-                  alt={`Image ${index + 1}`} 
-                  className="w-full h-full object-cover"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => removeImage(index)}
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </div>
-            ))}
-            
-            {uploadedImages.length < 10 && (
-              <Button
-                type="button"
-                variant="outline"
-                className="aspect-square"
-                onClick={() => imagesInputRef.current?.click()}
-              >
-                <Upload className="w-6 h-6" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Content Type */}
-        <div className="space-y-3">
-          <Label className="text-base font-semibold">Content Type</Label>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="content-image"
-                checked={data.contentType.includes('image')}
-                onCheckedChange={(checked) => {
-                  const newContentType = checked 
-                    ? [...data.contentType, 'image']
-                    : data.contentType.filter(type => type !== 'image');
-                  updateField('contentType', newContentType);
-                }}
+      <Accordion type="multiple" defaultValue={["basic", "media", "location", "schedule", "booking", "tags"]} className="space-y-4">
+        {/* Section 1: Basic Information */}
+        <AccordionItem value="basic" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            Basic Information
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Experience Name</Label>
+              <Input 
+                id="name" 
+                placeholder="Enter experience name" 
+                value={data.name}
+                onChange={(e) => updateField('name', e.target.value)}
               />
-              <Label htmlFor="content-image" className="font-normal cursor-pointer">Image</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="content-video"
-                checked={data.contentType.includes('video')}
-                onCheckedChange={(checked) => {
-                  const newContentType = checked 
-                    ? [...data.contentType, 'video']
-                    : data.contentType.filter(type => type !== 'video');
-                  updateField('contentType', newContentType);
-                }}
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Experience Description</Label>
+              <Textarea 
+                id="description" 
+                placeholder="Enter detailed description of the experience..." 
+                rows={6}
+                className="min-h-[150px]"
+                value={data.description}
+                onChange={(e) => updateField('description', e.target.value)}
               />
-              <Label htmlFor="content-video" className="font-normal cursor-pointer">Video</Label>
             </div>
-          </div>
-        </div>
+          </AccordionContent>
+        </AccordionItem>
 
-        {/* Aspect Ratio - Show only when Video is selected */}
-        {data.contentType.includes('video') && (
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Aspect Ratio</Label>
-            <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="square" id="square" />
-                <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="portrait" id="portrait" />
-                <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="landscape" id="landscape" />
-                <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        )}
-      </div>
-
-      {/* Section 3: Location Details */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Location Details</h4>
-        <Separator />
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input 
-              id="city" 
-              placeholder="Enter city" 
-              value={data.city}
-              onChange={(e) => updateField('city', e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="state">State</Label>
-            <Input 
-              id="state" 
-              placeholder="Enter state" 
-              value={data.state}
-              onChange={(e) => updateField('state', e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="fullAddress">Full Address</Label>
-          <Textarea 
-            id="fullAddress" 
-            placeholder="Enter complete address..." 
-            rows={3}
-            value={data.fullAddress}
-            onChange={(e) => updateField('fullAddress', e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="mapLink">Google Maps Link</Label>
-          <Input 
-            id="mapLink" 
-            placeholder="https://maps.google.com/..." 
-            value={data.mapLink}
-            onChange={(e) => updateField('mapLink', e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="price">Price (₹)</Label>
-          <Input 
-            id="price" 
-            placeholder="Enter price" 
-            value={data.price}
-            onChange={(e) => updateField('price', e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Section 4: Schedule */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-lg font-semibold">Schedule</h4>
-          <div className="flex gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={addScheduleEntry}>
-              <Plus className="w-4 h-4" />
-              Add Section
-            </Button>
-            <Button type="button" variant="outline" size="sm" onClick={addDayEntry}>
-              <Plus className="w-4 h-4" />
-              Add Day
-            </Button>
-          </div>
-        </div>
-        <Separator />
-        
-        <div className="space-y-4">
-          {data.schedule.map((entry, index) => (
-            <div key={index} className="border rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="font-semibold">Day {entry.day}</Label>
-                {data.schedule.length > 1 && (
+        {/* Section 2: Source Media */}
+        <AccordionItem value="media" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            Source Media
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            {/* Thumbnail Image */}
+            <div className="space-y-2">
+              <Label className="text-base font-semibold">Thumbnail Image</Label>
+              <input
+                ref={thumbnailInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailUpload}
+                className="hidden"
+              />
+              <div className="flex items-center gap-4">
+                {thumbnailImage ? (
+                  <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+                    <img 
+                      src={thumbnailImage.preview} 
+                      alt="Thumbnail" 
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 h-6 w-6"
+                      onClick={removeThumbnail}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeScheduleEntry(index)}
+                    variant="outline"
+                    className="w-32 h-32"
+                    onClick={() => thumbnailInputRef.current?.click()}
                   >
-                    <Trash2 className="w-4 h-4 text-destructive" />
+                    <Upload className="w-6 h-6" />
                   </Button>
                 )}
               </div>
+            </div>
+
+            {/* Upload Images (up to 10) */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">Upload Images</Label>
+                <span className="text-sm text-muted-foreground">{uploadedImages.length} / 10</span>
+              </div>
+              <input
+                ref={imagesInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImagesUpload}
+                className="hidden"
+              />
+              
+              <div className="grid grid-cols-5 gap-4">
+                {uploadedImages.map((image, index) => (
+                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
+                    <img 
+                      src={image.preview} 
+                      alt={`Image ${index + 1}`} 
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => removeImage(index)}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+                
+                {uploadedImages.length < 10 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="aspect-square"
+                    onClick={() => imagesInputRef.current?.click()}
+                  >
+                    <Upload className="w-6 h-6" />
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Content Type */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Content Type</Label>
               <div className="space-y-2">
-                <Label htmlFor={`heading-${index}`}>Heading</Label>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="content-image"
+                    checked={data.contentType.includes('image')}
+                    onCheckedChange={(checked) => {
+                      const newContentType = checked 
+                        ? [...data.contentType, 'image']
+                        : data.contentType.filter(type => type !== 'image');
+                      updateField('contentType', newContentType);
+                    }}
+                  />
+                  <Label htmlFor="content-image" className="font-normal cursor-pointer">Image</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="content-video"
+                    checked={data.contentType.includes('video')}
+                    onCheckedChange={(checked) => {
+                      const newContentType = checked 
+                        ? [...data.contentType, 'video']
+                        : data.contentType.filter(type => type !== 'video');
+                      updateField('contentType', newContentType);
+                    }}
+                  />
+                  <Label htmlFor="content-video" className="font-normal cursor-pointer">Video</Label>
+                </div>
+              </div>
+            </div>
+
+            {/* Aspect Ratio - Show only when Video is selected */}
+            {data.contentType.includes('video') && (
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">Aspect Ratio</Label>
+                <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="square" id="square" />
+                    <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="portrait" id="portrait" />
+                    <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="landscape" id="landscape" />
+                    <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 3: Location Details */}
+        <AccordionItem value="location" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            Location Details
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
                 <Input 
-                  id={`heading-${index}`} 
-                  placeholder="Enter section heading..." 
-                  value={entry.heading}
-                  onChange={(e) => updateScheduleEntry(index, 'heading', e.target.value)}
+                  id="city" 
+                  placeholder="Enter city" 
+                  value={data.city}
+                  onChange={(e) => updateField('city', e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Time Range</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <Label htmlFor={`start-time-${index}`} className="text-xs text-muted-foreground">Start Time</Label>
-                    <Input 
-                      id={`start-time-${index}`}
-                      type="time"
-                      value={entry.timing.split('-')[0]?.trim() || ''}
-                      onChange={(e) => updateScheduleTime(index, 'startTime', e.target.value)}
-                      className="text-sm"
-                    />
+                <Label htmlFor="state">State</Label>
+                <Input 
+                  id="state" 
+                  placeholder="Enter state" 
+                  value={data.state}
+                  onChange={(e) => updateField('state', e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fullAddress">Full Address</Label>
+              <Textarea 
+                id="fullAddress" 
+                placeholder="Enter complete address..." 
+                rows={3}
+                value={data.fullAddress}
+                onChange={(e) => updateField('fullAddress', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="mapLink">Google Maps Link</Label>
+              <Input 
+                id="mapLink" 
+                placeholder="https://maps.google.com/..." 
+                value={data.mapLink}
+                onChange={(e) => updateField('mapLink', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price">Price (₹)</Label>
+              <Input 
+                id="price" 
+                placeholder="Enter price" 
+                value={data.price}
+                onChange={(e) => updateField('price', e.target.value)}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 4: Schedule */}
+        <AccordionItem value="schedule" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            Schedule
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="flex justify-end">
+              <Button type="button" variant="outline" size="sm" onClick={addDayEntry}>
+                <Plus className="w-4 h-4" />
+                Add Day
+              </Button>
+            </div>
+            
+            <div className="space-y-6">
+              {Object.entries(getScheduleByDay()).sort(([a], [b]) => Number(a) - Number(b)).map(([day, entries]) => (
+                <div key={day} className="space-y-3 border rounded-lg p-4 bg-background/50">
+                  <div className="flex items-center justify-between">
+                    <h5 className="text-base font-semibold">Day {day}</h5>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => addScheduleEntry(Number(day))}
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Section
+                    </Button>
                   </div>
-                  <div className="space-y-1">
-                    <Label htmlFor={`end-time-${index}`} className="text-xs text-muted-foreground">End Time</Label>
-                    <Input 
-                      id={`end-time-${index}`}
-                      type="time"
-                      value={entry.timing.split('-')[1]?.trim() || ''}
-                      onChange={(e) => updateScheduleTime(index, 'endTime', e.target.value)}
-                      className="text-sm"
-                    />
+                  
+                  <div className="space-y-3">
+                    {entries.map((entry, entryIndex) => {
+                      const globalIndex = data.schedule.findIndex(
+                        s => s.day === entry.day && s.heading === entry.heading && s.timing === entry.timing
+                      );
+                      
+                      return (
+                        <Collapsible key={globalIndex} defaultOpen className="border rounded-lg bg-card">
+                          <CollapsibleTrigger className="w-full">
+                            <div className="flex items-center justify-between p-3 hover:bg-accent/50 transition-colors rounded-t-lg">
+                              <div className="flex items-center gap-2">
+                                <ChevronDown className="w-3 h-3 transition-transform" />
+                                <span className="text-sm font-medium">
+                                  {entry.heading || `Section ${entryIndex + 1}`}
+                                </span>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeScheduleEntry(globalIndex);
+                                }}
+                              >
+                                <Trash2 className="w-3 h-3 text-destructive" />
+                              </Button>
+                            </div>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <div className="p-3 pt-0 space-y-3">
+                              <div className="space-y-2">
+                                <Label htmlFor={`heading-${globalIndex}`}>Heading</Label>
+                                <Input 
+                                  id={`heading-${globalIndex}`} 
+                                  placeholder="Enter section heading..." 
+                                  value={entry.heading}
+                                  onChange={(e) => updateScheduleEntry(globalIndex, 'heading', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Time Range</Label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div className="space-y-1">
+                                    <Label htmlFor={`start-time-${globalIndex}`} className="text-xs text-muted-foreground">Start Time</Label>
+                                    <Input 
+                                      id={`start-time-${globalIndex}`}
+                                      type="time"
+                                      value={entry.timing.split('-')[0]?.trim() || ''}
+                                      onChange={(e) => updateScheduleTime(globalIndex, 'startTime', e.target.value)}
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label htmlFor={`end-time-${globalIndex}`} className="text-xs text-muted-foreground">End Time</Label>
+                                    <Input 
+                                      id={`end-time-${globalIndex}`}
+                                      type="time"
+                                      value={entry.timing.split('-')[1]?.trim() || ''}
+                                      onChange={(e) => updateScheduleTime(globalIndex, 'endTime', e.target.value)}
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                </div>
+                                {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
+                                  entry.day,
+                                  entry.timing.split('-')[0]?.trim() || '',
+                                  entry.timing.split('-')[1]?.trim() || '',
+                                  globalIndex
+                                ) && (
+                                  <p className="text-xs text-destructive">⚠ Time overlaps with another section on this day</p>
+                                )}
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`plan-${globalIndex}`}>Detailed Plan</Label>
+                                <Textarea 
+                                  id={`plan-${globalIndex}`} 
+                                  placeholder="Enter detailed plan for this section...&#10;&#10;Tip: Use • for bullet points or - for lists" 
+                                  rows={6}
+                                  value={entry.plan}
+                                  onChange={(e) => updateScheduleEntry(globalIndex, 'plan', e.target.value)}
+                                  className="font-mono text-sm"
+                                />
+                                <p className="text-xs text-muted-foreground">Use • or - for bullet points, they'll appear formatted in the preview</p>
+                              </div>
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      );
+                    })}
                   </div>
                 </div>
-                {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
-                  entry.day,
-                  entry.timing.split('-')[0]?.trim() || '',
-                  entry.timing.split('-')[1]?.trim() || '',
-                  index
-                ) && (
-                  <p className="text-xs text-destructive">⚠ Time overlaps with another section on this day</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
-                <Textarea 
-                  id={`plan-${index}`} 
-                  placeholder="Enter detailed plan for this section...&#10;&#10;Tip: Use • for bullet points or - for lists" 
-                  rows={6}
-                  value={entry.plan}
-                  onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">Use • or - for bullet points, they'll appear formatted in the preview</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 5: What to Know Before You Book */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">What to Know Before You Book</h4>
-        <Separator />
-        
-        <div className="space-y-4">
-          {/* Available category buttons */}
-          {bookingCategories.filter(cat => !selectedBookingCategories.includes(cat)).length > 0 && (
-            <div>
-              <Label className="text-sm text-muted-foreground mb-2 block">Select a category to add:</Label>
-              <div className="flex flex-wrap gap-2">
-                {bookingCategories
-                  .filter(cat => !selectedBookingCategories.includes(cat))
-                  .map((category) => (
-                    <Button
-                      key={category}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => toggleCategory(category)}
-                    >
-                      <Plus className="w-3 h-3 mr-1" />
-                      {category}
-                    </Button>
-                  ))}
-              </div>
-            </div>
-          )}
-
-          {/* Selected categories as collapsible panels */}
-          <div className="space-y-3">
-            {selectedBookingCategories.map((category) => {
-              const sections = data.bookingInfo[category] || [];
-              const sectionCount = sections.length;
-              
-              return (
-                <Collapsible 
-                  key={category} 
-                  open={openCollapsibles[category]}
-                  onOpenChange={() => toggleCollapsible(category)}
-                  className="border rounded-lg bg-card"
-                >
-                  <CollapsibleTrigger className="w-full">
-                    <div className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openCollapsibles[category] ? 'rotate-180' : ''}`} />
-                        <span className="font-semibold text-base">{category}</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="px-4 pb-4 space-y-3">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => addBookingSection(category)}
-                        className="w-full"
-                      >
-                        <Plus className="w-4 h-4" />
-                        Add Sub-Section
-                      </Button>
-
-                      {/* Sub-sections as nested collapsibles */}
-                      <div className="space-y-2">
-                        {sections.map((section, index) => (
-                          <Collapsible key={index} defaultOpen className="border rounded-lg bg-background">
-                            <CollapsibleTrigger className="w-full">
-                              <div className="flex items-center justify-between p-3 hover:bg-accent/50 transition-colors rounded-t-lg">
-                                <div className="flex items-center gap-2">
-                                  <ChevronDown className="w-3 h-3 transition-transform" />
-                                  <span className="text-sm font-medium">
-                                    {section.header || `Sub-section ${index + 1}`}
-                                  </span>
-                                </div>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeBookingSection(category, index);
-                                  }}
-                                >
-                                  <Trash2 className="w-3 h-3 text-destructive" />
-                                </Button>
-                              </div>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                              <div className="p-3 pt-0 space-y-3">
-                                <div className="space-y-2">
-                                  <Label htmlFor={`booking-header-${category}-${index}`}>Header</Label>
-                                  <Input 
-                                    id={`booking-header-${category}-${index}`}
-                                    placeholder="Enter section header..." 
-                                    value={section.header}
-                                    onChange={(e) => updateBookingSection(category, index, 'header', e.target.value)}
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label htmlFor={`booking-details-${category}-${index}`}>Details</Label>
-                                  <Textarea 
-                                    id={`booking-details-${category}-${index}`}
-                                    placeholder="Enter details...&#10;&#10;Tip: Use • for bullet points, **bold**, or *italic* for formatting" 
-                                    rows={6}
-                                    value={section.details}
-                                    onChange={(e) => updateBookingSection(category, index, 'details', e.target.value)}
-                                    className="font-mono text-sm"
-                                  />
-                                  <p className="text-xs text-muted-foreground">
-                                    Supports: • or - for bullets, **bold**, *italic*
-                                  </p>
-                                </div>
-                              </div>
-                            </CollapsibleContent>
-                          </Collapsible>
-                        ))}
-                      </div>
-
-                      {sections.length === 0 && (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          No sub-sections added yet. Click "Add Sub-Section" to get started.
-                        </p>
-                      )}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Section 6: Tags & FAQs */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold">Tags & FAQs</h4>
-        <Separator />
-        
-        <div className="space-y-4">
-          <div className="space-y-3">
-            <Label className="font-medium">Tags</Label>
-            <div className="flex flex-wrap gap-2 min-h-[40px] p-2 border rounded-md bg-background">
-              {data.tags.filter(t => t).map((tag, index) => (
-                <Badge key={index} variant="secondary" className="gap-1 pr-1 h-7">
-                  #{tag}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-4 w-4 p-0 hover:bg-transparent"
-                    onClick={() => removeTag(index)}
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                </Badge>
               ))}
             </div>
-            <Input
-              placeholder="Type and press Enter or Tab to add tags"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === 'Tab') {
-                  e.preventDefault();
-                  const value = e.currentTarget.value.trim();
-                  if (value) {
-                    const newTags = data.tags.filter(t => t);
-                    newTags.push(value);
-                    updateField('tags', newTags);
-                    e.currentTarget.value = '';
-                  }
-                }
-              }}
-            />
-          </div>
+          </AccordionContent>
+        </AccordionItem>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="font-medium">FAQs</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addFaq}>
-                <Plus className="w-4 h-4" />
-                Add FAQ
-              </Button>
+        {/* Section 5: What to Know Before You Book */}
+        <AccordionItem value="booking" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            What to Know Before You Book
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            {/* Available category buttons */}
+            {bookingCategories.filter(cat => !selectedBookingCategories.includes(cat)).length > 0 && (
+              <div>
+                <Label className="text-sm text-muted-foreground mb-2 block">Select a category to add:</Label>
+                <div className="flex flex-wrap gap-2">
+                  {bookingCategories
+                    .filter(cat => !selectedBookingCategories.includes(cat))
+                    .map((category) => (
+                      <Button
+                        key={category}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => toggleCategory(category)}
+                      >
+                        <Plus className="w-3 h-3 mr-1" />
+                        {category}
+                      </Button>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Selected categories as collapsible panels */}
+            <div className="space-y-3">
+              {selectedBookingCategories.map((category) => {
+                const sections = data.bookingInfo[category] || [];
+                const sectionCount = sections.length;
+                
+                return (
+                  <Collapsible 
+                    key={category} 
+                    open={openCollapsibles[category]}
+                    onOpenChange={() => toggleCollapsible(category)}
+                    className="border rounded-lg bg-background"
+                  >
+                    <CollapsibleTrigger className="w-full">
+                      <div className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <ChevronDown className={`w-4 h-4 transition-transform ${openCollapsibles[category] ? 'rotate-180' : ''}`} />
+                          <span className="font-semibold text-base">{category}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="px-4 pb-4 space-y-3">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => addBookingSection(category)}
+                          className="w-full"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Sub-Section
+                        </Button>
+
+                        {/* Sub-sections as nested collapsibles */}
+                        <div className="space-y-2">
+                          {sections.map((section, index) => (
+                            <Collapsible key={index} defaultOpen className="border rounded-lg bg-card">
+                              <CollapsibleTrigger className="w-full">
+                                <div className="flex items-center justify-between p-3 hover:bg-accent/50 transition-colors rounded-t-lg">
+                                  <div className="flex items-center gap-2">
+                                    <ChevronDown className="w-3 h-3 transition-transform" />
+                                    <span className="text-sm font-medium">
+                                      {section.header || `Sub-section ${index + 1}`}
+                                    </span>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeBookingSection(category, index);
+                                    }}
+                                  >
+                                    <Trash2 className="w-3 h-3 text-destructive" />
+                                  </Button>
+                                </div>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <div className="p-3 pt-0 space-y-3">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`booking-header-${category}-${index}`}>Header</Label>
+                                    <Input 
+                                      id={`booking-header-${category}-${index}`}
+                                      placeholder="Enter section header..." 
+                                      value={section.header}
+                                      onChange={(e) => updateBookingSection(category, index, 'header', e.target.value)}
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`booking-details-${category}-${index}`}>Details</Label>
+                                    <Textarea 
+                                      id={`booking-details-${category}-${index}`}
+                                      placeholder="Enter details...&#10;&#10;Tip: Use • for bullet points, **bold**, or *italic* for formatting" 
+                                      rows={6}
+                                      value={section.details}
+                                      onChange={(e) => updateBookingSection(category, index, 'details', e.target.value)}
+                                      className="font-mono text-sm"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                      Supports: • or - for bullets, **bold**, *italic*
+                                    </p>
+                                  </div>
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          ))}
+                        </div>
+
+                        {sections.length === 0 && (
+                          <p className="text-sm text-muted-foreground text-center py-4">
+                            No sub-sections added yet. Click "Add Sub-Section" to get started.
+                          </p>
+                        )}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
-            {data.faqs.map((faq, index) => (
-              <div key={index} className="border rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="font-medium">FAQ {index + 1}</Label>
-                  {data.faqs.length > 1 && (
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 6: Tags & FAQs */}
+        <AccordionItem value="tags" className="border rounded-lg px-4 bg-card/50">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+            Tags & FAQs
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="space-y-3">
+              <Label className="font-medium">Tags</Label>
+              <div className="flex flex-wrap gap-2 min-h-[40px] p-2 border rounded-md bg-background">
+                {data.tags.filter(t => t).map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="gap-1 pr-1 h-7">
+                    #{tag}
                     <Button
                       type="button"
                       variant="ghost"
-                      size="sm"
-                      onClick={() => removeFaq(index)}
+                      size="icon"
+                      className="h-4 w-4 p-0 hover:bg-transparent"
+                      onClick={() => removeTag(index)}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <X className="w-3 h-3" />
                     </Button>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`faq-question-${index}`}>Question</Label>
-                  <Input 
-                    id={`faq-question-${index}`}
-                    placeholder="Enter question..." 
-                    value={faq.question}
-                    onChange={(e) => updateFaq(index, 'question', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`faq-answer-${index}`}>Answer</Label>
-                  <Textarea 
-                    id={`faq-answer-${index}`}
-                    placeholder="Enter answer..." 
-                    rows={3}
-                    value={faq.answer}
-                    onChange={(e) => updateFaq(index, 'answer', e.target.value)}
-                  />
-                </div>
+                  </Badge>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+              <Input
+                placeholder="Type and press Enter or Tab to add tags"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    const value = e.currentTarget.value.trim();
+                    if (value) {
+                      const newTags = data.tags.filter(t => t);
+                      newTags.push(value);
+                      updateField('tags', newTags);
+                      e.currentTarget.value = '';
+                    }
+                  }
+                }}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="font-medium">FAQs</Label>
+                <Button type="button" variant="outline" size="sm" onClick={addFaq}>
+                  <Plus className="w-4 h-4" />
+                  Add FAQ
+                </Button>
+              </div>
+              {data.faqs.map((faq, index) => (
+                <div key={index} className="border rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="font-medium">FAQ {index + 1}</Label>
+                    {data.faqs.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFaq(index)}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`faq-question-${index}`}>Question</Label>
+                    <Input 
+                      id={`faq-question-${index}`}
+                      placeholder="Enter question..." 
+                      value={faq.question}
+                      onChange={(e) => updateFaq(index, 'question', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`faq-answer-${index}`}>Answer</Label>
+                    <Textarea 
+                      id={`faq-answer-${index}`}
+                      placeholder="Enter answer..." 
+                      rows={3}
+                      value={faq.answer}
+                      onChange={(e) => updateFaq(index, 'answer', e.target.value)}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <div className="flex gap-3 pt-4">
         <Button type="button" variant="outline" className="flex-1">
