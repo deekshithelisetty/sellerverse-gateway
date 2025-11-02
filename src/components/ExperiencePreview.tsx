@@ -25,17 +25,31 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   const parseTimeToHour = (timeStr: string): number | null => {
-    // Extract hour from time strings like "9:00 AM", "10 AM", "9:30 PM"
-    const match = timeStr.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)/i);
+    // Extract hour from time strings like "09:00", "14:30"
+    const match = timeStr.match(/(\d{1,2}):(\d{2})/);
     if (!match) return null;
     
-    let hour = parseInt(match[1]);
-    const period = match[3].toUpperCase();
-    
-    if (period === 'PM' && hour !== 12) hour += 12;
-    if (period === 'AM' && hour === 12) hour = 0;
-    
+    const hour = parseInt(match[1]);
     return hour;
+  };
+
+  const formatTextWithBullets = (text: string) => {
+    const lines = text.split('\n');
+    return lines.map((line, idx) => {
+      const trimmed = line.trim();
+      // Check if line starts with bullet point markers
+      if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
+        const content = trimmed.substring(1).trim();
+        return (
+          <div key={idx} className="flex items-start gap-2 ml-2">
+            <span className="text-primary mt-0.5">•</span>
+            <span>{content}</span>
+          </div>
+        );
+      }
+      // Regular line
+      return trimmed ? <p key={idx}>{trimmed}</p> : <br key={idx} />;
+    });
   };
 
   const getTimePeriod = (timeStr: string): string => {
@@ -276,12 +290,6 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                 <div className="flex items-center gap-2 mb-2">
                                   {getTimePeriodIcon(period)}
                                   <span className="text-sm font-semibold text-primary">{period}</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {period === 'Morning' && '(5 AM - 11:59 AM)'}
-                                    {period === 'Afternoon' && '(12 PM - 4:59 PM)'}
-                                    {period === 'Evening' && '(5 PM - 9:59 PM)'}
-                                    {period === 'Night' && '(10 PM - 4:59 AM)'}
-                                  </span>
                                 </div>
                               )}
 
@@ -306,7 +314,9 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                     
                                     {/* Activity Details */}
                                     {entry.plan && (
-                                      <p className="text-sm leading-relaxed text-muted-foreground">{entry.plan}</p>
+                                      <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                        {formatTextWithBullets(entry.plan)}
+                                      </div>
                                     )}
                                   </div>
                                 ) : null

@@ -34,6 +34,55 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
     updateField('schedule', newSchedule);
   };
 
+  const checkTimeOverlap = (day: number, startTime: string, endTime: string, excludeIndex: number): boolean => {
+    const sameDayEntries = data.schedule.filter((entry, idx) => entry.day === day && idx !== excludeIndex);
+    
+    const parseTime = (timeStr: string): number => {
+      if (!timeStr) return -1;
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const newStart = parseTime(startTime);
+    const newEnd = parseTime(endTime);
+    
+    if (newStart === -1 || newEnd === -1) return false;
+    if (newEnd <= newStart) return true; // Invalid range
+
+    for (const entry of sameDayEntries) {
+      const timing = entry.timing;
+      if (!timing || !timing.includes('-')) continue;
+      
+      const [existingStart, existingEnd] = timing.split('-').map(t => t.trim());
+      const existingStartMins = parseTime(existingStart);
+      const existingEndMins = parseTime(existingEnd);
+      
+      if (existingStartMins === -1 || existingEndMins === -1) continue;
+
+      // Check for overlap
+      if (
+        (newStart >= existingStartMins && newStart < existingEndMins) ||
+        (newEnd > existingStartMins && newEnd <= existingEndMins) ||
+        (newStart <= existingStartMins && newEnd >= existingEndMins)
+      ) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
+  const updateScheduleTime = (index: number, field: 'startTime' | 'endTime', value: string) => {
+    const entry = data.schedule[index];
+    const [currentStart, currentEnd] = entry.timing.split('-').map(t => t.trim());
+    
+    const startTime = field === 'startTime' ? value : currentStart;
+    const endTime = field === 'endTime' ? value : currentEnd;
+    
+    const newTiming = `${startTime}-${endTime}`;
+    updateScheduleEntry(index, 'timing', newTiming);
+  };
+
   const addDayEntry = () => {
     const maxDay = Math.max(...data.schedule.map(s => s.day));
     updateField('schedule', [...data.schedule, { day: maxDay + 1, heading: '', timing: '', plan: '' }]);
@@ -411,23 +460,49 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor={`timing-${index}`}>Time</Label>
-                <Input 
-                  id={`timing-${index}`} 
-                  placeholder="e.g., 9:00 AM - 11:59 AM" 
-                  value={entry.timing}
-                  onChange={(e) => updateScheduleEntry(index, 'timing', e.target.value)}
-                />
+                <Label>Time Range</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor={`start-time-${index}`} className="text-xs text-muted-foreground">Start Time</Label>
+                    <Input 
+                      id={`start-time-${index}`}
+                      type="time"
+                      value={entry.timing.split('-')[0]?.trim() || ''}
+                      onChange={(e) => updateScheduleTime(index, 'startTime', e.target.value)}
+                      className="text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor={`end-time-${index}`} className="text-xs text-muted-foreground">End Time</Label>
+                    <Input 
+                      id={`end-time-${index}`}
+                      type="time"
+                      value={entry.timing.split('-')[1]?.trim() || ''}
+                      onChange={(e) => updateScheduleTime(index, 'endTime', e.target.value)}
+                      className="text-sm"
+                    />
+                  </div>
+                </div>
+                {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
+                  entry.day,
+                  entry.timing.split('-')[0]?.trim() || '',
+                  entry.timing.split('-')[1]?.trim() || '',
+                  index
+                ) && (
+                  <p className="text-xs text-destructive">⚠ Time overlaps with another section on this day</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
                 <Textarea 
                   id={`plan-${index}`} 
-                  placeholder="Enter detailed plan for this section..." 
-                  rows={4}
+                  placeholder="Enter detailed plan for this section...&#10;&#10;Tip: Use • for bullet points or - for lists" 
+                  rows={6}
                   value={entry.plan}
                   onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}
+                  className="font-mono text-sm"
                 />
+                <p className="text-xs text-muted-foreground">Use • or - for bullet points, they'll appear formatted in the preview</p>
               </div>
             </div>
           ))}
