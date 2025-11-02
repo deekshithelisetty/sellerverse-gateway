@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CheckCircle2, ChevronRight, Circle, XCircle } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Circle, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ondcFormSchema = z.object({
@@ -136,6 +136,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   const [showForm, setShowForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState(0);
 
   const form = useForm<ONDCFormValues>({
     resolver: zodResolver(ondcFormSchema),
@@ -160,10 +161,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     },
   });
 
-  // Calculate progress based on current step
+  // Calculate progress based on completed steps (25% per step)
   const calculateProgress = () => {
     if (isSubmitted) return 100;
-    return ((currentStep + 1) / STEPS.length) * 100;
+    return (completedSteps / STEPS.length) * 100;
   };
 
   // Get current glow color based on progress
@@ -171,14 +172,14 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     const progress = calculateProgress();
     if (progress <= 33) return '0 0 20px rgba(255, 153, 51, 0.8)'; // Orange
     if (progress <= 66) return '0 0 20px rgba(255, 255, 255, 0.8)'; // White
-    return '0 0 20px rgba(19, 136, 8, 0.8)'; // Green
+    return '0 0 20px rgba(34, 197, 94, 0.8)'; // Green
   };
 
   const getCurrentColor = () => {
     const progress = calculateProgress();
     if (progress <= 33) return '#FF9933'; // Orange
     if (progress <= 66) return '#FFFFFF'; // White
-    return '#138808'; // Green
+    return '#22C55E'; // Green
   };
 
   const onSubmit = (data: ONDCFormValues) => {
@@ -193,8 +194,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     
     if (isValid) {
       if (currentStep < STEPS.length - 1) {
+        setCompletedSteps(prev => prev + 1);
         setCurrentStep(prev => prev + 1);
       } else {
+        setCompletedSteps(STEPS.length);
         form.handleSubmit(onSubmit)();
       }
     }
@@ -207,14 +210,33 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   // Initial state - Start Onboarding button
   if (!showForm && !isSubmitted) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <Button 
-          onClick={() => setShowForm(true)}
-          size="lg"
-          className="text-lg px-8 py-6 rounded-xl bg-primary hover:bg-primary/90 shadow-lg"
-        >
-          Start Onboarding
-        </Button>
+      <div className="h-full flex flex-col">
+        {/* Progress bar at top right */}
+        <div className="flex justify-end mb-4">
+          <div className="w-64 h-8 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
+            <div 
+              className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+              style={{ 
+                width: `${calculateProgress()}%`,
+                backgroundColor: getCurrentColor(),
+                boxShadow: getGlowColor()
+              }}
+            >
+              <span className="text-xs font-bold text-background px-2">
+                {Math.round(calculateProgress())}%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <Button 
+            onClick={() => setShowForm(true)}
+            size="lg"
+            className="text-lg px-8 py-6 rounded-xl bg-primary hover:bg-primary/90 shadow-lg"
+          >
+            Start Onboarding
+          </Button>
+        </div>
       </div>
     );
   }
@@ -223,9 +245,26 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   if (isSubmitted) {
     return (
       <div className="h-full flex flex-col">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">ONDC Onboarding Progress Tracking</h2>
-          <p className="text-muted-foreground">Track your progress across different environments</p>
+        {/* Progress bar at top right */}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">ONDC Onboarding Progress Tracking</h2>
+            <p className="text-muted-foreground">Track your progress across different environments</p>
+          </div>
+          <div className="w-64 h-8 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
+            <div 
+              className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+              style={{ 
+                width: `${calculateProgress()}%`,
+                backgroundColor: getCurrentColor(),
+                boxShadow: getGlowColor()
+              }}
+            >
+              <span className="text-xs font-bold text-background px-2">
+                {Math.round(calculateProgress())}%
+              </span>
+            </div>
+          </div>
         </div>
 
         <ScrollArea className="flex-1">
@@ -252,9 +291,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   // Form view
   return (
     <div className="h-full flex flex-col">
-      {/* Fixed Header */}
-      <div className="mb-4 space-y-4">
-        <div>
+      {/* Fixed Header with Progress Bar on Right */}
+      <div className="mb-4 flex justify-between items-start gap-4">
+        <div className="flex-1">
           <h3 className="text-2xl font-bold mb-1 flex items-center gap-2">
             <svg className="inline-block animate-spin-slow" width="26" height="26" viewBox="0 0 40 40">
               <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
@@ -280,33 +319,26 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                 <circle cx="0" cy="0" r="3" fill="#001F8D" />
               </g>
             </svg>
-            <span className="text-orange-500" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6)' }}>
-              ONDC
-            </span>
-            <span className="text-green-500" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.6)' }}>
-              Registration
-            </span>
+            <span>NDC Registration</span>
           </h3>
           <p className="text-sm text-muted-foreground">
             Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
           </p>
         </div>
 
-        {/* Profile Completion */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold">Profile Completion:</span>
-            <span className="text-sm font-bold">{Math.round(calculateProgress())}%</span>
-          </div>
-          <div className="relative w-full h-3 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
-            <div 
-              className="h-full transition-all duration-500 ease-out rounded-full"
-              style={{ 
-                width: `${calculateProgress()}%`,
-                backgroundColor: getCurrentColor(),
-                boxShadow: getGlowColor()
-              }}
-            />
+        {/* Profile Completion Progress Bar - Top Right */}
+        <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative flex-shrink-0">
+          <div 
+            className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+            style={{ 
+              width: `${calculateProgress()}%`,
+              backgroundColor: getCurrentColor(),
+              boxShadow: getGlowColor()
+            }}
+          >
+            <span className="text-sm font-bold text-background px-2">
+              {Math.round(calculateProgress())}%
+            </span>
           </div>
         </div>
       </div>

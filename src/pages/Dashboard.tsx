@@ -13,7 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity } from 'lucide-react';
+import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 import { Bar, BarChart, Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Routes, Route } from 'react-router-dom';
 
@@ -343,11 +343,30 @@ export default function Dashboard() {
               {location.pathname.includes('/ondc') && showONDCBenefits && (
                 <aside className="w-[420px] flex-shrink-0">
                   <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                    <div className="h-full p-6 overflow-auto animate-fade-in">
-                      <ONDCBenefits />
+                    <div className="h-full flex flex-col">
+                      {/* Collapsible Header */}
+                      <button
+                        onClick={() => setShowONDCBenefits(false)}
+                        className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors border-b border-white/10"
+                      >
+                        <h3 className="font-bold text-lg">Why Join ONDC?</h3>
+                        <ChevronUp className="w-5 h-5" />
+                      </button>
+                      <div className="flex-1 p-6 overflow-auto animate-fade-in">
+                        <ONDCBenefits />
+                      </div>
                     </div>
                   </div>
                 </aside>
+              )}
+              {/* Collapsed Panel Toggle */}
+              {location.pathname.includes('/ondc') && !showONDCBenefits && (
+                <button
+                  onClick={() => setShowONDCBenefits(true)}
+                  className="w-12 flex-shrink-0 rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg hover:bg-white/5 transition-colors flex items-center justify-center"
+                >
+                  <ChevronDown className="w-5 h-5" />
+                </button>
               )}
             </div>
           </div>
