@@ -181,11 +181,12 @@ export function ExperienceCircularMenu() {
 
               {/* Icon - Hidden on Hover */}
               <Icon 
-                className="w-7 h-7 text-foreground
+                className="w-7 h-7
                          opacity-100 scale-100 
                          group-hover:opacity-0 group-hover:scale-0
                          transition-all duration-300 ease-in-out
-                         relative z-10" 
+                         relative z-10"
+                style={{ color: item.gradientFrom }}
               />
 
               {/* Text - Shown on Hover */}
