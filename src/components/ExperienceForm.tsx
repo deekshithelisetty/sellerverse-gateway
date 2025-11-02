@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Trash2, Upload, FolderUp, X } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
@@ -152,43 +153,6 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
             onChange={(e) => updateField('description', e.target.value)}
           />
         </div>
-
-        {/* Three Column Layout for Aspect Ratio and Content Type */}
-        <div className="grid grid-cols-2 gap-6">
-          {/* Aspect Ratio */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Aspect Ratio</Label>
-            <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="square" id="square" />
-                <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="portrait" id="portrait" />
-                <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="landscape" id="landscape" />
-                <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Content Type */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Content Type</Label>
-            <RadioGroup value={data.contentType} onValueChange={(value) => updateField('contentType', value)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="image" id="image" />
-                <Label htmlFor="image" className="font-normal cursor-pointer">Image</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="video" id="video" />
-                <Label htmlFor="video" className="font-normal cursor-pointer">Video</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </div>
       </div>
 
       {/* Section 2: Source Media */}
@@ -284,6 +248,60 @@ export function ExperienceForm({ data, onChange }: { data: ExperienceData; onCha
             )}
           </div>
         </div>
+
+        {/* Content Type */}
+        <div className="space-y-3">
+          <Label className="text-base font-semibold">Content Type</Label>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="content-image"
+                checked={data.contentType.includes('image')}
+                onCheckedChange={(checked) => {
+                  const newContentType = checked 
+                    ? [...data.contentType, 'image']
+                    : data.contentType.filter(type => type !== 'image');
+                  updateField('contentType', newContentType);
+                }}
+              />
+              <Label htmlFor="content-image" className="font-normal cursor-pointer">Image</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="content-video"
+                checked={data.contentType.includes('video')}
+                onCheckedChange={(checked) => {
+                  const newContentType = checked 
+                    ? [...data.contentType, 'video']
+                    : data.contentType.filter(type => type !== 'video');
+                  updateField('contentType', newContentType);
+                }}
+              />
+              <Label htmlFor="content-video" className="font-normal cursor-pointer">Video</Label>
+            </div>
+          </div>
+        </div>
+
+        {/* Aspect Ratio - Show only when Video is selected */}
+        {data.contentType.includes('video') && (
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Aspect Ratio</Label>
+            <RadioGroup value={data.aspectRatio} onValueChange={(value) => updateField('aspectRatio', value)}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="square" id="square" />
+                <Label htmlFor="square" className="font-normal cursor-pointer">Square (1:1)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="portrait" id="portrait" />
+                <Label htmlFor="portrait" className="font-normal cursor-pointer">Portrait (9:16)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="landscape" id="landscape" />
+                <Label htmlFor="landscape" className="font-normal cursor-pointer">Landscape (16:9)</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
       </div>
 
       {/* Section 3: Location Details */}

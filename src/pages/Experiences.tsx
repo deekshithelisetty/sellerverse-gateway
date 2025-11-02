@@ -8,7 +8,7 @@ export interface ExperienceData {
   name: string;
   description: string;
   aspectRatio: string;
-  contentType: string;
+  contentType: string[];
   city: string;
   state: string;
   fullAddress: string;
@@ -35,7 +35,7 @@ export default function Experiences({
     name: '',
     description: '',
     aspectRatio: 'square',
-    contentType: 'image',
+    contentType: [],
     city: '',
     state: '',
     fullAddress: '',
