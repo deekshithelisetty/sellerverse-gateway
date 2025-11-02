@@ -31,12 +31,12 @@ export const ExperienceGallery = () => {
     const angleStep = (endAngle - startAngle) / (totalCards - 1);
     const angle = (startAngle + angleStep * index) * (Math.PI / 180);
     
-    // Radius of the arc - adjusted for better visual balance
-    const radius = 300;
+    // Radius of the arc - widened slightly
+    const radius = 340;
     
-    // Calculate x and y positions - adjusted to move left and up
-    const x = radius * Math.sin(angle) - 30; // Move left by 30px
-    const y = -radius * Math.cos(angle) + radius * 0.6; // Move up
+    // Calculate x and y positions - shift left and raise up
+    const x = radius * Math.sin(angle) - 50;
+    const y = -radius * Math.cos(angle) + radius * 0.5;
     
     // Rotation for card to follow the curve
     const rotation = angle * (180 / Math.PI);
