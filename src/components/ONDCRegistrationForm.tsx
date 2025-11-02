@@ -133,6 +133,7 @@ const StatusIcon = ({ status }: { status: string }) => {
 };
 
 export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegistrationFormProps) {
+  const [showForm, setShowForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(0);
@@ -206,6 +207,30 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     setCurrentStep(prev => Math.max(prev - 1, 0));
   };
 
+  // Initial state - Start Onboarding button
+  if (!showForm && !isSubmitted) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center space-y-6 max-w-md">
+          <div className="space-y-2">
+            <h2 className="text-4xl font-bold text-foreground">
+              Onboard with ONDC
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              empowering Indian businesses, strengthening 'Made in India'
+            </p>
+          </div>
+          <Button 
+            onClick={() => setShowForm(true)}
+            size="lg"
+            className="text-lg px-8 py-6 rounded-xl bg-gradient-to-r from-primary via-purple-500 to-pink-500 hover:from-primary/90 hover:via-purple-500/90 hover:to-pink-500/90 text-white shadow-lg transition-all duration-300"
+          >
+            Start Onboarding
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // After submission - Progress Tracking
   if (isSubmitted) {
