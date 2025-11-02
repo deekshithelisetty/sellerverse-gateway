@@ -339,16 +339,7 @@ export default function Dashboard() {
 
               {/* Right Section - Preview Panels - Handled by Experiences page itself */}
 
-              {/* Right Section - ONDC Benefits */}
-              {location.pathname.includes('/ondc') && showONDCBenefits && (
-                <aside className="w-[420px] flex-shrink-0">
-                  <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                    <div className="h-full p-6 overflow-auto animate-fade-in">
-                      <ONDCBenefits />
-                    </div>
-                  </div>
-                </aside>
-              )}
+              {/* Right Section - ONDC Benefits - Hidden since benefits are now in collapsible panel */}
             </div>
           </div>
         </div>

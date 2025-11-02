@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CheckCircle2, ChevronRight, Circle, XCircle } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Circle, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ondcFormSchema = z.object({
@@ -78,6 +78,47 @@ interface ONDCRegistrationFormProps {
   showBenefits?: boolean;
   setShowBenefits?: (show: boolean) => void;
 }
+
+const WhyJoinONDCPanel = ({ isExpanded, onToggle }: { isExpanded: boolean; onToggle: () => void }) => {
+  return (
+    <div className="absolute top-4 right-4 w-80 glass-card rounded-2xl border-white/20 shadow-xl z-50 overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+      >
+        <h3 className="font-bold text-lg">Why Join ONDC?</h3>
+        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+      </button>
+      
+      {isExpanded && (
+        <div className="p-4 pt-0 space-y-3 animate-accordion-down">
+          <div className="space-y-2 text-sm">
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p>Access to millions of buyers across India through a unified network</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p>Democratized e-commerce with equal opportunities for all sellers</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p>Lower costs through standardized protocols and shared infrastructure</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p>Government-backed initiative ensuring trust and transparency</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p>Seamless integration with your existing business processes</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Progress tracking data structure
 const progressSections = [
@@ -136,6 +177,8 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   const [showForm, setShowForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isPanelExpanded, setIsPanelExpanded] = useState(true);
+  const [completedSteps, setCompletedSteps] = useState(0);
 
   const form = useForm<ONDCFormValues>({
     resolver: zodResolver(ondcFormSchema),
@@ -160,10 +203,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     },
   });
 
-  // Calculate progress based on current step
+  // Calculate progress based on completed steps
   const calculateProgress = () => {
-    if (isSubmitted) return 100;
-    return ((currentStep + 1) / STEPS.length) * 100;
+    return completedSteps * 25; // Each step is 25%
   };
 
   // Get current glow color based on progress
@@ -171,14 +213,14 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     const progress = calculateProgress();
     if (progress <= 33) return '0 0 20px rgba(255, 153, 51, 0.8)'; // Orange
     if (progress <= 66) return '0 0 20px rgba(255, 255, 255, 0.8)'; // White
-    return '0 0 20px rgba(19, 136, 8, 0.8)'; // Green
+    return '0 0 20px rgba(34, 197, 94, 0.8)'; // Green
   };
 
   const getCurrentColor = () => {
     const progress = calculateProgress();
     if (progress <= 33) return '#FF9933'; // Orange
     if (progress <= 66) return '#FFFFFF'; // White
-    return '#138808'; // Green
+    return '#22C55E'; // Green
   };
 
   const onSubmit = (data: ONDCFormValues) => {
@@ -192,6 +234,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     const isValid = await form.trigger(currentStepFields);
     
     if (isValid) {
+      // Mark current step as completed and increase progress by 25%
+      setCompletedSteps(prev => prev + 1);
+      
       if (currentStep < STEPS.length - 1) {
         setCurrentStep(prev => prev + 1);
       } else {
@@ -207,7 +252,10 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   // Initial state - Start Onboarding button
   if (!showForm && !isSubmitted) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex items-center justify-center relative">
+        {/* Why Join ONDC Panel - Top Right */}
+        <WhyJoinONDCPanel isExpanded={isPanelExpanded} onToggle={() => setIsPanelExpanded(!isPanelExpanded)} />
+        
         <Button 
           onClick={() => setShowForm(true)}
           size="lg"
@@ -222,7 +270,30 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   // After submission - Progress Tracking
   if (isSubmitted) {
     return (
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col relative">
+        {/* Why Join ONDC Panel - Top Right */}
+        <WhyJoinONDCPanel isExpanded={isPanelExpanded} onToggle={() => setIsPanelExpanded(!isPanelExpanded)} />
+        
+        {/* Profile Completion Progress Bar - Top Right (100% completed) */}
+        <div className="absolute top-4 right-4 w-80 z-40" style={{ top: isPanelExpanded ? '280px' : '80px' }}>
+          <div className="glass-card rounded-xl border-white/20 p-3 shadow-xl">
+            <div className="relative h-8 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
+              <div 
+                className="h-full rounded-full flex items-center justify-center"
+                style={{ 
+                  width: '100%',
+                  backgroundColor: '#22C55E',
+                  boxShadow: '0 0 20px rgba(34, 197, 94, 0.8)'
+                }}
+              >
+                <span className="text-sm font-bold text-background/90 drop-shadow-lg">
+                  100%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div className="mb-6">
           <h2 className="text-3xl font-bold mb-2">ONDC Onboarding Progress Tracking</h2>
           <p className="text-muted-foreground">Track your progress across different environments</p>
@@ -251,7 +322,30 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
   // Form view
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative">
+      {/* Why Join ONDC Panel - Top Right */}
+      <WhyJoinONDCPanel isExpanded={isPanelExpanded} onToggle={() => setIsPanelExpanded(!isPanelExpanded)} />
+
+      {/* Profile Completion Progress Bar - Top Right */}
+      <div className="absolute top-4 right-4 w-80 z-40" style={{ top: isPanelExpanded ? '280px' : '80px' }}>
+        <div className="glass-card rounded-xl border-white/20 p-3 shadow-xl">
+          <div className="relative h-8 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
+            <div 
+              className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+              style={{ 
+                width: `${calculateProgress()}%`,
+                backgroundColor: getCurrentColor(),
+                boxShadow: getGlowColor()
+              }}
+            >
+              <span className="text-sm font-bold text-background/90 drop-shadow-lg">
+                {calculateProgress()}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Fixed Header */}
       <div className="mb-4 space-y-4">
         <div>
@@ -280,34 +374,13 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                 <circle cx="0" cy="0" r="3" fill="#001F8D" />
               </g>
             </svg>
-            <span className="text-orange-500" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6)' }}>
-              ONDC
-            </span>
             <span className="text-green-500" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.6)' }}>
-              Registration
+              NDC Registration
             </span>
           </h3>
           <p className="text-sm text-muted-foreground">
             Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
           </p>
-        </div>
-
-        {/* Profile Completion */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold">Profile Completion:</span>
-            <span className="text-sm font-bold">{Math.round(calculateProgress())}%</span>
-          </div>
-          <div className="relative w-full h-3 overflow-hidden rounded-full bg-secondary/20 border border-white/10">
-            <div 
-              className="h-full transition-all duration-500 ease-out rounded-full"
-              style={{ 
-                width: `${calculateProgress()}%`,
-                backgroundColor: getCurrentColor(),
-                boxShadow: getGlowColor()
-              }}
-            />
-          </div>
         </div>
       </div>
 
