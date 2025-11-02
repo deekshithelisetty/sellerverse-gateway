@@ -133,7 +133,6 @@ const StatusIcon = ({ status }: { status: string }) => {
 };
 
 export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegistrationFormProps) {
-  const [showForm, setShowForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(0);
@@ -207,39 +206,6 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     setCurrentStep(prev => Math.max(prev - 1, 0));
   };
 
-  // Initial state - Start Onboarding button
-  if (!showForm && !isSubmitted) {
-    return (
-      <div className="h-full flex flex-col">
-        {/* Progress bar at top right */}
-        <div className="flex justify-end mb-4">
-          <div className="w-64 h-8 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
-            <div 
-              className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
-              style={{ 
-                width: `${calculateProgress()}%`,
-                backgroundColor: getCurrentColor(),
-                boxShadow: getGlowColor()
-              }}
-            >
-              <span className="text-xs font-bold text-background px-2">
-                {Math.round(calculateProgress())}%
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <Button 
-            onClick={() => setShowForm(true)}
-            size="lg"
-            className="text-lg px-8 py-6 rounded-xl bg-primary hover:bg-primary/90 shadow-lg"
-          >
-            Start Onboarding
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   // After submission - Progress Tracking
   if (isSubmitted) {
@@ -319,28 +285,36 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                 <circle cx="0" cy="0" r="3" fill="#001F8D" />
               </g>
             </svg>
-            <span>NDC Registration</span>
+            <span>
+              <span className="text-[#FF9933]">NDC</span>{' '}
+              <span className="text-[#22C55E]">Registration</span>
+            </span>
           </h3>
           <p className="text-sm text-muted-foreground">
             Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
           </p>
         </div>
 
-        {/* Profile Completion Progress Bar - Top Right */}
-        <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative flex-shrink-0">
-          <div 
-            className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
-            style={{ 
-              width: `${calculateProgress()}%`,
-              backgroundColor: getCurrentColor(),
-              boxShadow: getGlowColor()
-            }}
-          >
-            <span className="text-sm font-bold text-background px-2">
-              {Math.round(calculateProgress())}%
-            </span>
+        {/* Profile Completion Progress Bar - Top Right - Only show after first step */}
+        {completedSteps > 0 && (
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            <span className="text-xs font-medium text-muted-foreground">Profile Completion</span>
+            <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
+              <div 
+                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+                style={{ 
+                  width: `${calculateProgress()}%`,
+                  background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #22C55E 100%)',
+                  boxShadow: '0 0 20px rgba(255, 153, 51, 0.4)'
+                }}
+              >
+                <span className="text-sm font-bold text-gray-800 px-2 drop-shadow-sm">
+                  {Math.round(calculateProgress())}%
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Scrollable Form Content */}
