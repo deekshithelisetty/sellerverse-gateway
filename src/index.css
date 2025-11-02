@@ -229,4 +229,29 @@ All colors MUST be HSL.
   .glow {
     filter: drop-shadow(0 0 20px rgba(166, 128, 202, 0.6));
   }
+
+  /* Indian Flag Border Animation */
+  @keyframes indian-flag-border {
+    0% {
+      border-color: #FF9933;
+      box-shadow: 0 0 20px rgba(255, 153, 51, 0.6), inset 0 0 20px rgba(255, 153, 51, 0.1);
+    }
+    33% {
+      border-color: #FFFFFF;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    66% {
+      border-color: #22C55E;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), inset 0 0 20px rgba(34, 197, 94, 0.1);
+    }
+    100% {
+      border-color: #FF9933;
+      box-shadow: 0 0 20px rgba(255, 153, 51, 0.6), inset 0 0 20px rgba(255, 153, 51, 0.1);
+    }
+  }
+
+  .indian-flag-border {
+    border: 2px solid #FF9933;
+    animation: indian-flag-border 3s ease-in-out infinite;
+  }
 }

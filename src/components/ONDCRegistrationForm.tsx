@@ -338,30 +338,6 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     if (isFullyCompleted) {
       return (
         <div className="h-full flex items-center justify-center relative overflow-hidden">
-          {/* Floating paper confetti animation */}
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(30)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute animate-float-paper"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `-${Math.random() * 20}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 4}s`,
-                }}
-              >
-                <div
-                  className="w-3 h-3 rotate-45"
-                  style={{
-                    background: ['#FF9933', '#FFFFFF', '#22C55E'][Math.floor(Math.random() * 3)],
-                    opacity: 0.7,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-
           {/* Success message */}
           <div className="text-center space-y-6 max-w-2xl px-8 z-10">
             <div className="mb-8">
@@ -465,7 +441,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         <ScrollArea className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pr-4">
             {progressSections.map((section, idx) => (
-              <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
+              <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4 indian-flag-border">
                 <h3 className="text-lg font-bold mb-4">
                   {showGradientAnimation ? (
                     <span 
@@ -570,7 +546,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             <form className="space-y-6 pb-20">
               {/* Step 1: Personal Information */}
               {currentStep === 0 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
                   <h4 className="font-semibold text-lg">{STEPS[0].title}</h4>
                 
                   <div className="grid grid-cols-2 gap-4">
@@ -636,7 +612,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 2: Business Information */}
               {currentStep === 1 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
                   <h4 className="font-semibold text-lg">{STEPS[1].title}</h4>
 
                   <FormField
@@ -770,7 +746,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 3: Network Configuration */}
               {currentStep === 2 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
                   <h4 className="font-semibold text-lg">{STEPS[2].title}</h4>
 
                   <FormField
@@ -823,7 +799,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 4: Location Information */}
               {currentStep === 3 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in indian-flag-border">
                   <h4 className="font-semibold text-lg">{STEPS[3].title}</h4>
 
                   <div className="grid grid-cols-2 gap-4">
