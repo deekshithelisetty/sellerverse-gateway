@@ -31,7 +31,10 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   };
 
   const addScheduleEntry = (day: number) => {
+    const newIndex = data.schedule.length;
     updateField('schedule', [...data.schedule, { day, heading: '', timing: '', plan: '' }]);
+    // Close all other itineraries and open the new one
+    setOpenItineraries({ [`${day}-${newIndex}`]: true });
   };
 
   const removeScheduleEntry = (index: number) => {
@@ -172,6 +175,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({ 1: true });
   const [openTagsSection, setOpenTagsSection] = useState(true);
   const [openFaqsSection, setOpenFaqsSection] = useState(true);
+  const [openItineraries, setOpenItineraries] = useState<{ [key: string]: boolean }>({});
 
   const toggleCategory = (category: string) => {
     if (!selectedBookingCategories.includes(category)) {
@@ -182,6 +186,19 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
   const toggleCollapsible = (category: string) => {
     setOpenCollapsibles({ ...openCollapsibles, [category]: !openCollapsibles[category] });
+  };
+
+  const removeCategory = (category: string) => {
+    // Remove from selected categories
+    setSelectedBookingCategories(selectedBookingCategories.filter(cat => cat !== category));
+    // Remove the data for this category
+    const newBookingInfo = { ...data.bookingInfo };
+    delete newBookingInfo[category];
+    updateField('bookingInfo', newBookingInfo);
+    // Remove from open collapsibles
+    const newOpenCollapsibles = { ...openCollapsibles };
+    delete newOpenCollapsibles[category];
+    setOpenCollapsibles(newOpenCollapsibles);
   };
 
   const addBookingSection = (category: string) => {
@@ -621,91 +638,106 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                         {data.schedule
                           .map((entry, index) => ({ entry, index }))
                           .filter(({ entry }) => entry.day === day)
-                          .map(({ entry, index }) => (
-                            <Collapsible key={index} defaultOpen={false}>
-                              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted rounded-md hover:bg-muted/80 transition-colors">
-                                <span className="text-sm font-medium">
-                                  {entry.heading || `Itinerary ${index + 1}`}
-                                </span>
-                                <ChevronDown className="h-4 w-4" />
-                              </CollapsibleTrigger>
-                              <CollapsibleContent>
-                                <div className="p-3 pt-0 space-y-3 mt-2 border rounded-lg bg-card">
-                                  <div className="space-y-2 pt-3">
-                                    <Label htmlFor={`heading-${index}`}>Heading</Label>
-                                    <Input 
-                                      id={`heading-${index}`} 
-                                      placeholder="Enter section heading..." 
-                                      value={entry.heading}
-                                      onChange={(e) => updateScheduleEntry(index, 'heading', e.target.value)}
-                                    />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label>Time Range</Label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      <div className="space-y-1">
-                                        <Label htmlFor={`start-time-${index}`} className="text-xs text-muted-foreground">Start Time</Label>
-                                        <Input 
-                                          id={`start-time-${index}`}
-                                          type="time"
-                                          value={entry.timing.split('-')[0]?.trim() || ''}
-                                          onChange={(e) => updateScheduleTime(index, 'startTime', e.target.value)}
-                                          className="text-sm"
-                                        />
-                                      </div>
-                                      <div className="space-y-1">
-                                        <Label htmlFor={`end-time-${index}`} className="text-xs text-muted-foreground">End Time</Label>
-                                        <Input 
-                                          id={`end-time-${index}`}
-                                          type="time"
-                                          value={entry.timing.split('-')[1]?.trim() || ''}
-                                          onChange={(e) => updateScheduleTime(index, 'endTime', e.target.value)}
-                                          className="text-sm"
-                                        />
-                                      </div>
+                          .map(({ entry, index }) => {
+                            const itineraryKey = `${day}-${index}`;
+                            return (
+                              <Collapsible 
+                                key={index} 
+                                open={openItineraries[itineraryKey] ?? false}
+                                onOpenChange={(isOpen) => {
+                                  if (isOpen) {
+                                    // Close all others when opening this one
+                                    setOpenItineraries({ [itineraryKey]: true });
+                                  } else {
+                                    setOpenItineraries({ ...openItineraries, [itineraryKey]: false });
+                                  }
+                                }}
+                              >
+                                <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted rounded-md hover:bg-muted/80 transition-colors">
+                                  <span className="text-sm font-medium">
+                                    {entry.heading || `Itinerary ${index + 1}`}
+                                  </span>
+                                  <ChevronDown className={`h-4 w-4 transition-transform ${openItineraries[itineraryKey] ? 'rotate-180' : ''}`} />
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                  <div className="p-3 pt-0 space-y-3 mt-2 border rounded-lg bg-card">
+                                    <div className="space-y-2 pt-3">
+                                      <Label htmlFor={`heading-${index}`}>Heading</Label>
+                                      <Input 
+                                        id={`heading-${index}`} 
+                                        placeholder="Enter section heading..." 
+                                        value={entry.heading}
+                                        onChange={(e) => updateScheduleEntry(index, 'heading', e.target.value)}
+                                      />
                                     </div>
-                                    {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
-                                      entry.day,
-                                      entry.timing.split('-')[0]?.trim() || '',
-                                      entry.timing.split('-')[1]?.trim() || '',
-                                      index
-                                    ) && (
-                                      <p className="text-xs text-destructive">⚠ Time overlaps with another section on this day</p>
-                                    )}
+                                    <div className="space-y-2">
+                                      <Label>Time Range</Label>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <div className="space-y-1">
+                                          <Label htmlFor={`start-time-${index}`} className="text-xs text-muted-foreground">Start Time</Label>
+                                          <Input 
+                                            id={`start-time-${index}`}
+                                            type="time"
+                                            value={entry.timing.split('-')[0]?.trim() || ''}
+                                            onChange={(e) => updateScheduleTime(index, 'startTime', e.target.value)}
+                                            className="text-sm"
+                                          />
+                                        </div>
+                                        <div className="space-y-1">
+                                          <Label htmlFor={`end-time-${index}`} className="text-xs text-muted-foreground">End Time</Label>
+                                          <Input 
+                                            id={`end-time-${index}`}
+                                            type="time"
+                                            value={entry.timing.split('-')[1]?.trim() || ''}
+                                            onChange={(e) => updateScheduleTime(index, 'endTime', e.target.value)}
+                                            className="text-sm"
+                                          />
+                                        </div>
+                                      </div>
+                                      {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
+                                        entry.day,
+                                        entry.timing.split('-')[0]?.trim() || '',
+                                        entry.timing.split('-')[1]?.trim() || '',
+                                        index
+                                      ) && (
+                                        <p className="text-xs text-destructive">⚠ Time overlaps with another section on this day</p>
+                                      )}
+                                    </div>
+                                    <div className="space-y-2">
+                                      <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
+                                      <Textarea 
+                                        id={`plan-${index}`} 
+                                        placeholder="Enter detailed plan for this section...&#10;&#10;Tip: Use • for bullet points or - for lists" 
+                                        rows={6}
+                                        value={entry.plan}
+                                        onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}
+                                        className="font-mono text-sm"
+                                      />
+                                      <p className="text-xs text-muted-foreground">Use • or - for bullet points, they'll appear formatted in the preview</p>
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() => removeScheduleEntry(index)}
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5 mr-2" />
+                                      Remove
+                                    </Button>
                                   </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor={`plan-${index}`}>Detailed Plan</Label>
-                                    <Textarea 
-                                      id={`plan-${index}`} 
-                                      placeholder="Enter detailed plan for this section...&#10;&#10;Tip: Use • for bullet points or - for lists" 
-                                      rows={6}
-                                      value={entry.plan}
-                                      onChange={(e) => updateScheduleEntry(index, 'plan', e.target.value)}
-                                      className="font-mono text-sm"
-                                    />
-                                    <p className="text-xs text-muted-foreground">Use • or - for bullet points, they'll appear formatted in the preview</p>
-                                  </div>
-                                  <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => removeScheduleEntry(index)}
-                                  >
-                                    Remove Itinerary
-                                  </Button>
-                                </div>
-                              </CollapsibleContent>
-                            </Collapsible>
-                          ))}
+                                </CollapsibleContent>
+                              </Collapsible>
+                            );
+                          })}
                       </div>
                       <Button
                         type="button"
                         onClick={() => addScheduleEntry(day)}
                         variant="outline"
                         size="sm"
-                        className="w-full mt-2"
+                        className="rounded-full text-xs h-8 px-4 mt-2"
                       >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="h-3 w-3 mr-1.5" />
                         Add Day Itinerary
                       </Button>
                     </CollapsibleContent>
@@ -767,6 +799,18 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                             {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
                           </Badge>
                         </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeCategory(category);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
                       </div>
                     </CollapsibleTrigger>
                     <CollapsibleContent>

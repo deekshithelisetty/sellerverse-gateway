@@ -81,11 +81,11 @@ export default function Experiences({
       </div>
 
       {/* Main Content Area - Two Column Layout */}
-      <div className="flex-1 flex gap-4">
+      <div className="flex-1 flex gap-4 overflow-hidden">
         {/* Center - Form Section */}
-        <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm overflow-hidden">
+        <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm flex flex-col overflow-hidden">
           {showForm ? (
-            <div className="h-full pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div className="flex-1 pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <ExperienceForm data={experienceData} onChange={setExperienceData} onClose={() => setShowForm(false)} />
             </div>
           ) : (
@@ -97,8 +97,8 @@ export default function Experiences({
 
         {/* Right - Preview Panel */}
         {showPreview && (
-          <div className="flex-1 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg animate-fade-in">
-            <div className="h-full overflow-auto">
+          <div className="flex-1 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm flex flex-col overflow-hidden shadow-lg animate-fade-in">
+            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <ExperiencePreview data={experienceData} />
             </div>
           </div>
