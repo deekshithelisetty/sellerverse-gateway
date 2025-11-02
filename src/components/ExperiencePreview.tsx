@@ -1,4 +1,4 @@
-import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2, Maximize2, Minimize2 } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -11,10 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState } from 'react';
-
 export function ExperiencePreview({ data }: { data: ExperienceData }) {
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -113,6 +110,11 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   const groupScheduleByDayAndTime = () => {
     const grouped: { [key: number]: { [key: string]: typeof data.schedule } } = {};
     
+    // Initialize all days up to dayCount
+    for (let i = 1; i <= data.dayCount; i++) {
+      grouped[i] = { Morning: [], Afternoon: [], Evening: [], Night: [], Other: [] };
+    }
+    
     data.schedule.forEach(entry => {
       if (!grouped[entry.day]) {
         grouped[entry.day] = { Morning: [], Afternoon: [], Evening: [], Night: [], Other: [] };
@@ -126,28 +128,18 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   return (
-    <div className={isFullscreen ? "fixed inset-0 z-50 bg-background" : "flex justify-center items-start min-h-screen p-6 pt-8 pb-12"}>
-      {/* Phone Mockup or Fullscreen */}
-      <div className={isFullscreen ? "w-full h-full overflow-y-auto" : "relative w-[380px] bg-background border-8 border-foreground/10 rounded-[3rem] shadow-2xl"}>
-        {/* Phone Notch - only in non-fullscreen */}
-        {!isFullscreen && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-foreground/10 rounded-b-2xl z-10" />}
-        
-        {/* Phone Screen Content */}
-        <div className={isFullscreen ? "bg-background" : "bg-background overflow-hidden rounded-[2.25rem]"}>
+    <div className="flex justify-center items-start w-full h-full">
+      {/* Always Maximized View */}
+      <div className="w-full h-full overflow-y-auto">
+        {/* Content */}
+        <div className="bg-background">
           {/* Top Header Bar */}
-          <div className={`sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20 ${isFullscreen ? 'max-w-4xl mx-auto' : ''}`}>
+          <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20 max-w-4xl mx-auto">
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <Share2 className="w-4 h-4" />
             </Button>
             <h3 className="text-sm font-semibold">Experience Details</h3>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8"
-              onClick={() => setIsFullscreen(!isFullscreen)}
-            >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </Button>
+            <div className="w-8"></div>
           </div>
 
           {/* Hero Image */}
@@ -169,7 +161,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
           </div>
 
           {/* Content */}
-          <div className={`px-5 py-6 space-y-6 ${isFullscreen ? 'max-w-4xl mx-auto' : ''}`}>
+          <div className="px-5 py-6 space-y-6 max-w-4xl mx-auto">
             {/* Creator Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -254,7 +246,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                         <div>
                           <p className="text-xs font-medium">Duration</p>
                           <p className="text-xs text-muted-foreground">
-                            {data.schedule.length} {data.schedule.length === 1 ? 'Day' : 'Days'}
+                            {data.dayCount} {data.dayCount === 1 ? 'Day' : 'Days'}
                           </p>
                         </div>
                       </div>
@@ -316,7 +308,9 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                         <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
                           {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
                             const entries = periods[period];
-                            if (!entries || entries.length === 0) return null;
+                            // Always show Morning and Afternoon, hide others if empty
+                            const shouldShow = period === 'Morning' || period === 'Afternoon' || (entries && entries.length > 0);
+                            if (!shouldShow) return null;
 
                             return (
                               <div key={period} className="space-y-3">
@@ -329,33 +323,39 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                 )}
 
                                 {/* Entries for this time period */}
-                                {entries.map((entry, idx) => (
-                                  entry.heading || entry.timing || entry.plan ? (
-                                    <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
-                                      {/* Heading */}
-                                      {entry.heading && (
-                                        <h4 className="text-sm font-semibold">{entry.heading}</h4>
-                                      )}
-                                      
-                                      {/* Timing Badge */}
-                                      {entry.timing && (
-                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                          <Clock className="w-3 h-3" />
-                                          <span className="text-xs font-medium text-primary">
-                                            {entry.timing}
-                                          </span>
-                                        </div>
-                                      )}
-                                      
-                                      {/* Activity Details */}
-                                      {entry.plan && (
-                                        <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
-                                          {formatTextWithBullets(entry.plan)}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ) : null
-                                ))}
+                                {entries && entries.length > 0 ? (
+                                  entries.map((entry, idx) => (
+                                    entry.heading || entry.timing || entry.plan ? (
+                                      <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
+                                        {/* Heading */}
+                                        {entry.heading && (
+                                          <h4 className="text-sm font-semibold">{entry.heading}</h4>
+                                        )}
+                                        
+                                        {/* Timing Badge */}
+                                        {entry.timing && (
+                                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                                            <Clock className="w-3 h-3" />
+                                            <span className="text-xs font-medium text-primary">
+                                              {entry.timing}
+                                            </span>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Activity Details */}
+                                        {entry.plan && (
+                                          <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                            {formatTextWithBullets(entry.plan)}
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : null
+                                  ))
+                                ) : (
+                                  <div className="text-sm text-muted-foreground/60 italic py-2">
+                                    No itinerary added yet
+                                  </div>
+                                )}
                               </div>
                             );
                           })}

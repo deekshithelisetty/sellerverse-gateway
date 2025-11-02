@@ -48,17 +48,20 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
     const newDayCount = dayCount + 1;
     setDayCount(newDayCount);
     setOpenDays({ ...openDays, [newDayCount]: true });
+    updateField('dayCount', newDayCount);
   };
 
   const removeDay = () => {
     if (dayCount > 1) {
-      setDayCount(dayCount - 1);
+      const newDayCount = dayCount - 1;
+      setDayCount(newDayCount);
       const newOpenDays = { ...openDays };
       delete newOpenDays[dayCount];
       setOpenDays(newOpenDays);
       // Remove schedule entries for removed day
       const updatedSchedule = data.schedule.filter(entry => entry.day < dayCount);
       updateField('schedule', updatedSchedule);
+      updateField('dayCount', newDayCount);
     }
   };
 
@@ -75,8 +78,10 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
       return entry;
     });
     
+    const newDayCount = dayCount - 1;
     updateField('schedule', renumberedSchedule);
-    setDayCount(dayCount - 1);
+    setDayCount(newDayCount);
+    updateField('dayCount', newDayCount);
     
     // Update open states
     const newOpenDays: { [key: number]: boolean } = {};
@@ -163,7 +168,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
   const [selectedBookingCategories, setSelectedBookingCategories] = useState<string[]>([]);
   const [openCollapsibles, setOpenCollapsibles] = useState<{ [key: string]: boolean }>({});
-  const [dayCount, setDayCount] = useState(1);
+  const [dayCount, setDayCount] = useState(data.dayCount || 1);
   const [openDays, setOpenDays] = useState<{ [key: number]: boolean }>({ 1: true });
   const [openTagsSection, setOpenTagsSection] = useState(true);
   const [openFaqsSection, setOpenFaqsSection] = useState(true);

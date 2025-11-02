@@ -13,6 +13,7 @@ export interface ExperienceData {
   state: string;
   fullAddress: string;
   mapLink: string;
+  dayCount: number;
   schedule: { day: number; heading: string; timing: string; plan: string }[];
   bookingInfo: {
     [category: string]: { header: string; details: string }[];
@@ -41,6 +42,7 @@ export default function Experiences({
     state: '',
     fullAddress: '',
     mapLink: '',
+    dayCount: 1,
     schedule: [{ day: 1, heading: '', timing: '', plan: '' }],
     bookingInfo: {},
     tags: [''],
@@ -95,7 +97,7 @@ export default function Experiences({
 
         {/* Right - Preview Panel */}
         {showPreview && (
-          <div className="w-[420px] rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg animate-fade-in">
+          <div className="flex-1 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm overflow-hidden shadow-lg animate-fade-in">
             <div className="h-full overflow-auto">
               <ExperiencePreview data={experienceData} />
             </div>
