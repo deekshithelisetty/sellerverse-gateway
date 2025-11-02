@@ -80,7 +80,7 @@ interface ONDCRegistrationFormProps {
 }
 
 // Progress tracking data structure
-const progressSections = [
+const initialProgressSections = [
   {
     title: 'Staging Environment Progress',
     items: [
@@ -151,6 +151,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(0);
   const [showGradientAnimation, setShowGradientAnimation] = useState(true);
+  const [progressSections, setProgressSections] = useState(initialProgressSections);
 
   // Timer to stop gradient animation after 3 seconds
   useEffect(() => {
@@ -159,6 +160,35 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         setShowGradientAnimation(false);
       }, 3000);
       return () => clearTimeout(timer);
+    }
+  }, [isSubmitted]);
+
+  // Auto-completion animation for testing (5 seconds)
+  useEffect(() => {
+    if (isSubmitted) {
+      // Collect all incomplete items
+      const allItems: Array<{ sectionIdx: number; itemIdx: number }> = [];
+      progressSections.forEach((section, sectionIdx) => {
+        section.items.forEach((item, itemIdx) => {
+          if (item.status !== 'completed') {
+            allItems.push({ sectionIdx, itemIdx });
+          }
+        });
+      });
+
+      // Calculate interval (5000ms / number of items)
+      const interval = 5000 / allItems.length;
+
+      // Complete items one by one
+      allItems.forEach((item, index) => {
+        setTimeout(() => {
+          setProgressSections(prevSections => {
+            const newSections = JSON.parse(JSON.stringify(prevSections));
+            newSections[item.sectionIdx].items[item.itemIdx].status = 'completed';
+            return newSections;
+          });
+        }, interval * (index + 1));
+      });
     }
   }, [isSubmitted]);
 
@@ -389,7 +419,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
           </div>
 
           {/* Progress bar - top right */}
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex flex-col items-center gap-1 flex-shrink-0">
             <span className="text-xs font-medium text-muted-foreground">Onboarding Progress</span>
             <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
               <div 
