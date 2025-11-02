@@ -541,7 +541,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="flex-1 min-h-0">
         <ScrollArea className="h-full pr-4">
           <Form {...form}>
-            <form className="space-y-6 pb-20">
+            <form className="space-y-6">
               {/* Step 1: Personal Information */}
               {currentStep === 0 && (
                 <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
@@ -876,31 +876,31 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                   />
                 </div>
               )}
+              
+              {/* Navigation Buttons - Inside ScrollArea, after form content */}
+              <div className="pt-6 pb-4 flex items-center justify-end gap-2">
+                {currentStep > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleBack}
+                    className="gap-2"
+                  >
+                    Back
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  className="gap-2 w-[120px]"
+                >
+                  {currentStep < STEPS.length - 1 ? 'Next' : 'Submit'}
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
             </form>
           </Form>
         </ScrollArea>
-      </div>
-
-      {/* Bottom Navigation - Near Form */}
-      <div className="pt-6 flex items-center justify-end gap-2 px-4">
-        {currentStep > 0 && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleBack}
-            className="gap-2"
-          >
-            Back
-          </Button>
-        )}
-        <Button
-          type="button"
-          onClick={handleNext}
-          className="gap-2 w-[120px]"
-        >
-          {currentStep < STEPS.length - 1 ? 'Next' : 'Submit'}
-          <ChevronRight className="w-4 h-4" />
-        </Button>
       </div>
 
       <style>{`
