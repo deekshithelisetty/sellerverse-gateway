@@ -1,4 +1,4 @@
-import { Plus, Grid3x3, Monitor } from 'lucide-react';
+import { Eye, LayoutGrid, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExperienceForm } from '@/components/ExperienceForm';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
@@ -65,16 +65,14 @@ export default function Experiences({
         </div>
         <div className="flex gap-3">
           <Button 
-            variant={showPreview ? "default" : "outline"}
-            className="gap-2"
+            className="gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-500 rounded-2xl"
             onClick={() => setShowPreview(!showPreview)}
           >
-            <Monitor className="w-4 h-4" />
+            <Eye className="w-4 h-4" />
             Live Preview
           </Button>
           <Button 
-            variant={showCardSelector ? "default" : "outline"} 
-            className="gap-2"
+            className="gap-2 bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-500 rounded-2xl"
             onClick={() => {
               setShowCardSelector(!showCardSelector);
               if (!showCardSelector) {
@@ -82,11 +80,14 @@ export default function Experiences({
               }
             }}
           >
-            <Grid3x3 className="w-4 h-4" />
+            <LayoutGrid className="w-4 h-4" />
             View All
           </Button>
-          <Button className="gap-2" onClick={() => setShowForm(true)}>
-            <Plus className="w-4 h-4" />
+          <Button 
+            className="gap-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-500 rounded-2xl"
+            onClick={() => setShowForm(true)}
+          >
+            <Sparkles className="w-4 h-4" />
             Create
           </Button>
         </div>
@@ -98,7 +99,7 @@ export default function Experiences({
         <div className="flex-1 rounded-2xl border border-white/10 bg-background/20 backdrop-blur-sm flex flex-col overflow-hidden">
           {showCardSelector ? (
             <div className="flex-1 overflow-hidden">
-              <ExperienceCircularMenu />
+              <ExperienceCircularMenu onClose={() => setShowCardSelector(false)} />
             </div>
           ) : showForm ? (
             <div className="flex-1 pl-4 pr-6 py-6 overflow-y-auto animate-fade-in scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { FileCheck, FileText, FileX, Image, Wrench, Home, Mountain, Compass, Utensils, Trees, Building2, Sparkles } from 'lucide-react';
+import { FileCheck, FileText, FileX, Image, Wrench, Home, Mountain, Compass, Utensils, Trees, Building2, Sparkles, X } from 'lucide-react';
 import { ExperienceCardSelector } from './ExperienceCardSelector';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface MenuItem {
   id: string;
@@ -71,7 +72,7 @@ const categoryButtons: CategoryButton[] = [
   { id: 'wellness', name: 'Wellness', icon: Sparkles, color: '#ec4899' },
 ];
 
-export function ExperienceCircularMenu() {
+export function ExperienceCircularMenu({ onClose }: { onClose?: () => void }) {
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
 
   // If a menu is selected, show the category view with cards
@@ -172,7 +173,19 @@ export function ExperienceCircularMenu() {
 
   // Default circular menu view
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-background">
+    <div className="h-full flex flex-col items-center justify-center bg-background relative">
+      {/* Close Button */}
+      {onClose && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          onClick={onClose}
+          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-white/20 hover:from-red-500/30 hover:to-pink-500/30 transition-all duration-300 backdrop-blur-sm group shadow-lg"
+        >
+          <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-300" />
+        </motion.button>
+      )}
       {/* Header Section */}
       <div className="mb-16 space-y-4 text-center animate-fade-in-top">
         <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-500 via-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">

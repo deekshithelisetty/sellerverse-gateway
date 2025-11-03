@@ -1,4 +1,4 @@
-import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2, ChevronDown } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Share2, ChevronDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -172,38 +172,15 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
           {/* Content */}
           <div className="px-5 py-6 space-y-6 max-w-4xl mx-auto">
             {/* Creator Info */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 border-2 border-white/30">
-                  <AvatarFallback className="bg-white/20 text-white text-xs">
-                    {getInitials(data.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-xs text-white/70">Created by</p>
-                  <p className="text-sm font-semibold text-white">Bhuvith Trammela</p>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
-                <Heart className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="flex items-center justify-between py-3 border-y border-white/20">
-              <div className="text-center flex-1">
-                <p className="text-xs text-white/70">Total Earnings</p>
-                <p className="text-sm font-bold text-white">--</p>
-              </div>
-              <Separator orientation="vertical" className="h-8 bg-white/20" />
-              <div className="text-center flex-1">
-                <p className="text-xs text-white/70">Total Sales</p>
-                <p className="text-sm font-bold text-white">0</p>
-              </div>
-              <Separator orientation="vertical" className="h-8 bg-white/20" />
-              <div className="text-center flex-1">
-                <p className="text-xs text-white/70">Total Views</p>
-                <p className="text-sm font-bold text-white">--</p>
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 border-2 border-white/30">
+                <AvatarFallback className="bg-white/20 text-white text-xs">
+                  {getInitials(data.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-xs text-white/70">Created by</p>
+                <p className="text-sm font-semibold text-white">Bhuvith Trammela</p>
               </div>
             </div>
 
