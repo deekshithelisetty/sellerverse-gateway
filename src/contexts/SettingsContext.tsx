@@ -6,11 +6,13 @@ interface SettingsContextType {
   theme: string;
   brandLogo: string | null;
   language: string;
+  interestedCategories: string[];
   setFontSize: (size: string) => void;
   setFontName: (name: string) => void;
   setTheme: (theme: string) => void;
   setBrandLogo: (logo: string | null) => void;
   setLanguage: (lang: string) => void;
+  setInterestedCategories: (categories: string[]) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -37,6 +39,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'default');
   const [brandLogo, setBrandLogo] = useState<string | null>(() => localStorage.getItem('brandLogo'));
   const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en');
+  const [interestedCategories, setInterestedCategories] = useState<string[]>(() => {
+    const stored = localStorage.getItem('interestedCategories');
+    return stored ? JSON.parse(stored) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('fontSize', fontSize);
@@ -69,6 +75,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('language', language);
   }, [language]);
 
+  useEffect(() => {
+    localStorage.setItem('interestedCategories', JSON.stringify(interestedCategories));
+  }, [interestedCategories]);
+
   return (
     <SettingsContext.Provider value={{
       fontSize,
@@ -76,11 +86,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       theme,
       brandLogo,
       language,
+      interestedCategories,
       setFontSize,
       setFontName,
       setTheme,
       setBrandLogo,
       setLanguage,
+      setInterestedCategories,
     }}>
       {children}
     </SettingsContext.Provider>

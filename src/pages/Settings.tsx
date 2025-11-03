@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Upload, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'motion/react';
 
 const fontSizes = ['14', '16', '18', '20', '22'];
 const fontNames = [
@@ -18,6 +19,21 @@ const fontNames = [
   'Poppins',
 ];
 
+const categoryOptions = [
+  'Retail',
+  'Products',
+  'Mobility',
+  'Flights',
+  'Hotels',
+  'Cars',
+  'Cruises',
+  'Pharmacy',
+  'Drivers',
+  'Food and Beverages',
+  'Fashion and Beauty',
+  'Electronics & Appliances',
+];
+
 export default function Settings() {
   const {
     fontSize,
@@ -25,12 +41,24 @@ export default function Settings() {
     theme,
     brandLogo,
     language,
+    interestedCategories,
     setFontSize,
     setFontName,
     setTheme,
     setBrandLogo,
     setLanguage,
+    setInterestedCategories,
   } = useSettings();
+
+  const toggleCategory = (category: string) => {
+    if (interestedCategories.includes(category)) {
+      setInterestedCategories(interestedCategories.filter(c => c !== category));
+      toast.success(`${category} removed from sidebar`);
+    } else {
+      setInterestedCategories([...interestedCategories, category]);
+      toast.success(`${category} added to sidebar`);
+    }
+  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,15 +155,15 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Theme Settings - Spans 2 columns */}
-        <Card className="glass-card border-white/20 lg:col-span-2">
+        {/* Theme Settings */}
+        <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Theme</CardTitle>
             <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-              {themes.map((themeOption) => (
+            <div className="grid grid-cols-3 gap-3">
+              {themes.slice(0, 3).map((themeOption) => (
                 <button
                   key={themeOption.id}
                   onClick={() => {
@@ -166,8 +194,8 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Brand Logo - Spans 2 columns */}
-        <Card className="glass-card border-white/20 lg:col-span-2">
+        {/* Brand Logo */}
+        <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Brand Logo</CardTitle>
             <CardDescription className="text-xs">Upload your brand logo for the dashboard header</CardDescription>
@@ -202,6 +230,39 @@ export default function Settings() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Interested Category Section */}
+      <Card className="glass-card border-white/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Interested Category</CardTitle>
+          <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {categoryOptions.map((category) => {
+              const isSelected = interestedCategories.includes(category);
+              return (
+                <motion.button
+                  key={category}
+                  onClick={() => toggleCategory(category)}
+                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white shadow-lg shadow-purple-500/50'
+                      : 'bg-muted/50 text-foreground hover:bg-muted'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {category}
+                </motion.button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
