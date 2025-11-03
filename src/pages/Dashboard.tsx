@@ -8,6 +8,7 @@ import { ONDCBenefits } from '@/components/ONDCBenefits';
 import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
 import NBBLSettlement from '@/pages/NBBLSettlement';
+import Profile from '@/pages/Profile';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -274,7 +275,7 @@ export default function Dashboard() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
@@ -330,6 +331,7 @@ export default function Dashboard() {
                           setShowForm={setShowForm}
                         />
                       } />
+                      <Route path="profile" element={<Profile />} />
                       <Route path="retail" element={<div>
                         <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
                         <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
