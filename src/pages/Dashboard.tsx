@@ -262,16 +262,19 @@ export default function Dashboard() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/10">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">{user.email || user.phone}</span>
-                </Button>
+                <button className="relative group cursor-pointer">
+                  <Avatar className="h-10 w-10 border-2 border-white/30 shadow-lg ring-2 ring-primary/50 transition-all duration-300 group-hover:ring-4 group-hover:ring-primary/70 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold">
+                      BT
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 glass-card border-white/20">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">Seller Account</p>
-                    <p className="text-xs text-muted-foreground">{user.email || user.phone}</p>
+                    <p className="text-sm font-medium">Bhuvan Tummala</p>
+                    <p className="text-xs text-muted-foreground">bhuvant@tabhi.com</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

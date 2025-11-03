@@ -1,27 +1,42 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { User, Building2, Phone, Mail, Calendar, Edit, Lock, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
+import { toast } from '@/hooks/use-toast';
 
 export default function Profile() {
   const { user } = useAuth();
   const { interestedCategories } = useSettings();
   const [activeTab, setActiveTab] = useState('all');
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock profile data
-  const profileData = {
-    name: 'John Smith',
-    company: 'TechCorp Solutions Pvt. Ltd.',
-    phone: '+91 98765 43210',
-    email: user?.email || 'seller@example.com',
+  // Profile data state
+  const [profileData, setProfileData] = useState({
+    name: 'Bhuvan Tummala',
+    company: 'TabhiCorp Solutions Pvt. Ltd.',
+    phone: '+1 650 650 0650',
+    email: 'bhuvant@tabhi.com',
     registeredDate: 'January 15, 2024',
-  };
+  });
+
+  // Password form state
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
 
   // Mock notifications data
   const notifications = {
@@ -45,6 +60,48 @@ export default function Profile() {
       .map(n => n[0])
       .join('')
       .toUpperCase();
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditClick = () => {
+    if (isEditing) {
+      // Save changes
+      toast({
+        title: "Changes saved successfully",
+        duration: 3000,
+      });
+      setIsEditing(false);
+    } else {
+      setIsEditing(true);
+    }
+  };
+
+  const handlePasswordUpdate = () => {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    
+    toast({
+      title: "Password updated successfully",
+      duration: 3000,
+    });
+    setShowPasswordModal(false);
+    setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
   };
 
   const categoryGradients = [
@@ -71,7 +128,15 @@ export default function Profile() {
               {/* Avatar and Basic Info */}
               <div className="flex items-start gap-6">
                 <div className="relative group">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
                   <Avatar className="h-24 w-24 border-4 border-white/20 shadow-lg">
+                    {profileImage && <AvatarImage src={profileImage} alt={profileData.name} />}
                     <AvatarFallback className="bg-gradient-to-br from-purple-600 to-pink-600 text-white text-2xl font-bold">
                       {getInitials(profileData.name)}
                     </AvatarFallback>
@@ -79,13 +144,22 @@ export default function Profile() {
                   <motion.div
                     className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                     whileHover={{ scale: 1.05 }}
+                    onClick={() => fileInputRef.current?.click()}
                   >
                     <Edit className="h-6 w-6 text-white" />
                   </motion.div>
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-1">{profileData.name}</h3>
+                  {isEditing ? (
+                    <Input
+                      value={profileData.name}
+                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                      className="text-2xl font-bold mb-1 h-auto py-1"
+                    />
+                  ) : (
+                    <h3 className="text-2xl font-bold mb-1">{profileData.name}</h3>
+                  )}
                   <div className="flex items-center gap-2 text-muted-foreground mb-4">
                     <Building2 className="h-4 w-4" />
                     <span className="text-sm">{profileData.company}</span>
@@ -99,9 +173,17 @@ export default function Profile() {
                   <div className="p-2 rounded-full bg-primary/10">
                     <Phone className="h-4 w-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xs text-muted-foreground">Phone Number</p>
-                    <p className="text-sm font-medium">{profileData.phone}</p>
+                    {isEditing ? (
+                      <Input
+                        value={profileData.phone}
+                        onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                        className="text-sm font-medium h-8 mt-1"
+                      />
+                    ) : (
+                      <p className="text-sm font-medium">{profileData.phone}</p>
+                    )}
                   </div>
                 </div>
 
@@ -109,9 +191,17 @@ export default function Profile() {
                   <div className="p-2 rounded-full bg-primary/10">
                     <Mail className="h-4 w-4 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xs text-muted-foreground">Email Address</p>
-                    <p className="text-sm font-medium">{profileData.email}</p>
+                    {isEditing ? (
+                      <Input
+                        value={profileData.email}
+                        onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                        className="text-sm font-medium h-8 mt-1"
+                      />
+                    ) : (
+                      <p className="text-sm font-medium">{profileData.email}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -141,12 +231,16 @@ export default function Profile() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
-                <Button className="flex-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90 transition-all duration-600 shadow-lg hover:shadow-xl hover:scale-105">
+                <Button 
+                  onClick={handleEditClick}
+                  className="flex-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90 transition-all duration-600 shadow-lg hover:shadow-xl hover:scale-105"
+                >
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit Profile
+                  {isEditing ? 'Save' : 'Edit Profile'}
                 </Button>
                 <Button
                   variant="outline"
+                  onClick={() => setShowPasswordModal(true)}
                   className="flex-1 border-2 border-primary/30 hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-500 hover:to-purple-700 hover:text-white hover:border-transparent transition-all duration-600 shadow-md hover:shadow-lg hover:scale-105"
                 >
                   <Lock className="h-4 w-4 mr-2" />
@@ -164,7 +258,7 @@ export default function Profile() {
           <CardHeader className="border-b border-white/10">
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
-              <span className="bg-gradient-to-r from-orange-500 via-white to-green-500 bg-clip-text text-transparent font-bold">
+              <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 bg-clip-text text-transparent font-bold bg-[length:200%_auto] animate-gradient-flow">
                 Alerts & Notifications
               </span>
             </CardTitle>
@@ -242,6 +336,64 @@ export default function Profile() {
           </CardContent>
         </Card>
       </aside>
+
+      {/* Change Password Modal */}
+      <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
+        <DialogContent className="glass-card border-white/20 sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription>
+              Update your password to keep your account secure.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="old-password">Old Password</Label>
+              <Input
+                id="old-password"
+                type="password"
+                value={passwordForm.oldPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New Password</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowPasswordModal(false);
+                setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePasswordUpdate}
+              className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90"
+            >
+              Update Password
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
