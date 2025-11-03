@@ -1,4 +1,4 @@
-import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2 } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Heart, Share2, ChevronDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -11,7 +11,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { motion } from 'motion/react';
+import { useState } from 'react';
 export function ExperiencePreview({ data }: { data: ExperienceData }) {
+  const [isImagesExpanded, setIsImagesExpanded] = useState(false);
+  
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -128,22 +132,27 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
   };
 
   return (
-    <div className="flex justify-center items-start w-full h-full">
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="flex justify-center items-start w-full h-full"
+    >
       {/* Always Maximized View */}
-      <div className="w-full h-full overflow-y-auto">
+      <div className="w-full h-full overflow-y-auto gradient-border-animated rounded-lg">
         {/* Content */}
-        <div className="bg-background">
+        <div className="experience-gradient-bg text-white">
           {/* Top Header Bar */}
-          <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border/50 px-4 py-3 flex items-center justify-between z-20 max-w-4xl mx-auto">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+          <div className="sticky top-0 bg-white/10 backdrop-blur-sm border-b border-white/20 px-4 py-3 flex items-center justify-between z-20 max-w-4xl mx-auto">
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
               <Share2 className="w-4 h-4" />
             </Button>
-            <h3 className="text-sm font-semibold">Experience Details</h3>
+            <h3 className="text-sm font-semibold text-white">Experience Details</h3>
             <div className="w-8"></div>
           </div>
 
           {/* Hero Image */}
-          <div className="relative h-64 bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden">
+          <div className="relative h-64 bg-white/10 overflow-hidden">
             {data.thumbnailImage ? (
               <img 
                 src={data.thumbnailImage} 
@@ -152,7 +161,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center space-y-2 text-muted-foreground/40">
+                <div className="text-center space-y-2 text-white/40">
                   <MapPin className="w-16 h-16 mx-auto" />
                   <p className="text-xs">Experience Image</p>
                 </div>
@@ -165,49 +174,49 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {/* Creator Info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 border-2 border-primary/20">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                <Avatar className="h-10 w-10 border-2 border-white/30">
+                  <AvatarFallback className="bg-white/20 text-white text-xs">
                     {getInitials(data.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-xs text-muted-foreground">Created by</p>
-                  <p className="text-sm font-semibold">Bhuvith Trammela</p>
+                  <p className="text-xs text-white/70">Created by</p>
+                  <p className="text-sm font-semibold text-white">Bhuvith Trammela</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
                 <Heart className="w-4 h-4" />
               </Button>
             </div>
 
             {/* Stats */}
-            <div className="flex items-center justify-between py-3 border-y border-border/50">
+            <div className="flex items-center justify-between py-3 border-y border-white/20">
               <div className="text-center flex-1">
-                <p className="text-xs text-muted-foreground">Total Earnings</p>
-                <p className="text-sm font-bold">--</p>
+                <p className="text-xs text-white/70">Total Earnings</p>
+                <p className="text-sm font-bold text-white">--</p>
               </div>
-              <Separator orientation="vertical" className="h-8" />
+              <Separator orientation="vertical" className="h-8 bg-white/20" />
               <div className="text-center flex-1">
-                <p className="text-xs text-muted-foreground">Total Sales</p>
-                <p className="text-sm font-bold">0</p>
+                <p className="text-xs text-white/70">Total Sales</p>
+                <p className="text-sm font-bold text-white">0</p>
               </div>
-              <Separator orientation="vertical" className="h-8" />
+              <Separator orientation="vertical" className="h-8 bg-white/20" />
               <div className="text-center flex-1">
-                <p className="text-xs text-muted-foreground">Total Views</p>
-                <p className="text-sm font-bold">--</p>
+                <p className="text-xs text-white/70">Total Views</p>
+                <p className="text-sm font-bold text-white">--</p>
               </div>
             </div>
 
             {/* Title */}
             <div>
-              <h1 className="text-2xl font-bold leading-tight mb-2">
+              <h1 className="text-2xl font-bold leading-tight mb-2 text-white">
                 {data.name || 'Experience Title'}
               </h1>
               {data.price && (
-                <div className="flex items-center gap-1 text-primary">
+                <div className="flex items-center gap-1 text-white">
                   <IndianRupee className="w-4 h-4" />
                   <span className="text-xl font-bold">{data.price}</span>
-                  <span className="text-xs text-muted-foreground ml-1">per person</span>
+                  <span className="text-xs text-white/70 ml-1">per person</span>
                 </div>
               )}
             </div>
@@ -215,8 +224,8 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {/* Overview */}
             {data.description && (
               <div className="space-y-2">
-                <h2 className="text-lg font-semibold">Overview</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <h2 className="text-lg font-semibold text-white">Overview</h2>
+                <p className="text-sm text-white/80 leading-relaxed">
                   {data.description}
                 </p>
               </div>
@@ -224,28 +233,28 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
 
             {/* Location Info */}
             {(data.city || data.state || data.fullAddress) && (
-              <Card className="border-primary/10">
+              <Card className="border-white/20 bg-white/10">
                 <CardContent className="p-4 space-y-2">
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-white mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="text-xs font-medium">Location</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs font-medium text-white">Location</p>
+                      <p className="text-xs text-white/70">
                         {[data.city, data.state].filter(Boolean).join(', ')}
                       </p>
                       {data.fullAddress && (
-                        <p className="text-xs text-muted-foreground mt-1">{data.fullAddress}</p>
+                        <p className="text-xs text-white/70 mt-1">{data.fullAddress}</p>
                       )}
                     </div>
                   </div>
                   {data.schedule.some(s => s.timing || s.plan) && (
                     <>
-                      <Separator />
+                      <Separator className="bg-white/20" />
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+                        <Clock className="w-4 h-4 text-white flex-shrink-0" />
                         <div>
-                          <p className="text-xs font-medium">Duration</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs font-medium text-white">Duration</p>
+                          <p className="text-xs text-white/70">
                             {data.dayCount} {data.dayCount === 1 ? 'Day' : 'Days'}
                           </p>
                         </div>
@@ -256,31 +265,57 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               </Card>
             )}
 
-            {/* Images */}
+            {/* Images - Collapsible */}
             {data.uploadedImages && data.uploadedImages.length > 0 && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold">Images</h2>
-                <div className="grid grid-cols-2 gap-2">
-                  {data.uploadedImages.map((image, i) => (
-                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden border border-border">
-                      <img 
-                        src={image} 
-                        alt={`Experience image ${i + 1}`} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <button
+                  onClick={() => setIsImagesExpanded(!isImagesExpanded)}
+                  className="flex items-center justify-between w-full text-left group"
+                >
+                  <h2 className="text-lg font-semibold text-white">Images ({data.uploadedImages.length})</h2>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-white transition-transform duration-200 ${
+                      isImagesExpanded ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: isImagesExpanded ? 'auto' : 0,
+                    opacity: isImagesExpanded ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    {data.uploadedImages.map((image, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: i * 0.05 }}
+                        className="relative aspect-square rounded-lg overflow-hidden border border-white/20"
+                      >
+                        <img 
+                          src={image} 
+                          alt={`Experience image ${i + 1}`} 
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
             )}
 
             {/* Tags */}
             {data.tags.filter(t => t).length > 0 && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold">Tags</h2>
-                <div className="bg-card border border-border rounded-lg p-4 space-y-1.5">
+                <h2 className="text-lg font-semibold text-white">Tags</h2>
+                <div className="bg-white/10 border border-white/20 rounded-lg p-4 space-y-1.5">
                   {data.tags.filter(t => t).map((tag, i) => (
-                    <div key={i} className="text-sm font-semibold text-primary">
+                    <div key={i} className="text-sm font-semibold text-white">
                       #{tag.toUpperCase()}
                     </div>
                   ))}
@@ -291,21 +326,21 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {/* Itinerary */}
             {data.schedule.some(s => s.heading || s.timing || s.plan) && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold">Day Planning</h2>
+                <h2 className="text-lg font-semibold text-white">Day Planning</h2>
                 <Accordion type="multiple" className="w-full space-y-2">
                   {Object.entries(groupScheduleByDayAndTime()).map(([day, periods]) => (
-                    <AccordionItem key={day} value={`day-${day}`} className="border rounded-lg px-1">
-                      <AccordionTrigger className="text-sm font-semibold text-primary hover:no-underline px-3">
+                    <AccordionItem key={day} value={`day-${day}`} className="border border-white/20 rounded-lg px-1 bg-white/5">
+                      <AccordionTrigger className="text-sm font-semibold text-white hover:no-underline px-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-primary">{day}</span>
+                          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-bold text-white">{day}</span>
                           </div>
                           Day {day}
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="px-3 pb-3">
                         {/* Day Activities grouped by time period */}
-                        <div className="ml-4 pl-4 border-l-2 border-border/50 space-y-4">
+                        <div className="ml-4 pl-4 border-l-2 border-white/20 space-y-4">
                           {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
                             const entries = periods[period];
                             // Only show periods that have actual data
@@ -317,24 +352,24 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                 {period !== 'Other' && (
                                   <div className="flex items-center gap-2 mb-2">
                                     {getTimePeriodIcon(period)}
-                                    <span className="text-sm font-semibold text-primary">{period}</span>
+                                    <span className="text-sm font-semibold text-white">{period}</span>
                                   </div>
                                 )}
 
                                 {/* Entries for this time period */}
                                 {entries.map((entry, idx) => (
                                   entry.heading || entry.timing || entry.plan ? (
-                                    <div key={idx} className="space-y-2 pb-3 border-b border-border/30 last:border-0">
+                                    <div key={idx} className="space-y-2 pb-3 border-b border-white/10 last:border-0">
                                       {/* Heading */}
                                       {entry.heading && (
-                                        <h4 className="text-sm font-semibold">{entry.heading}</h4>
+                                        <h4 className="text-sm font-semibold text-white">{entry.heading}</h4>
                                       )}
                                       
                                       {/* Timing Badge */}
                                       {entry.timing && (
-                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                          <Clock className="w-3 h-3" />
-                                          <span className="text-xs font-medium text-primary">
+                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20">
+                                          <Clock className="w-3 h-3 text-white" />
+                                          <span className="text-xs font-medium text-white">
                                             {entry.timing}
                                           </span>
                                         </div>
@@ -342,7 +377,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                       
                                       {/* Activity Details */}
                                       {entry.plan && (
-                                        <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                        <div className="text-sm leading-relaxed text-white/80 space-y-1">
                                           {formatTextWithBullets(entry.plan)}
                                         </div>
                                       )}
@@ -363,12 +398,12 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {/* What to Know Before You Book */}
             {Object.keys(data.bookingInfo).length > 0 && Object.values(data.bookingInfo).some(sections => sections.length > 0) && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold">What to Know Before You Book</h2>
+                <h2 className="text-lg font-semibold text-white">What to Know Before You Book</h2>
                 <Accordion type="single" collapsible className="w-full space-y-2">
                   {Object.entries(data.bookingInfo).map(([category, sections]) => (
                     sections.length > 0 && (
-                      <AccordionItem key={category} value={category} className="border rounded-lg px-1">
-                        <AccordionTrigger className="text-sm font-semibold text-primary hover:no-underline px-3">
+                      <AccordionItem key={category} value={category} className="border border-white/20 rounded-lg px-1 bg-white/5">
+                        <AccordionTrigger className="text-sm font-semibold text-white hover:no-underline px-3">
                           {category}
                         </AccordionTrigger>
                         <AccordionContent className="px-3 pb-3">
@@ -378,14 +413,14 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                                 <AccordionItem 
                                   key={idx} 
                                   value={`${category}-${idx}`} 
-                                  className="border rounded-md bg-card/50"
+                                  className="border border-white/10 rounded-md bg-white/5"
                                 >
-                                  <AccordionTrigger className="text-xs font-semibold hover:no-underline px-3 py-2">
+                                  <AccordionTrigger className="text-xs font-semibold text-white hover:no-underline px-3 py-2">
                                     {section.header || `Section ${idx + 1}`}
                                   </AccordionTrigger>
                                   <AccordionContent className="px-3 pb-2">
                                     {section.details && (
-                                      <div className="text-sm leading-relaxed text-muted-foreground space-y-1">
+                                      <div className="text-sm leading-relaxed text-white/80 space-y-1">
                                         {formatTextWithBullets(section.details)}
                                       </div>
                                     )}
@@ -405,15 +440,15 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
             {/* FAQs */}
             {data.faqs.some(faq => faq.question || faq.answer) && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold">FAQs</h2>
+                <h2 className="text-lg font-semibold text-white">FAQs</h2>
                 <Accordion type="single" collapsible className="w-full">
                   {data.faqs.map((faq, i) => (
                     faq.question || faq.answer ? (
-                      <AccordionItem key={i} value={`faq-${i}`} className="border-border/50">
-                        <AccordionTrigger className="text-sm text-left hover:no-underline">
+                      <AccordionItem key={i} value={`faq-${i}`} className="border-white/20">
+                        <AccordionTrigger className="text-sm text-white text-left hover:no-underline">
                           {faq.question || 'Question'}
                         </AccordionTrigger>
-                        <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
+                        <AccordionContent className="text-xs text-white/80 leading-relaxed">
                           {faq.answer || 'Answer'}
                         </AccordionContent>
                       </AccordionItem>
@@ -428,6 +463,6 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -20,6 +20,7 @@ import {
 import { Plus, Trash2, Upload, FolderUp, X, ChevronDown, Minus } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef } from 'react';
+import { motion } from 'motion/react';
 
 export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceData; onChange: (data: ExperienceData) => void; onClose: () => void }) {
   const [thumbnailImage, setThumbnailImage] = useState<{ file: File; preview: string } | null>(null);
@@ -310,7 +311,12 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   };
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="space-y-6 max-w-6xl"
+    >
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-2xl font-semibold mb-2">Create Experience</h3>
@@ -1030,6 +1036,6 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
           Publish Experience
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }
