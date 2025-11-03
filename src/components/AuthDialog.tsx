@@ -73,7 +73,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px] max-h-[85vh] overflow-y-auto experience-gradient-bg border-2 border-primary/50 backdrop-blur-xl auth-dialog-glow">
+      <DialogContent className="sm:max-w-[420px] max-h-[85vh] overflow-y-auto experience-gradient-bg border-2 border-primary/50 backdrop-blur-xl shadow-2xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-white">Seller Portal</DialogTitle>
           <DialogDescription className="text-white/80">
@@ -137,7 +137,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 hover:shadow-lg hover:scale-105 transition-all">
+              <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 transition-all duration-400">
                 Create Account
               </Button>
             </form>
@@ -154,7 +154,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
             <Button
               type="button"
               variant="outline"
-              className="w-full bg-white/10 border-white/30 hover:bg-white/20 hover:scale-105 transition-all text-white"
+              className="w-full bg-white/10 border-white/30 hover:bg-white/20 transition-all duration-400 text-white"
               onClick={handleGoogleSignUp}
             >
               <Chrome className="mr-2 h-4 w-4" />
@@ -179,7 +179,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 hover:shadow-lg hover:scale-105 transition-all">
+                <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 transition-all duration-400">
                   Send OTP to Phone
                 </Button>
               </form>
@@ -208,7 +208,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 hover:shadow-lg hover:scale-105 transition-all">
+                <Button type="submit" className="w-full bg-white/20 hover:bg-white/30 text-white border-0 transition-all duration-400">
                   Send OTP to Email
                 </Button>
               </form>
@@ -225,7 +225,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full bg-white/10 border-white/30 hover:bg-white/20 hover:scale-105 transition-all text-white"
+                className="w-full bg-white/10 border-white/30 hover:bg-white/20 transition-all duration-400 text-white"
                 onClick={handleGoogleSignUp}
               >
                 <Chrome className="mr-2 h-4 w-4" />
