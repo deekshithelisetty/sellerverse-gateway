@@ -239,9 +239,8 @@ export default function Profile() {
                   {isEditing ? 'Save' : 'Edit Profile'}
                 </Button>
                 <Button
-                  variant="outline"
                   onClick={() => setShowPasswordModal(true)}
-                  className="flex-1 border-2 border-primary/30 hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-500 hover:to-purple-700 hover:text-white hover:border-transparent transition-all duration-600 shadow-md hover:shadow-lg hover:scale-105"
+                  className="flex-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90 transition-all duration-600 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <Lock className="h-4 w-4 mr-2" />
                   Change Password
@@ -339,55 +338,58 @@ export default function Profile() {
 
       {/* Change Password Modal */}
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
-        <DialogContent className="glass-card border-white/20 sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[380px] bg-gradient-to-br from-orange-500/95 via-pink-500/95 to-purple-600/95 backdrop-blur-xl border-2 border-white/20 animate-in fade-in-0 zoom-in-95 duration-500">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-white text-xl">Change Password</DialogTitle>
+            <DialogDescription className="text-white/90">
               Update your password to keep your account secure.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="old-password">Old Password</Label>
+              <Label htmlFor="old-password" className="text-white font-medium">Old Password</Label>
               <Input
                 id="old-password"
                 type="password"
                 value={passwordForm.oldPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:bg-white/25"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="new-password">New Password</Label>
+              <Label htmlFor="new-password" className="text-white font-medium">New Password</Label>
               <Input
                 id="new-password"
                 type="password"
                 value={passwordForm.newPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:bg-white/25"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirm-password" className="text-white font-medium">Confirm Password</Label>
               <Input
                 id="confirm-password"
                 type="password"
                 value={passwordForm.confirmPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:bg-white/25"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
-              variant="outline"
               onClick={() => {
                 setShowPasswordModal(false);
                 setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
               }}
+              className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90 transition-all duration-400"
             >
               Cancel
             </Button>
             <Button
               onClick={handlePasswordUpdate}
-              className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white hover:opacity-90"
+              className="bg-white/20 hover:bg-white/30 text-white border border-white/30 transition-all duration-400"
             >
               Update Password
             </Button>

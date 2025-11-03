@@ -263,8 +263,8 @@ export default function Dashboard() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="relative group cursor-pointer">
-                  <Avatar className="h-10 w-10 border-2 border-white/30 shadow-lg ring-2 ring-primary/50 transition-all duration-300 group-hover:ring-4 group-hover:ring-primary/70 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]">
-                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold">
+                  <Avatar className="h-9 w-9 border-2 border-white/30 shadow-lg ring-2 ring-primary/50 transition-all duration-300 group-hover:ring-4 group-hover:ring-primary/70">
+                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold text-sm">
                       BT
                     </AvatarFallback>
                   </Avatar>
