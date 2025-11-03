@@ -276,4 +276,35 @@ All colors MUST be HSL.
   .experience-gradient-bg {
     background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 50%, #EC4899 100%);
   }
+
+  /* Auth Dialog Glowing Border Animation */
+  @keyframes auth-glow-border {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.6), 
+                  0 0 40px rgba(124, 58, 237, 0.4), 
+                  inset 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+    33% {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 
+                  0 0 40px rgba(139, 92, 246, 0.4), 
+                  inset 0 0 20px rgba(139, 92, 246, 0.1);
+    }
+    66% {
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.6), 
+                  0 0 40px rgba(236, 72, 153, 0.4), 
+                  inset 0 0 20px rgba(236, 72, 153, 0.1);
+    }
+  }
+
+  .auth-dialog-glow {
+    animation: auth-glow-border 4s ease-in-out infinite;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .auth-dialog-glow:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.8), 
+                0 0 60px rgba(236, 72, 153, 0.6), 
+                inset 0 0 30px rgba(139, 92, 246, 0.2);
+  }
 }
