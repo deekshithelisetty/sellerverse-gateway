@@ -294,7 +294,7 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Content Area with minimal padding */}
-      <div className="relative z-10 h-full pt-20 px-6 pb-6">
+      <div className="relative z-10 h-full pt-20 px-6 pb-2">
         <div className="max-w-[1600px] mx-auto h-full">
           <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full flex flex-col">
             {/* Subtle grid pattern overlay */}
