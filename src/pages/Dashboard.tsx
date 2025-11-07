@@ -294,7 +294,7 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Content Area with minimal padding */}
-      <div className="relative z-10 h-full pt-20 px-6 pb-2">
+      <div className="relative z-10 h-full pt-20 px-6 pb-6">
         <div className="max-w-[1600px] mx-auto h-full">
           <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full flex flex-col">
             {/* Subtle grid pattern overlay */}
@@ -318,7 +318,7 @@ export default function Dashboard() {
               {/* Center Section - Main Content */}
               <div className="flex-1 min-w-0">
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                  <main className="h-full overflow-auto p-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <main className="h-full overflow-auto p-3">
                     <Routes>
                       <Route index element={<DashboardContent />} />
                       <Route path="ondc" element={
