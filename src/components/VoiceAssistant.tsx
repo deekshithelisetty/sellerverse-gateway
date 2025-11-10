@@ -140,18 +140,15 @@ const VoiceAssistant = () => {
   };
 
   const findAndClickElement = (targetText: string) => {
+    console.log('🔍 Searching for:', targetText);
     const allElements = document.querySelectorAll('*');
-    const matches: { element: HTMLElement; score: number }[] = [];
+    const matches: { element: HTMLElement; score: number; reason: string }[] = [];
+    let interactiveCount = 0;
 
     allElements.forEach((element) => {
       const htmlElement = element as HTMLElement;
       
-      // Skip if not visible
-      if (htmlElement.offsetWidth === 0 || htmlElement.offsetHeight === 0) {
-        return;
-      }
-
-      // Skip if not interactive
+      // Check if interactive first
       const tagName = htmlElement.tagName.toLowerCase();
       const isInteractive = 
         tagName === 'button' ||
@@ -165,31 +162,71 @@ const VoiceAssistant = () => {
         return;
       }
 
-      // Check various text sources
+      interactiveCount++;
+
+      // Check visibility
+      const rect = htmlElement.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0 && 
+                       htmlElement.offsetParent !== null;
+
+      if (!isVisible) {
+        return;
+      }
+
+      // Get all text content including children
       const innerText = htmlElement.innerText?.toLowerCase() || '';
       const textContent = htmlElement.textContent?.toLowerCase() || '';
       const ariaLabel = htmlElement.getAttribute('aria-label')?.toLowerCase() || '';
       const title = htmlElement.getAttribute('title')?.toLowerCase() || '';
+      const placeholder = htmlElement.getAttribute('placeholder')?.toLowerCase() || '';
 
       const searchTarget = targetText.toLowerCase();
       
       // Calculate match score
       let score = 0;
-      if (innerText.includes(searchTarget)) score += 10;
-      if (textContent.includes(searchTarget)) score += 8;
-      if (ariaLabel.includes(searchTarget)) score += 7;
-      if (title.includes(searchTarget)) score += 5;
+      let matchReason = '';
+
+      if (innerText.includes(searchTarget)) {
+        score += 10;
+        matchReason += 'innerText ';
+      }
+      if (textContent.includes(searchTarget)) {
+        score += 8;
+        matchReason += 'textContent ';
+      }
+      if (ariaLabel.includes(searchTarget)) {
+        score += 12;
+        matchReason += 'aria-label ';
+      }
+      if (title.includes(searchTarget)) {
+        score += 7;
+        matchReason += 'title ';
+      }
+      if (placeholder.includes(searchTarget)) {
+        score += 6;
+        matchReason += 'placeholder ';
+      }
       
       // Exact match bonus
-      if (innerText.trim() === searchTarget) score += 20;
-      if (ariaLabel === searchTarget) score += 15;
+      if (innerText.trim() === searchTarget) {
+        score += 20;
+        matchReason += '(exact innerText) ';
+      }
+      if (ariaLabel === searchTarget) {
+        score += 25;
+        matchReason += '(exact aria-label) ';
+      }
 
       if (score > 0) {
-        matches.push({ element: htmlElement, score });
+        console.log(`✓ Found match (score: ${score}):`, htmlElement, matchReason);
+        matches.push({ element: htmlElement, score, reason: matchReason });
       }
     });
 
+    console.log(`📊 Stats: ${interactiveCount} interactive elements, ${matches.length} matches found`);
+
     if (matches.length === 0) {
+      console.log('❌ No matches found');
       toast.error(`Element not found: "${targetText}"`);
       return;
     }
@@ -198,7 +235,7 @@ const VoiceAssistant = () => {
     matches.sort((a, b) => b.score - a.score);
     const bestMatch = matches[0];
 
-    console.log('Clicking element:', bestMatch.element);
+    console.log('🎯 Best match:', bestMatch.element, 'Score:', bestMatch.score, 'Reason:', bestMatch.reason);
     
     // Scroll into view and click
     bestMatch.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -206,6 +243,7 @@ const VoiceAssistant = () => {
     setTimeout(() => {
       bestMatch.element.click();
       toast.success(`Clicked: "${targetText}"`);
+      console.log('✅ Clicked successfully');
     }, 300);
   };
 
