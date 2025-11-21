@@ -9,6 +9,7 @@ import Experiences from '@/pages/Experiences';
 import Settings from '@/pages/Settings';
 import NBBLSettlement from '@/pages/NBBLSettlement';
 import Profile from '@/pages/Profile';
+import Hookpoint from '@/pages/Hookpoint';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -219,7 +220,8 @@ export default function Dashboard() {
   const location = useLocation();
   const [showForm, setShowForm] = useState(false);
   const [showONDCBenefits, setShowONDCBenefits] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
   
   useEffect(() => {
     if (!user) {
@@ -254,8 +256,9 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               {brandLogo ? (
                 <img src={brandLogo} alt="Brand Logo" className="h-8 w-auto object-contain" />
-              ) : null}
-              <h1 className="text-2xl font-bold tracking-tight">TABHI</h1>
+              ) : (
+                <h1 className="text-2xl font-bold tracking-tight">TABHI</h1>
+              )}
             </div>
             
             
@@ -306,11 +309,15 @@ export default function Dashboard() {
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
             <div className="relative flex gap-2 flex-1 min-h-0 w-full overflow-hidden">
               {/* Left Section - Menu */}
-              <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300 h-full`}>
+              <aside 
+                className={`${sidebarHovered ? 'w-[240px]' : 'w-[80px]'} flex-shrink-0 transition-all duration-300 h-full`}
+                onMouseEnter={() => setSidebarHovered(true)}
+                onMouseLeave={() => setSidebarHovered(false)}
+              >
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4 overflow-hidden">
                   <AppSidebar 
-                    collapsed={sidebarCollapsed} 
-                    onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+                    collapsed={!sidebarHovered} 
+                    onToggle={() => {}} 
                   />
                 </div>
               </aside>
@@ -340,6 +347,7 @@ export default function Dashboard() {
                         <p className="text-muted-foreground">Manage your retail operations and inventory.</p>
                       </div>} />
                       <Route path="settings" element={<Settings />} />
+                      <Route path="hookpoint" element={<Hookpoint />} />
                     </Routes>
                   </main>
                 </div>

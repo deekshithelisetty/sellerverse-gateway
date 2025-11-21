@@ -230,32 +230,34 @@ export function NBBLRegistrationForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+      <div className="text-center space-y-2 flex-shrink-0 mb-4">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           NOCA (Nodal) Account Registration
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Enter your company and nodal account details for NBBL settlement
         </p>
       </div>
 
       {/* Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ScrollArea className="h-[calc(100vh-300px)] pr-4">
-            <div className="space-y-8">
-              {/* Company Account Information */}
-              <div className="glass-card rounded-2xl p-6 border border-white/20 space-y-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">Company Account Information</h3>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-y-auto pr-2">
+            <div className="space-y-4">
+              {/* Company Account Information and NOCA Account Information in two columns */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                {/* Company Account Information */}
+                <div className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5">
+                  <h3 className="text-lg font-semibold mb-2 text-primary">Company Account Information</h3>
                 
                 <FormField
                   control={form.control}
                   name="companyBankName"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bank Name <span className="text-destructive">*</span></FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-sm">Bank Name <span className="text-destructive">*</span></FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -279,8 +281,8 @@ export function NBBLRegistrationForm() {
                   control={form.control}
                   name="companyAccountName"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-sm">Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account holder name" {...field} />
                       </FormControl>
@@ -293,8 +295,8 @@ export function NBBLRegistrationForm() {
                   control={form.control}
                   name="companyAccountNumber"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account Number <span className="text-destructive">*</span></FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-sm">Account Number <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account number" {...field} />
                       </FormControl>
@@ -307,8 +309,8 @@ export function NBBLRegistrationForm() {
                   control={form.control}
                   name="companyIfsCode"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>IFS Code <span className="text-destructive">*</span></FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-sm">IFS Code <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="e.g., SBIN0001234" 
@@ -320,18 +322,18 @@ export function NBBLRegistrationForm() {
                     </FormItem>
                   )}
                 />
-              </div>
+                </div>
 
-              {/* NOCA (Nodal) Account Information */}
-              <div className="glass-card rounded-2xl p-6 border border-white/20 space-y-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">NOCA (Nodal) Account Information</h3>
-                
-                <FormField
-                  control={form.control}
-                  name="nocaBankName"
+                {/* NOCA (Nodal) Account Information */}
+                <div className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5">
+                  <h3 className="text-lg font-semibold mb-2 text-primary">NOCA (Nodal) Account Information</h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="nocaBankName"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bank Name <span className="text-destructive">*</span></FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-sm">Bank Name <span className="text-destructive">*</span></FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -351,12 +353,12 @@ export function NBBLRegistrationForm() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="nocaAccountName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="nocaAccountName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-sm">Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account holder name" {...field} />
                       </FormControl>
@@ -365,12 +367,12 @@ export function NBBLRegistrationForm() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="nocaAccountNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account Number <span className="text-destructive">*</span></FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="nocaAccountNumber"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-sm">Account Number <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input placeholder="Enter account number" {...field} />
                       </FormControl>
@@ -379,12 +381,12 @@ export function NBBLRegistrationForm() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="nocaIfsCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>IFS Code <span className="text-destructive">*</span></FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="nocaIfsCode"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-sm">IFS Code <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="e.g., SBIN0001234" 
@@ -396,20 +398,21 @@ export function NBBLRegistrationForm() {
                     </FormItem>
                   )}
                 />
+                </div>
               </div>
             </div>
-
-            {/* Submit Button */}
-            <div className="pt-6 flex items-center justify-end px-4">
-              <Button 
-                type="submit" 
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              >
-                Submit NOCA Details
-              </Button>
-            </div>
-          </ScrollArea>
+          </div>
+          
+          {/* Submit Button - Centered */}
+          <div className="pt-4 flex items-center justify-center border-t border-white/10 flex-shrink-0">
+            <Button 
+              type="submit" 
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            >
+              Submit NOCA Details
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

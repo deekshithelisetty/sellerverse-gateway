@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useSettings, themes, languages } from '@/contexts/SettingsContext';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Upload, Check } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Upload, Check, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
 
@@ -19,7 +21,7 @@ const fontNames = [
   'Poppins',
 ];
 
-const categoryOptions = [
+const defaultCategoryOptions = [
   'Retail',
   'Products',
   'Mobility',
@@ -29,12 +31,16 @@ const categoryOptions = [
   'Cruises',
   'Pharmacy',
   'Drivers',
-  'Food and Beverages',
-  'Fashion and Beauty',
+  'Food & Beverages',
+  'Fashion & Beauty',
   'Electronics & Appliances',
 ];
 
 export default function Settings() {
+  const [categoryOptions, setCategoryOptions] = useState<string[]>(defaultCategoryOptions);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+
   const {
     fontSize,
     fontName,
@@ -81,10 +87,43 @@ export default function Settings() {
     toast.success('Brand logo removed');
   };
 
+  const handleAddCategory = () => {
+    const trimmedName = newCategoryName.trim();
+    if (!trimmedName) {
+      toast.error('Please enter a category name');
+      return;
+    }
+    if (categoryOptions.includes(trimmedName)) {
+      toast.error('Category already exists');
+      return;
+    }
+    setCategoryOptions([...categoryOptions, trimmedName]);
+    setNewCategoryName('');
+    setIsDialogOpen(false);
+    toast.success(`Category "${trimmedName}" added successfully`);
+  };
+
+  const handleCancelDialog = () => {
+    setNewCategoryName('');
+    setIsDialogOpen(false);
+  };
+
+  const handleRemoveCategory = (category: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the category toggle
+    // Remove from category options
+    setCategoryOptions(categoryOptions.filter(c => c !== category));
+    // Also remove from interested categories if it's selected
+    if (interestedCategories.includes(category)) {
+      setInterestedCategories(interestedCategories.filter(c => c !== category));
+      toast.success(`${category} removed from sidebar`);
+    }
+    toast.success(`Category "${category}" removed`);
+  };
+
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold mb-1">Settings</h2>
+        <h2 className="text-3xl font-bold mb-1 bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Settings</h2>
         <p className="text-sm text-muted-foreground">Configure your dashboard preferences</p>
       </div>
 
@@ -93,7 +132,7 @@ export default function Settings() {
         {/* Font Settings */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Font Settings</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Font Settings</CardTitle>
             <CardDescription className="text-xs">Customize text appearance</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -134,7 +173,7 @@ export default function Settings() {
         {/* Language Settings */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Language</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Language</CardTitle>
             <CardDescription className="text-xs">Select your preferred language</CardDescription>
           </CardHeader>
           <CardContent>
@@ -162,7 +201,7 @@ export default function Settings() {
         {/* Theme Settings */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Theme</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Theme</CardTitle>
             <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
           </CardHeader>
           <CardContent>
@@ -204,7 +243,7 @@ export default function Settings() {
         {/* Brand Logo */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Brand Logo</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Brand Logo</CardTitle>
             <CardDescription className="text-xs">Upload your brand logo for the dashboard header</CardDescription>
           </CardHeader>
           <CardContent>
@@ -240,36 +279,98 @@ export default function Settings() {
         {/* Interested Category Section */}
         <Card className="glass-card border-white/20 lg:col-span-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Interested Category</CardTitle>
-            <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Interested Category</CardTitle>
+                <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
+              </div>
+              <Button
+                onClick={() => setIsDialogOpen(true)}
+                size="sm"
+                className="h-9 px-3 gap-2"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                New Category
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="flex flex-wrap gap-3">
               {categoryOptions.map((category) => {
                 const isSelected = interestedCategories.includes(category);
                 return (
-                  <motion.button
+                  <motion.div
                     key={category}
-                    onClick={() => toggleCategory(category)}
-                    className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white shadow-lg shadow-purple-500/50'
-                        : 'bg-muted/50 text-foreground hover:bg-muted'
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="group relative inline-flex"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {category}
-                  </motion.button>
+                    <motion.button
+                      onClick={() => toggleCategory(category)}
+                      className={`inline-flex items-center justify-center px-4 py-2.5 text-sm rounded-full font-medium transition-all duration-500 whitespace-nowrap ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white shadow-lg shadow-purple-500/50'
+                          : 'bg-muted/50 text-foreground hover:bg-muted'
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {category}
+                    </motion.button>
+                    <button
+                      onClick={(e) => handleRemoveCategory(category, e)}
+                      className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                      title="Remove category"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </motion.div>
                 );
               })}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Add Category Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="glass-card border-white/20 new-category-dialog-gradient p-4 max-w-sm">
+          <DialogHeader className="pb-2">
+            <DialogTitle className="text-lg text-white">Add New Category</DialogTitle>
+            <DialogDescription className="text-xs text-white/80">
+              Enter a name for the new category.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-name" className="text-sm text-white">Category Name</Label>
+              <Input
+                id="category-name"
+                placeholder="Enter category name"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddCategory();
+                  }
+                }}
+                className="h-9 bg-white/90 border-white/30"
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter className="pt-2 gap-2">
+            <Button variant="outline" onClick={handleCancelDialog} size="sm" className="h-9 bg-white/20 border-white/30 text-white hover:bg-white/30">
+              Cancel
+            </Button>
+            <Button onClick={handleAddCategory} size="sm" className="h-9 bg-white text-purple-600 hover:bg-white/90">
+              Add
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

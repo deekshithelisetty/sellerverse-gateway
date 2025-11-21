@@ -357,4 +357,23 @@ All colors MUST be HSL.
   .signup-gradient-rich {
     background: linear-gradient(to right, #2E3192, #1BFFFF);
   }
+
+  /* New Category Dialog Gradient */
+  .new-category-dialog-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Fade in up animation for webhook cards */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
