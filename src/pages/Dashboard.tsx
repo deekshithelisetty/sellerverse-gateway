@@ -64,7 +64,7 @@ const chartConfig = {
 
 function DashboardContent() {
   return (
-    <div className="space-y-6"> 
+    <div className="space-y-6 pb-0"> 
       <div>
         <h2 className="text-3xl font-bold mb-2">Dashboard</h2>
         <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
@@ -234,7 +234,7 @@ export default function Dashboard() {
   if (!user) {
     return null;
   }
-  return <div className="h-screen overflow-hidden">
+  return <div className="h-screen w-screen overflow-hidden fixed inset-0">
       {/* Ultra bright vibrant gradient background - same as hero */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200"></div>
       
@@ -249,7 +249,7 @@ export default function Dashboard() {
       
       {/* Fixed Header - Same as hero page */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full mx-auto">
           <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
             <div className="flex items-center gap-3">
               {brandLogo ? (
@@ -294,9 +294,9 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Content Area with minimal padding */}
-      <div className="relative z-10 h-full pt-20 px-6 pb-0 box-border">
-        <div className="max-w-[1600px] mx-auto h-[calc(100vh-5rem)]">
-          <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full flex flex-col">
+      <div className="relative z-10 h-full w-full pt-20 px-4 pb-0 box-border flex flex-col">
+        <div className="w-full h-full flex-1 min-h-0">
+          <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full w-full flex flex-col">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-5" style={{
             backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
@@ -304,10 +304,10 @@ export default function Dashboard() {
           }}></div>
 
             {/* Three Section Layout: Left Menu + Center Content + Right Preview */}
-            <div className="relative flex gap-2 flex-1 min-h-0">
+            <div className="relative flex gap-2 flex-1 min-h-0 w-full overflow-hidden">
               {/* Left Section - Menu */}
-              <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300`}>
-                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4">
+              <aside className={`${sidebarCollapsed ? 'w-[80px]' : 'w-[240px]'} flex-shrink-0 transition-all duration-300 h-full`}>
+                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4 overflow-hidden">
                   <AppSidebar 
                     collapsed={sidebarCollapsed} 
                     onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
@@ -316,7 +316,7 @@ export default function Dashboard() {
               </aside>
 
               {/* Center Section - Main Content */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden h-full">
                 <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
                   <main className="h-full overflow-auto p-3">
                     <Routes>

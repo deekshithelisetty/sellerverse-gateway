@@ -122,6 +122,16 @@ export default {
             transform: "rotate(360deg)",
           },
         },
+        "fade-in-up": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(30px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -131,6 +141,7 @@ export default {
         "card-fade-in": "card-fade-in 0.7s ease-out both",
         "gradient-flow": "gradient-flow 3s linear infinite",
         "spin-slow": "spin-slow 8s linear infinite",
+        "fade-in-up": "fade-in-up 0.8s ease-out both",
       },
     },
   },

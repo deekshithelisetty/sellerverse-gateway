@@ -307,4 +307,54 @@ All colors MUST be HSL.
                 0 0 60px rgba(236, 72, 153, 0.6), 
                 inset 0 0 30px rgba(139, 92, 246, 0.2);
   }
+
+  /* Smooth section fade-in animation */
+  @keyframes section-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-fade-in {
+    animation: section-fade-in 0.8s ease-out both;
+  }
+
+  /* Google brand colors border animation */
+  @keyframes google-border {
+    0% {
+      border-color: #4285F4;
+    }
+    25% {
+      border-color: #EA4335;
+    }
+    50% {
+      border-color: #FBBC05;
+    }
+    75% {
+      border-color: #34A853;
+    }
+    100% {
+      border-color: #4285F4;
+    }
+  }
+
+  .google-button-hover {
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .google-button-hover:hover {
+    animation: google-border 2s ease-in-out infinite;
+    border-width: 2px !important;
+  }
+
+  /* Rich signup gradient - blue to cyan */
+  .signup-gradient-rich {
+    background: linear-gradient(to right, #2E3192, #1BFFFF);
+  }
 }

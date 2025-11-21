@@ -8,7 +8,6 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import VoiceAssistant from "@/components/VoiceAssistant";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +26,6 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-          <VoiceAssistant />
         </TooltipProvider>
       </SettingsProvider>
     </AuthProvider>

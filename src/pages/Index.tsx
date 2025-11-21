@@ -6,6 +6,7 @@ import PricingSection from "@/components/PricingSection";
 import ONDCSection from "@/components/ONDCSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import { SectionWrapper } from "@/components/SectionWrapper";
 
 const Index = () => {
   return (
@@ -14,19 +15,29 @@ const Index = () => {
       <HeroSection />
       
       {/* Products Section */}
-      <ProductsSection />
+      <SectionWrapper delay={0}>
+        <ProductsSection />
+      </SectionWrapper>
       
       {/* Creators Section */}
-      <CreatorsSection />
+      <SectionWrapper delay={100}>
+        <CreatorsSection />
+      </SectionWrapper>
 
       {/* Pricing Section */}
-      <PricingSection />
+      <SectionWrapper delay={200}>
+        <PricingSection />
+      </SectionWrapper>
 
       {/* ONDC Investor Relations Section */}
-      <ONDCSection />
+      <SectionWrapper delay={300}>
+        <ONDCSection />
+      </SectionWrapper>
 
       {/* Contact Section */}
-      <ContactSection />
+      <SectionWrapper delay={400}>
+        <ContactSection />
+      </SectionWrapper>
 
       {/* Footer */}
       <Footer />

@@ -1,4 +1,4 @@
-import { Home, Network, Sparkles, ShoppingBag, Settings, ChevronLeft, ChevronRight, Landmark, Package } from 'lucide-react';
+import { Home, Network, Sparkles, Settings, ChevronLeft, ChevronRight, Landmark, Package } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -8,9 +8,8 @@ import { motion, AnimatePresence } from 'motion/react';
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: Home, gradient: 'from-blue-500 to-cyan-500' },
   { title: 'ONDC', url: '/dashboard/ondc', icon: Network, gradient: 'from-purple-500 to-pink-500' },
-  { title: 'NBBL (Settlement Agency)', url: '/dashboard/nbbl', icon: Landmark, gradient: 'from-green-500 to-teal-500' },
+  { title: 'NBBL', subtitle: '(Settlement Agency)', url: '/dashboard/nbbl', icon: Landmark, gradient: 'from-green-500 to-teal-500' },
   { title: 'Experiences', url: '/dashboard/experiences', icon: Sparkles, gradient: 'from-pink-500 to-rose-500' },
-  { title: 'Retail', url: '/dashboard/retail', icon: ShoppingBag, gradient: 'from-orange-500 to-yellow-500' },
   { title: 'Settings', url: '/dashboard/settings', icon: Settings, gradient: 'from-gray-500 to-slate-500' },
 ];
 
@@ -63,7 +62,12 @@ export function AppSidebar({
           <item.icon className="h-4 w-4 text-white" />
         </div>
         {!collapsed && (
-          <span className="text-xs font-semibold whitespace-nowrap">{item.title}</span>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold">{item.title}</span>
+            {item.subtitle && (
+              <span className="text-[10px] font-normal opacity-80 leading-tight">{item.subtitle}</span>
+            )}
+          </div>
         )}
       </NavLink>
     );
@@ -74,7 +78,15 @@ export function AppSidebar({
           {linkContent}
         </TooltipTrigger>
         <TooltipContent side="right" className="bg-background border border-white/20">
-          <p>{item.title}</p>
+          <p>
+            {item.title}
+            {item.subtitle && (
+              <>
+                <br />
+                {item.subtitle}
+              </>
+            )}
+          </p>
         </TooltipContent>
       </Tooltip>
     ) : linkContent;

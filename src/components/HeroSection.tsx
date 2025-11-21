@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Shield, TrendingUp, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-3d-element.png";
+import { useState } from "react";
+import AuthDialog from "./AuthDialog";
 
 const HeroSection = () => {
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const services = [
     { icon: Zap, label: "Quick Onboarding", color: "from-blue-500 to-purple-500" },
     { icon: Shield, label: "Secure Integration", color: "from-purple-500 to-pink-500" },
@@ -51,6 +54,7 @@ const HeroSection = () => {
                 <Button 
                   size="lg" 
                   className="gradient-primary border-0 hover:shadow-lg hover:scale-105 transition-all text-base px-8 py-6 rounded-2xl group"
+                  onClick={() => setAuthDialogOpen(true)}
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -134,6 +138,7 @@ const HeroSection = () => {
           animation: float-delayed 4s ease-in-out infinite;
         }
       `}</style>
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
     </div>
   );
 };

@@ -1,9 +1,9 @@
 import { useSettings, themes, languages } from '@/contexts/SettingsContext';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Upload, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
@@ -88,44 +88,45 @@ export default function Settings() {
         <p className="text-sm text-muted-foreground">Configure your dashboard preferences</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* First Row: Font Settings, Language, Theme */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Font Settings */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Font Settings</CardTitle>
             <CardDescription className="text-xs">Customize text appearance</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="fontSize" className="text-sm">Font Size</Label>
-              <Select value={fontSize} onValueChange={setFontSize}>
-                <SelectTrigger id="fontSize" className="h-9">
-                  <SelectValue placeholder="Select font size" />
-                </SelectTrigger>
-                <SelectContent>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm">Font Size</Label>
+              <RadioGroup value={fontSize} onValueChange={setFontSize}>
+                <div className="flex flex-wrap gap-2">
                   {fontSizes.map((size) => (
-                    <SelectItem key={size} value={size}>
-                      {size}px
-                    </SelectItem>
+                    <div key={size} className="flex items-center space-x-2">
+                      <RadioGroupItem value={size} id={`fontSize-${size}`} />
+                      <Label htmlFor={`fontSize-${size}`} className="text-sm cursor-pointer">
+                        {size}px
+                      </Label>
+                    </div>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              </RadioGroup>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="fontName" className="text-sm">Font Family</Label>
-              <Select value={fontName} onValueChange={setFontName}>
-                <SelectTrigger id="fontName" className="h-9">
-                  <SelectValue placeholder="Select font" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontNames.map((font) => (
-                    <SelectItem key={font} value={font}>
-                      <span style={{ fontFamily: font }}>{font}</span>
-                    </SelectItem>
+            <div className="space-y-2">
+              <Label className="text-sm">Font Family</Label>
+              <RadioGroup value={fontName} onValueChange={setFontName}>
+                <div className="grid grid-cols-3 gap-2">
+                  {fontNames.slice(0, 3).map((font) => (
+                    <div key={font} className="flex items-center space-x-2">
+                      <RadioGroupItem value={font} id={`fontName-${font}`} />
+                      <Label htmlFor={`fontName-${font}`} className="text-sm cursor-pointer" style={{ fontFamily: font }}>
+                        {font}
+                      </Label>
+                    </div>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              </RadioGroup>
             </div>
           </CardContent>
         </Card>
@@ -137,21 +138,24 @@ export default function Settings() {
             <CardDescription className="text-xs">Select your preferred language</CardDescription>
           </CardHeader>
           <CardContent>
-            <Select value={language} onValueChange={(value) => {
-              setLanguage(value);
-              toast.success('Language changed successfully');
-            }}>
-              <SelectTrigger className="h-9">
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
+            <RadioGroup 
+              value={language} 
+              onValueChange={(value) => {
+                setLanguage(value);
+                toast.success('Language changed successfully');
+              }}
+            >
+              <div className="flex flex-col gap-2">
                 {languages.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </SelectItem>
+                  <div key={lang.code} className="flex items-center space-x-2">
+                    <RadioGroupItem value={lang.code} id={`lang-${lang.code}`} />
+                    <Label htmlFor={`lang-${lang.code}`} className="text-sm cursor-pointer">
+                      {lang.name}
+                    </Label>
+                  </div>
                 ))}
-              </SelectContent>
-            </Select>
+              </div>
+            </RadioGroup>
           </CardContent>
         </Card>
 
@@ -162,8 +166,8 @@ export default function Settings() {
             <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-3">
-              {themes.slice(0, 3).map((themeOption) => (
+            <div className="grid grid-cols-2 gap-3">
+              {themes.slice(0, 2).map((themeOption) => (
                 <button
                   key={themeOption.id}
                   onClick={() => {
@@ -193,7 +197,10 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+      </div>
 
+      {/* Second Row: Brand Logo and Interested Category */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Brand Logo */}
         <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
@@ -229,40 +236,40 @@ export default function Settings() {
             )}
           </CardContent>
         </Card>
-      </div>
 
-      {/* Interested Category Section */}
-      <Card className="glass-card border-white/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Interested Category</CardTitle>
-          <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {categoryOptions.map((category) => {
-              const isSelected = interestedCategories.includes(category);
-              return (
-                <motion.button
-                  key={category}
-                  onClick={() => toggleCategory(category)}
-                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
-                    isSelected
-                      ? 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white shadow-lg shadow-purple-500/50'
-                      : 'bg-muted/50 text-foreground hover:bg-muted'
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {category}
-                </motion.button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+        {/* Interested Category Section */}
+        <Card className="glass-card border-white/20 lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Interested Category</CardTitle>
+            <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {categoryOptions.map((category) => {
+                const isSelected = interestedCategories.includes(category);
+                return (
+                  <motion.button
+                    key={category}
+                    onClick={() => toggleCategory(category)}
+                    className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white shadow-lg shadow-purple-500/50'
+                        : 'bg-muted/50 text-foreground hover:bg-muted'
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {category}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
