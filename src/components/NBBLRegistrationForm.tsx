@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { CheckCircle2, XCircle, Circle } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'motion/react';
 
 // List of major Indian banks
 const INDIAN_BANKS = [
@@ -113,6 +114,7 @@ export function NBBLRegistrationForm() {
   const [showIntro, setShowIntro] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showGradientAnimation, setShowGradientAnimation] = useState(true);
+  const [isFormLoading, setIsFormLoading] = useState(true);
 
   const form = useForm<NOCAFormValues>({
     resolver: zodResolver(nocaFormSchema),
@@ -127,6 +129,16 @@ export function NBBLRegistrationForm() {
       nocaIfsCode: '',
     },
   });
+
+  useEffect(() => {
+    // Simulate form loading animation
+    if (!showIntro && !isSubmitted) {
+      const timer = setTimeout(() => {
+        setIsFormLoading(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showIntro, isSubmitted]);
 
   const onSubmit = async (data: NOCAFormValues) => {
     console.log('NOCA Form Data:', data);
@@ -232,14 +244,19 @@ export function NBBLRegistrationForm() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="text-center space-y-2 flex-shrink-0 mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? -10 : 0 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        className="text-center space-y-2 flex-shrink-0 mb-4"
+      >
         <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           NOCA (Nodal) Account Registration
         </h2>
         <p className="text-sm text-muted-foreground">
           Enter your company and nodal account details for NBBL settlement
         </p>
-      </div>
+      </motion.div>
 
       {/* Form */}
       <Form {...form}>
@@ -249,7 +266,12 @@ export function NBBLRegistrationForm() {
               {/* Company Account Information and NOCA Account Information in two columns */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 {/* Company Account Information */}
-                <div className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5">
+                <motion.div
+                  initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                  animate={{ opacity: isFormLoading ? 0 : 1, x: isFormLoading ? -20 : 0, scale: isFormLoading ? 0.95 : 1 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5"
+                >
                   <h3 className="text-lg font-semibold mb-2 text-primary">Company Account Information</h3>
                 
                 <FormField
@@ -322,89 +344,123 @@ export function NBBLRegistrationForm() {
                     </FormItem>
                   )}
                 />
-                </div>
+                </motion.div>
 
                 {/* NOCA (Nodal) Account Information */}
-                <div className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5">
+                <motion.div
+                  initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                  animate={{ opacity: isFormLoading ? 0 : 1, x: isFormLoading ? 20 : 0, scale: isFormLoading ? 0.95 : 1 }}
+                  transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                  className="glass-card rounded-2xl p-4 border border-white/20 space-y-2.5"
+                >
                   <h3 className="text-lg font-semibold mb-2 text-primary">NOCA (Nodal) Account Information</h3>
                   
-                  <FormField
-                    control={form.control}
-                    name="nocaBankName"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-sm">Bank Name <span className="text-destructive">*</span></FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select bank name" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="max-h-[200px]">
-                          {INDIAN_BANKS.map((bank) => (
-                            <SelectItem key={bank} value={bank}>
-                              {bank}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? 10 : 0 }}
+                    transition={{ duration: 0.4, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="nocaBankName"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm">Bank Name <span className="text-destructive">*</span></FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select bank name" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="max-h-[200px]">
+                              {INDIAN_BANKS.map((bank) => (
+                                <SelectItem key={bank} value={bank}>
+                                  {bank}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
 
-                  <FormField
-                    control={form.control}
-                    name="nocaAccountName"
-                    render={({ field }) => (
-                      <FormItem className="space-y-1.5">
-                        <FormLabel className="text-sm">Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter account holder name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? 10 : 0 }}
+                    transition={{ duration: 0.4, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="nocaAccountName"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm">Name as per Bank Account <span className="text-destructive">*</span></FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter account holder name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
 
-                  <FormField
-                    control={form.control}
-                    name="nocaAccountNumber"
-                    render={({ field }) => (
-                      <FormItem className="space-y-1.5">
-                        <FormLabel className="text-sm">Account Number <span className="text-destructive">*</span></FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter account number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? 10 : 0 }}
+                    transition={{ duration: 0.4, delay: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="nocaAccountNumber"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm">Account Number <span className="text-destructive">*</span></FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter account number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
 
-                  <FormField
-                    control={form.control}
-                    name="nocaIfsCode"
-                    render={({ field }) => (
-                      <FormItem className="space-y-1.5">
-                        <FormLabel className="text-sm">IFS Code <span className="text-destructive">*</span></FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="e.g., SBIN0001234" 
-                          {...field}
-                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? 10 : 0 }}
+                    transition={{ duration: 0.4, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="nocaIfsCode"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm">IFS Code <span className="text-destructive">*</span></FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., SBIN0001234" 
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                </motion.div>
               </div>
             </div>
           </div>
           
           {/* Submit Button - Centered */}
-          <div className="pt-4 flex items-center justify-center border-t border-white/10 flex-shrink-0">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? 10 : 0 }}
+            transition={{ duration: 0.5, delay: 0.7, ease: [0.4, 0, 0.2, 1] }}
+            className="pt-4 flex items-center justify-center border-t border-white/10 flex-shrink-0"
+          >
             <Button 
               type="submit" 
               size="lg"
@@ -412,7 +468,7 @@ export function NBBLRegistrationForm() {
             >
               Submit NOCA Details
             </Button>
-          </div>
+          </motion.div>
         </form>
       </Form>
     </div>

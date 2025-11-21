@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSettings, themes, languages } from '@/contexts/SettingsContext';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,6 +40,7 @@ export default function Settings() {
   const [categoryOptions, setCategoryOptions] = useState<string[]>(defaultCategoryOptions);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     fontSize,
@@ -55,6 +56,14 @@ export default function Settings() {
     setLanguage,
     setInterestedCategories,
   } = useSettings();
+
+  useEffect(() => {
+    // Simulate loading animation
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleCategory = (category: string) => {
     if (interestedCategories.includes(category)) {
@@ -130,7 +139,12 @@ export default function Settings() {
       {/* First Row: Font Settings, Language, Theme */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Font Settings */}
-        <Card className="glass-card border-white/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Font Settings</CardTitle>
             <CardDescription className="text-xs">Customize text appearance</CardDescription>
@@ -169,9 +183,15 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Language Settings */}
-        <Card className="glass-card border-white/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Language</CardTitle>
             <CardDescription className="text-xs">Select your preferred language</CardDescription>
@@ -197,9 +217,15 @@ export default function Settings() {
             </RadioGroup>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Theme Settings */}
-        <Card className="glass-card border-white/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Theme</CardTitle>
             <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
@@ -236,12 +262,18 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Second Row: Brand Logo and Interested Category */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Brand Logo */}
-        <Card className="glass-card border-white/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Brand Logo</CardTitle>
             <CardDescription className="text-xs">Upload your brand logo for the dashboard header</CardDescription>
@@ -275,9 +307,16 @@ export default function Settings() {
             )}
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Interested Category Section */}
-        <Card className="glass-card border-white/20 lg:col-span-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          className="lg:col-span-2"
+        >
+          <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
@@ -332,6 +371,7 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Add Category Dialog */}
