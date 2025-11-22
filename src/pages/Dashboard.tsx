@@ -16,7 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity, ChevronDown, ChevronUp } from 'lucide-react';
+import { LogOut, User, TrendingUp, TrendingDown, Users, ShoppingBag, Package, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Bar, BarChart, Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Routes, Route } from 'react-router-dom';
 
@@ -67,7 +67,7 @@ function DashboardContent() {
   return (
     <div className="space-y-6 pb-0"> 
       <div>
-        <h2 className="text-3xl font-bold mb-2">Dashboard</h2>
+        <h2 className="text-3xl font-bold mb-2" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Dashboard</h2>
         <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
       </div>
 
@@ -75,7 +75,7 @@ function DashboardContent() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="glass-card border-white/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Total Revenue</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -89,7 +89,7 @@ function DashboardContent() {
 
         <Card className="glass-card border-white/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Sellers</CardTitle>
+            <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Total Sellers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -103,7 +103,7 @@ function DashboardContent() {
 
         <Card className="glass-card border-white/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+            <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Pending Orders</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -117,7 +117,7 @@ function DashboardContent() {
 
         <Card className="glass-card border-white/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Products</CardTitle>
+            <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Active Products</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -135,7 +135,7 @@ function DashboardContent() {
         {/* Bar Chart */}
         <Card className="glass-card border-white/20 min-w-0">
           <CardHeader>
-            <CardTitle>Sales & Orders Overview</CardTitle>
+            <CardTitle style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Sales & Orders Overview</CardTitle>
             <CardDescription>Monthly sales and order statistics</CardDescription>
           </CardHeader>
           <CardContent className="overflow-hidden">
@@ -155,7 +155,7 @@ function DashboardContent() {
         {/* Line Chart */}
         <Card className="glass-card border-white/20 min-w-0">
           <CardHeader>
-            <CardTitle>Visitor Analytics</CardTitle>
+            <CardTitle style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Visitor Analytics</CardTitle>
             <CardDescription>Weekly visitor trends</CardDescription>
           </CardHeader>
           <CardContent className="overflow-hidden">
@@ -181,7 +181,7 @@ function DashboardContent() {
       {/* Recent Activities */}
       <Card className="glass-card border-white/20">
         <CardHeader>
-          <CardTitle>Recent Activities</CardTitle>
+          <CardTitle style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Recent Activities</CardTitle>
           <CardDescription>Latest updates and actions on the platform</CardDescription>
         </CardHeader>
         <CardContent>
@@ -297,7 +297,7 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Content Area with minimal padding */}
-      <div className="relative z-10 h-full w-full pt-20 px-4 pb-0 box-border flex flex-col">
+      <div className="relative z-10 h-full w-full pt-[4.5rem] px-4 pb-0 box-border flex flex-col">
         <div className="w-full h-full flex-1 min-h-0">
           <div className="glass-card rounded-[3rem] p-2 relative overflow-hidden border border-white/20 h-full w-full flex flex-col">
             {/* Subtle grid pattern overlay */}
@@ -361,13 +361,16 @@ export default function Dashboard() {
                   <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg overflow-hidden">
                     <div className="h-full flex flex-col">
                       {/* Collapsible Header */}
-                      <button
-                        onClick={() => setShowONDCBenefits(false)}
-                        className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors border-b border-white/10"
-                      >
-                        <h3 className="font-bold text-lg">Why Join ONDC?</h3>
-                        <ChevronUp className="w-5 h-5" />
-                      </button>
+                      <div className="flex items-center justify-between p-4 border-b border-white/10">
+                        <div className="flex-1"></div>
+                        <h3 className="text-3xl font-bold text-center flex-1 whitespace-nowrap">Why Join ONDC?</h3>
+                        <button
+                          onClick={() => setShowONDCBenefits(false)}
+                          className="flex items-center justify-end flex-1 hover:bg-white/5 transition-colors rounded"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </div>
                       <div className="flex-1 p-6 overflow-auto animate-fade-in">
                         <ONDCBenefits />
                       </div>
@@ -381,7 +384,7 @@ export default function Dashboard() {
                   onClick={() => setShowONDCBenefits(true)}
                   className="w-12 flex-shrink-0 rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg hover:bg-white/5 transition-colors flex items-center justify-center"
                 >
-                  <ChevronDown className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
               )}
             </div>

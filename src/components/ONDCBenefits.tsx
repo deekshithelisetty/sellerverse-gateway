@@ -58,8 +58,7 @@ const videos = [
 export function ONDCBenefits() {
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-2xl font-bold mb-2">Why Join ONDC?</h3>
+      <div className="text-center">
         <p className="text-muted-foreground text-sm">
           Discover the benefits of being part of India's open commerce network
         </p>

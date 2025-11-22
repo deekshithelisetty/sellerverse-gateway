@@ -19,8 +19,165 @@ import {
 } from "@/components/ui/accordion";
 import { Plus, Trash2, Upload, FolderUp, X, ChevronDown, Minus } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
+
+// Generate time slots in 30-minute intervals
+const generateTimeSlots = () => {
+  const slots = [];
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      const displayTime = `${hour === 0 ? 12 : hour > 12 ? hour - 12 : hour}:${minute.toString().padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
+      slots.push({ value: timeString, display: displayTime });
+    }
+  }
+  return slots;
+};
+
+const TIME_SLOTS = generateTimeSlots();
+
+// iPhone-style Time Picker Component
+const TimePicker = ({ value, onChange, label }: { value: string; onChange: (value: string) => void; label: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const selectedIndex = TIME_SLOTS.findIndex(slot => slot.value === value) || 0;
+  const itemHeight = 48;
+
+  useEffect(() => {
+    if (isOpen && scrollRef.current && selectedIndex >= 0) {
+      scrollRef.current.scrollTop = selectedIndex * itemHeight;
+      setCurrentIndex(selectedIndex);
+    }
+  }, [isOpen, selectedIndex]);
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const scrollTop = scrollElement.scrollTop;
+      const newIndex = Math.round(scrollTop / itemHeight);
+      setCurrentIndex(newIndex);
+    };
+
+    const handleScrollEnd = () => {
+      const scrollTop = scrollElement.scrollTop;
+      const newIndex = Math.round(scrollTop / itemHeight);
+      const targetScroll = newIndex * itemHeight;
+      scrollElement.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      setCurrentIndex(newIndex);
+    };
+
+    scrollElement.addEventListener('scroll', handleScroll);
+    let scrollTimeout: NodeJS.Timeout;
+    scrollElement.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(handleScrollEnd, 150);
+    });
+
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isOpen]);
+
+  const handleTimeSelect = (timeValue: string) => {
+    onChange(timeValue);
+    setIsOpen(false);
+  };
+
+  const handleDone = () => {
+    if (currentIndex >= 0 && currentIndex < TIME_SLOTS.length) {
+      onChange(TIME_SLOTS[currentIndex].value);
+    }
+    setIsOpen(false);
+  };
+
+  const formatDisplayTime = (timeValue: string) => {
+    if (!timeValue) return 'Select time';
+    const slot = TIME_SLOTS.find(s => s.value === timeValue);
+    return slot ? slot.display : timeValue;
+  };
+
+  return (
+    <div className="relative">
+      <Label className="text-xs text-muted-foreground mb-2 block">{label}</Label>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-[200px] h-12 px-3 rounded-xl border-2 border-input bg-background text-left flex items-center justify-between hover:border-[#f24270]/50 transition-all time-picker-trigger"
+      >
+        <span className="text-sm font-medium">{formatDisplayTime(value)}</span>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}></div>
+          <div className="absolute z-50 mt-2 w-[200px] bg-background border-2 border-input rounded-xl shadow-xl overflow-hidden time-picker-dropdown">
+            <div className="relative h-[240px] overflow-hidden">
+              {/* Gradient overlays for fade effect */}
+              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none"></div>
+              
+              {/* Selection highlight */}
+              <div className="absolute top-1/2 left-0 right-0 h-12 -translate-y-1/2 border-t-2 border-b-2 border-[#f24270] pointer-events-none z-20"></div>
+              
+              {/* Scrollable time list */}
+              <div 
+                ref={scrollRef}
+                className="h-full overflow-y-scroll snap-y snap-mandatory scroll-smooth time-picker-scroll"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                <div className="py-[96px]">
+                  {TIME_SLOTS.map((slot, index) => {
+                    const isSelected = index === currentIndex;
+                    const distance = Math.abs(index - currentIndex);
+                    const opacity = Math.max(0.3, 1 - distance * 0.2);
+                    const scale = Math.max(0.8, 1 - distance * 0.08);
+                    
+                    return (
+                      <button
+                        key={slot.value}
+                        type="button"
+                        onClick={() => handleTimeSelect(slot.value)}
+                        className="w-full h-12 flex items-center justify-center snap-center transition-all duration-150 time-picker-item"
+                        style={{
+                          opacity,
+                          transform: `scale(${scale})`,
+                          fontWeight: isSelected ? '600' : '400',
+                          color: isSelected ? '#f24270' : 'inherit',
+                        }}
+                      >
+                        {slot.display}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="p-3 border-t border-input flex justify-end gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                type="button" 
+                size="sm"
+                onClick={handleDone}
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+                className="text-white"
+              >
+                Done
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceData; onChange: (data: ExperienceData) => void; onClose: () => void }) {
   const [thumbnailImage, setThumbnailImage] = useState<{ file: File; preview: string } | null>(null);
@@ -177,6 +334,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   const [openTagsSection, setOpenTagsSection] = useState(true);
   const [openFaqsSection, setOpenFaqsSection] = useState(true);
   const [openItineraries, setOpenItineraries] = useState<{ [key: string]: boolean }>({ "1-0": true });
+  const [openFaqs, setOpenFaqs] = useState<{ [key: number]: boolean }>({});
 
   const toggleCategory = (category: string) => {
     if (!selectedBookingCategories.includes(category)) {
@@ -315,22 +473,27 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="space-y-6 max-w-6xl"
+      className="space-y-6 max-w-6xl experience-form"
     >
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-semibold mb-2">Create Experience</h3>
+          <h3 className="text-2xl font-semibold mb-2" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Create Experience</h3>
           <p className="text-sm text-muted-foreground">Fill in the details to create a comprehensive experience.</p>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="w-5 h-5" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onClose}
+          className="close-button-experience"
+        >
+          <X className="w-5 h-5 close-icon-experience" />
         </Button>
       </div>
 
       <Accordion type="multiple" defaultValue={[]} className="space-y-4">
         {/* Section 1: Basic Information */}
         <AccordionItem value="basic" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Basic Information
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -360,7 +523,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
         {/* Section 2: Source Media */}
         <AccordionItem value="media" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Source Media
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -520,7 +683,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
         {/* Section 3: Location Details */}
         <AccordionItem value="location" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Location Details
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -580,7 +743,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
         {/* Section 4: Schedule */}
         <AccordionItem value="schedule" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Schedule
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -678,27 +841,17 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                                     </div>
                                     <div className="space-y-2">
                                       <Label>Time Range</Label>
-                                      <div className="grid grid-cols-2 gap-2">
-                                        <div className="space-y-1">
-                                          <Label htmlFor={`start-time-${index}`} className="text-xs text-muted-foreground">Start Time</Label>
-                                          <Input 
-                                            id={`start-time-${index}`}
-                                            type="time"
-                                            value={entry.timing.split('-')[0]?.trim() || ''}
-                                            onChange={(e) => updateScheduleTime(index, 'startTime', e.target.value)}
-                                            className="text-sm"
-                                          />
-                                        </div>
-                                        <div className="space-y-1">
-                                          <Label htmlFor={`end-time-${index}`} className="text-xs text-muted-foreground">End Time</Label>
-                                          <Input 
-                                            id={`end-time-${index}`}
-                                            type="time"
-                                            value={entry.timing.split('-')[1]?.trim() || ''}
-                                            onChange={(e) => updateScheduleTime(index, 'endTime', e.target.value)}
-                                            className="text-sm"
-                                          />
-                                        </div>
+                                      <div className="flex items-end gap-3">
+                                        <TimePicker
+                                          value={entry.timing.split('-')[0]?.trim() || ''}
+                                          onChange={(time) => updateScheduleTime(index, 'startTime', time)}
+                                          label="Start Time"
+                                        />
+                                        <TimePicker
+                                          value={entry.timing.split('-')[1]?.trim() || ''}
+                                          onChange={(time) => updateScheduleTime(index, 'endTime', time)}
+                                          label="End Time"
+                                        />
                                       </div>
                                       {entry.timing && entry.timing.includes('-') && checkTimeOverlap(
                                         entry.day,
@@ -756,7 +909,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
         {/* Section 5: What to Know Before You Book */}
         <AccordionItem value="booking" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             What to Know Before You Book
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -774,6 +927,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                         variant="outline"
                         size="sm"
                         onClick={() => toggleCategory(category)}
+                        className="category-button-hover"
                       >
                         <Plus className="w-3 h-3 mr-1" />
                         {category}
@@ -800,7 +954,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                       <div className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors rounded-lg">
                         <div className="flex items-center gap-3">
                           <ChevronDown className={`w-4 h-4 transition-transform ${openCollapsibles[category] ? 'rotate-180' : ''}`} />
-                          <span className="font-semibold text-base">{category}</span>
+                          <span className="font-semibold text-base" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{category}</span>
                           <Badge variant="secondary" className="text-xs">
                             {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
                           </Badge>
@@ -916,7 +1070,7 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
 
         {/* Section 6: Tags & FAQs */}
         <AccordionItem value="tags" className="border rounded-lg px-4 bg-card/50">
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+          <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Tags & FAQs
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -977,38 +1131,53 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 </CollapsibleTrigger>
                 <CollapsibleContent className="p-4 space-y-3">
                   {data.faqs.map((faq, index) => (
-                    <div key={index} className="border rounded-lg p-4 space-y-3 bg-card">
-                      <div className="flex items-center justify-between">
-                        <Label className="font-medium">FAQ {index + 1}</Label>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFaq(index)}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`faq-question-${index}`}>Question</Label>
-                        <Input 
-                          id={`faq-question-${index}`}
-                          placeholder="Enter question..." 
-                          value={faq.question}
-                          onChange={(e) => updateFaq(index, 'question', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`faq-answer-${index}`}>Answer</Label>
-                        <Textarea 
-                          id={`faq-answer-${index}`}
-                          placeholder="Enter answer..." 
-                          rows={3}
-                          value={faq.answer}
-                          onChange={(e) => updateFaq(index, 'answer', e.target.value)}
-                        />
-                      </div>
-                    </div>
+                    <Collapsible 
+                      key={index}
+                      open={openFaqs[index] !== false}
+                      onOpenChange={(open) => setOpenFaqs({ ...openFaqs, [index]: open })}
+                      className="border rounded-lg bg-card"
+                    >
+                      <CollapsibleTrigger className="w-full">
+                        <div className="flex items-center justify-between p-4 hover:bg-accent/50 transition-colors rounded-t-lg">
+                          <div className="flex items-center gap-3">
+                            <ChevronDown className={`w-4 h-4 transition-transform ${openFaqs[index] !== false ? 'rotate-180' : ''}`} />
+                            <Label className="font-medium">FAQ {index + 1}</Label>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFaq(index);
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-4 pb-4 space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor={`faq-question-${index}`}>Question</Label>
+                          <Input 
+                            id={`faq-question-${index}`}
+                            placeholder="Enter question..." 
+                            value={faq.question}
+                            onChange={(e) => updateFaq(index, 'question', e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`faq-answer-${index}`}>Answer</Label>
+                          <Textarea 
+                            id={`faq-answer-${index}`}
+                            placeholder="Enter answer..." 
+                            rows={3}
+                            value={faq.answer}
+                            onChange={(e) => updateFaq(index, 'answer', e.target.value)}
+                          />
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
                   ))}
                   
                   <Button 
@@ -1028,14 +1197,83 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
         </AccordionItem>
       </Accordion>
 
-      <div className="flex gap-3 pt-4">
-        <Button type="button" variant="outline" className="flex-1">
+      <div className="flex gap-3 pt-4 justify-center">
+        <Button 
+          type="button" 
+          className="w-[180px] text-white hover:opacity-90 transition-opacity"
+          style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+        >
           Save as Draft
         </Button>
-        <Button className="flex-1">
+        <Button 
+          type="button"
+          className="w-[180px] text-white hover:opacity-90 transition-opacity"
+          style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+        >
           Publish Experience
         </Button>
       </div>
+      <style>{`
+        .close-button-experience:hover {
+          background: linear-gradient(to right, #f24270, #ffc7b5);
+        }
+        .close-icon-experience {
+          transition: color 0.2s;
+        }
+        .close-button-experience:hover .close-icon-experience {
+          color: white;
+        }
+        .experience-form input:focus-visible,
+        .experience-form textarea:focus-visible {
+          outline: none !important;
+          ring: none !important;
+          ring-offset: 0 !important;
+          border: 2px solid #f24270 !important;
+          box-shadow: none !important;
+        }
+        .category-button-hover:hover {
+          background: linear-gradient(to right, #f24270, #ffc7b5) !important;
+          border-color: transparent !important;
+          color: white !important;
+        }
+        .time-picker-trigger:focus-visible {
+          border-color: #f24270 !important;
+          outline: none !important;
+          box-shadow: 0 0 0 3px rgba(242, 66, 112, 0.1) !important;
+        }
+        .time-picker-dropdown {
+          animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          backdrop-filter: blur(10px);
+        }
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .time-picker-scroll::-webkit-scrollbar {
+          display: none;
+        }
+        .time-picker-scroll {
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+        }
+        .time-picker-item {
+          cursor: pointer;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .time-picker-item:hover {
+          background: rgba(242, 66, 112, 0.08);
+        }
+        .time-picker-item:active {
+          background: rgba(242, 66, 112, 0.15);
+        }
+      `}</style>
     </motion.div>
   );
 }

@@ -60,7 +60,7 @@ export default function Experiences({
       {/* Header Section */}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold">Experiences</h1>
+          <h1 className="text-4xl font-bold" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Experiences</h1>
           <p className="text-muted-foreground">Create and manage customer experiences.</p>
         </div>
         <div className="flex gap-3">

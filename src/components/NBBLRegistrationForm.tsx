@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CheckCircle2, XCircle, Circle } from 'lucide-react';
+import { CheckCircle2, XCircle, Circle, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
 
@@ -154,25 +154,52 @@ export function NBBLRegistrationForm() {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <div className="max-w-2xl mx-auto text-center space-y-6 p-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold animate-fade-in-up" style={{ background: 'linear-gradient(to bottom right, #56ab2f, #a8e063)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             NBBL Settlement Agency
           </h1>
           <div className="space-y-4 text-muted-foreground text-lg">
-            <p>
+            <p className="animate-fade-in-up-delay-1">
               NBBL (National Banking and Bill Payments Layer) Settlement Agency manages the settlement and reconciliation of payments across the ONDC network.
             </p>
-            <p>
+            <p className="animate-fade-in-up-delay-1">
               Register your Nodal Account (NOCA) details to enable seamless payment settlements and ensure secure transaction processing for your business operations.
             </p>
           </div>
           <Button
             size="lg"
             onClick={() => setShowIntro(false)}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 mt-8"
+            className="mt-8 text-white hover:opacity-90 transition-opacity animate-fade-in-up-delay-2"
+            style={{ background: 'linear-gradient(to bottom right, #56ab2f, #a8e063)' }}
           >
             Start NBBL Onboarding
           </Button>
         </div>
+        <style>{`
+          @keyframes fade-in-up {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+          }
+          
+          .animate-fade-in-up-delay-1 {
+            animation: fade-in-up 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+          }
+          
+          .animate-fade-in-up-delay-2 {
+            animation: fade-in-up 0.8s ease-out 0.4s forwards;
+            opacity: 0;
+          }
+        `}</style>
       </div>
     );
   }
@@ -248,9 +275,16 @@ export function NBBLRegistrationForm() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: isFormLoading ? 0 : 1, y: isFormLoading ? -10 : 0 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        className="text-center space-y-2 flex-shrink-0 mb-4"
+        className="text-center space-y-2 flex-shrink-0 mb-4 relative"
       >
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <button
+          onClick={() => setShowIntro(true)}
+          className="absolute top-0 right-0 p-2 rounded-full transition-all close-button-hover"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5 text-muted-foreground close-icon-hover" />
+        </button>
+        <h2 className="text-2xl font-bold" style={{ background: 'linear-gradient(to bottom right, #56ab2f, #a8e063)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           NOCA (Nodal) Account Registration
         </h2>
         <p className="text-sm text-muted-foreground">
@@ -464,13 +498,25 @@ export function NBBLRegistrationForm() {
             <Button 
               type="submit" 
               size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="text-white hover:opacity-90 transition-opacity"
+              style={{ background: 'linear-gradient(to bottom right, #56ab2f, #a8e063)' }}
             >
               Submit NOCA Details
             </Button>
           </motion.div>
         </form>
       </Form>
+      <style>{`
+        .close-button-hover:hover {
+          background: linear-gradient(to bottom right, #56ab2f, #a8e063);
+        }
+        .close-icon-hover {
+          transition: color 0.2s;
+        }
+        .close-button-hover:hover .close-icon-hover {
+          color: white;
+        }
+      `}</style>
     </div>
   );
 }

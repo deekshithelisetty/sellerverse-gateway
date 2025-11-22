@@ -181,7 +181,7 @@ export function ExperienceCircularMenu({ onClose }: { onClose?: () => void }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={onClose}
-          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-white/20 hover:from-red-500/30 hover:to-pink-500/30 transition-all duration-300 backdrop-blur-sm group shadow-lg"
+          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-white/20 transition-all duration-300 backdrop-blur-sm group shadow-lg close-button-hover"
         >
           <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-300" />
         </motion.button>
@@ -266,6 +266,11 @@ export function ExperienceCircularMenu({ onClose }: { onClose?: () => void }) {
         })}
       </div>
 
+      <style>{`
+        .close-button-hover:hover {
+          background: linear-gradient(to right, #f97316, #ec4899, #a855f7, #3b82f6);
+        }
+      `}</style>
     </div>
   );
 }

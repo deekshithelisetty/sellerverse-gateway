@@ -267,54 +267,49 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="h-full flex items-center justify-center">
         <div className="text-center space-y-6 max-w-3xl">
           <div className="space-y-2">
-            <h2 className="text-5xl font-bold flex items-center justify-center gap-3 whitespace-nowrap">
-              <span className="text-[#FF9933]" style={{ filter: 'drop-shadow(0 0 12px rgba(255, 153, 51, 0.8))' }}>
-                Onboard
-              </span>
-              {/* Ashoka Chakra Icon with Rotation */}
-              <svg className="animate-spin-slow" width="32" height="32" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
-                <g transform="translate(20, 20)">
-                  {[...Array(24)].map((_, i) => {
-                    const angle = (i * 15 * Math.PI) / 180;
-                    const x1 = 0;
-                    const y1 = 0;
-                    const x2 = Math.cos(angle) * 16;
-                    const y2 = Math.sin(angle) * 16;
-                    return (
-                      <line
-                        key={i}
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke="#001F8D"
-                        strokeWidth="1.5"
-                      />
-                    );
-                  })}
-                  <circle cx="0" cy="0" r="3" fill="#001F8D" />
-                </g>
-              </svg>
-              <span className="text-white" style={{ filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.9))' }}>
-                with
-              </span>
-              <span className="text-[#22C55E]" style={{ filter: 'drop-shadow(0 0 12px rgba(34, 197, 94, 0.8))' }}>
-                ONDC
+            <h2 className="text-5xl font-bold flex items-center justify-center gap-3 whitespace-nowrap animate-fade-in-up">
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Onboard with ONDC
               </span>
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground animate-fade-in-up-delay-1">
               empowering Indian businesses, strengthening 'Made in India'
             </p>
           </div>
           <Button 
             onClick={() => setShowForm(true)}
             size="lg"
-            className="text-lg px-8 py-6 rounded-xl bg-gradient-to-r from-primary via-purple-500 to-pink-500 hover:from-primary/90 hover:via-purple-500/90 hover:to-pink-500/90 text-white shadow-lg transition-all duration-300"
+            className="text-lg px-8 py-6 rounded-xl bg-gradient-to-r from-primary via-purple-500 to-pink-500 hover:from-primary/90 hover:via-purple-500/90 hover:to-pink-500/90 text-white shadow-lg transition-all duration-300 animate-fade-in-up-delay-2"
           >
             Start Onboarding
           </Button>
         </div>
+        <style>{`
+          @keyframes fade-in-up {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+          }
+          
+          .animate-fade-in-up-delay-1 {
+            animation: fade-in-up 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+          }
+          
+          .animate-fade-in-up-delay-2 {
+            animation: fade-in-up 0.8s ease-out 0.4s forwards;
+            opacity: 0;
+          }
+        `}</style>
       </div>
     );
   }
@@ -325,53 +320,100 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
     if (isFullyCompleted) {
       return (
         <div className="h-full flex items-center justify-center relative overflow-hidden">
-          {/* Success message */}
-          <div className="text-center space-y-6 max-w-2xl px-8 z-10">
-            <div className="mb-8">
-              {/* Rotating Ashoka Chakra - White and Blue */}
-              <svg className="animate-spin-slow w-24 h-24 mx-auto mb-6" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
-                <g transform="translate(20, 20)">
-                  {[...Array(24)].map((_, i) => {
-                    const angle = (i * 15 * Math.PI) / 180;
-                    const x1 = 0;
-                    const y1 = 0;
-                    const x2 = Math.cos(angle) * 16;
-                    const y2 = Math.sin(angle) * 16;
-                    return (
-                      <line
-                        key={i}
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke="#001F8D"
-                        strokeWidth="1.5"
-                      />
-                    );
-                  })}
-                  <circle cx="0" cy="0" r="3" fill="#001F8D" />
-                </g>
-              </svg>
-              <h2 className="text-5xl font-bold mb-4">
-                <span 
-                  className="text-[#22C55E] animate-pulse"
-                  style={{ 
-                    filter: 'drop-shadow(0 0 20px rgba(34, 197, 94, 0.9))',
+          {/* Animated Party Poppers */}
+          <div className="absolute inset-0 pointer-events-none z-0">
+            {/* Party Popper Emojis */}
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={`popper-${i}`}
+                className="absolute text-4xl animate-party-poppers-once"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 30}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`,
+                }}
+              >
+                🎉
+              </div>
+            ))}
+            
+            {/* Confetti Particles */}
+            {[...Array(50)].map((_, i) => {
+              const colors = ['#FF6B9D', '#C084FC', '#60A5FA', '#34D399', '#FBBF24', '#FB7185'];
+              const color = colors[Math.floor(Math.random() * colors.length)];
+              return (
+                <div
+                  key={`confetti-${i}`}
+                  className="absolute w-2 h-2 rounded-full animate-confetti-once"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: '-10px',
+                    backgroundColor: color,
+                    animationDelay: `${Math.random() * 3}s`,
+                    animationDuration: `${3 + Math.random() * 2}s`,
                   }}
-                >
+                />
+              );
+            })}
+          </div>
+
+          {/* Success message */}
+          <div className="text-center space-y-6 max-w-2xl px-8 z-10 relative">
+            <div className="mb-8">
+              <h2 className="text-5xl font-bold mb-4 animate-bounce">
+                <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
                   Congratulations!
                 </span>
               </h2>
             </div>
             <p className="text-xl leading-relaxed">
-              <span className="font-bold text-[#FF9933]">You have successfully subscribed to ONDC!</span>
+              <span className="font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">You have successfully subscribed to ONDC!</span>
               <br />
               <span className="text-muted-foreground">
                 All your catalogs will now be published automatically on the ONDC network.
               </span>
             </p>
           </div>
+
+          <style>{`
+            @keyframes party-poppers-once {
+              0% {
+                transform: translateY(0) rotate(0deg) scale(0);
+                opacity: 0;
+              }
+              10% {
+                opacity: 1;
+                transform: translateY(-20px) rotate(180deg) scale(1);
+              }
+              50% {
+                transform: translateY(-100px) rotate(360deg) scale(1.2);
+              }
+              100% {
+                transform: translateY(200vh) rotate(720deg) scale(0.5);
+                opacity: 0;
+              }
+            }
+            
+            @keyframes confetti-once {
+              0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+              }
+              100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+              }
+            }
+            
+            .animate-party-poppers-once {
+              animation: party-poppers-once 3s ease-out forwards;
+            }
+            
+            .animate-confetti-once {
+              animation: confetti-once 4s linear forwards;
+            }
+          `}</style>
         </div>
       );
     }
@@ -383,22 +425,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         <div className="mb-6 flex justify-between items-start gap-4">
           <div className="flex-1">
             <h2 className="text-3xl font-bold mb-2">
-              {showGradientAnimation ? (
-                <span 
-                  className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
-                  style={{ 
-                    backgroundSize: '200% 100%',
-                  }}
-                >
-                  ONDC Onboarding Progress Tracking
-                </span>
-              ) : (
-                <>
-                  <span className="text-[#FF9933]">ONDC</span>{' '}
-                  <span className="text-white">Onboarding</span>{' '}
-                  <span className="text-[#22C55E]">Progress Tracking</span>
-                </>
-              )}
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                ONDC Onboarding Progress Tracking
+              </span>
             </h2>
             <p className="text-muted-foreground">Track your progress across different environments</p>
           </div>
@@ -408,14 +437,12 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             <span className="text-xs font-medium text-muted-foreground">Onboarding Progress</span>
             <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
               <div 
-                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center bg-gradient-to-r from-primary via-purple-500 to-pink-500"
                 style={{ 
                   width: `${overallProgress}%`,
-                  background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #22C55E 100%)',
-                  boxShadow: '0 0 20px rgba(255, 153, 51, 0.4)'
                 }}
               >
-                <span className="text-sm font-bold text-gray-800 px-2 drop-shadow-sm">
+                <span className="text-sm font-bold text-white px-2 drop-shadow-sm">
                   {Math.round(overallProgress)}%
                 </span>
               </div>
@@ -428,22 +455,9 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             {progressSections.map((section, idx) => (
               <div key={idx} className="glass-card p-6 rounded-2xl border-white/20 space-y-4">
                 <h3 className="text-lg font-bold mb-4">
-                  {showGradientAnimation ? (
-                    <span 
-                      className="inline-block animate-gradient-flow bg-gradient-to-r from-[#FF9933] via-white to-[#22C55E] bg-clip-text text-transparent"
-                      style={{ 
-                        backgroundSize: '200% 100%',
-                      }}
-                    >
-                      {section.title}
-                    </span>
-                  ) : (
-                    <>
-                      <span className="text-[#FF9933]">{section.title.split(' ')[0]}</span>{' '}
-                      <span className="text-white">{section.title.split(' ').slice(1, -1).join(' ')}</span>{' '}
-                      <span className="text-[#22C55E]">{section.title.split(' ').slice(-1)}</span>
-                    </>
-                  )}
+                  <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    {section.title}
+                  </span>
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item, itemIdx) => (
@@ -468,33 +482,8 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
       <div className="mb-4 flex justify-between items-start gap-4">
         <div className="flex-1">
           <h3 className="text-2xl font-bold mb-1 flex items-center gap-2">
-            <svg className="inline-block animate-spin-slow" width="26" height="26" viewBox="0 0 40 40">
-              <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
-              <g transform="translate(20, 20)">
-                {[...Array(24)].map((_, i) => {
-                  const angle = (i * 15 * Math.PI) / 180;
-                  const x1 = 0;
-                  const y1 = 0;
-                  const x2 = Math.cos(angle) * 16;
-                  const y2 = Math.sin(angle) * 16;
-                  return (
-                    <line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="#001F8D"
-                      strokeWidth="1.5"
-                    />
-                  );
-                })}
-                <circle cx="0" cy="0" r="3" fill="#001F8D" />
-              </g>
-            </svg>
-            <span>
-              <span className="text-[#FF9933]">NDC</span>{' '}
-              <span className="text-[#22C55E]">Registration</span>
+            <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              ONDC Registration
             </span>
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -504,18 +493,16 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
         {/* Profile Completion Progress Bar - Top Right - Only show after first step */}
         {completedSteps > 0 && (
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex flex-col items-center gap-1 flex-shrink-0">
             <span className="text-xs font-medium text-muted-foreground">Profile Completion</span>
             <div className="w-64 h-10 rounded-full bg-secondary/20 border border-white/10 overflow-hidden relative">
               <div 
-                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center"
+                className="h-full transition-all duration-500 ease-out rounded-full flex items-center justify-center bg-gradient-to-r from-primary via-purple-500 to-pink-500"
                 style={{ 
                   width: `${calculateProgress()}%`,
-                  background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #22C55E 100%)',
-                  boxShadow: '0 0 20px rgba(255, 153, 51, 0.4)'
                 }}
               >
-                <span className="text-sm font-bold text-gray-800 px-2 drop-shadow-sm">
+                <span className="text-sm font-bold text-white px-2 drop-shadow-sm">
                   {Math.round(calculateProgress())}%
                 </span>
               </div>
@@ -531,7 +518,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
             <form className="space-y-6">
               {/* Step 1: Personal Information */}
               {currentStep === 0 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in-up">
                   <h4 className="font-semibold text-lg">{STEPS[0].title}</h4>
                 
                   <div className="grid grid-cols-2 gap-4">
@@ -597,7 +584,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 2: Business Information */}
               {currentStep === 1 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in-up">
                   <h4 className="font-semibold text-lg">{STEPS[1].title}</h4>
 
                   <FormField
@@ -731,7 +718,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 3: Network Configuration */}
               {currentStep === 2 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in-up">
                   <h4 className="font-semibold text-lg">{STEPS[2].title}</h4>
 
                   <FormField
@@ -753,7 +740,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
 
               {/* Step 4: Location Information */}
               {currentStep === 3 && (
-                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in">
+                <div className="glass-card p-6 rounded-2xl border-white/20 space-y-4 animate-fade-in-up">
                   <h4 className="font-semibold text-lg">{STEPS[3].title}</h4>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -835,6 +822,16 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
               
               {/* Navigation Buttons - Inside ScrollArea, after form content */}
               <div className="pt-6 pb-4 flex items-center justify-end gap-2">
+                {currentStep === 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowForm(false)}
+                    className="gap-2"
+                  >
+                    Cancel
+                  </Button>
+                )}
                 {currentStep > 0 && (
                   <Button
                     type="button"
@@ -848,7 +845,7 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
                 <Button
                   type="button"
                   onClick={handleNext}
-                  className="gap-2 w-[120px]"
+                  className="gap-2 w-[120px] bg-gradient-to-r from-primary via-purple-500 to-pink-500 hover:from-primary/90 hover:via-purple-500/90 hover:to-pink-500/90 text-white shadow-lg transition-all duration-300"
                 >
                   {currentStep < STEPS.length - 1 ? 'Next' : 'Submit'}
                   <ChevronRight className="w-4 h-4" />
@@ -885,6 +882,19 @@ export function ONDCRegistrationForm({ showBenefits, setShowBenefits }: ONDCRegi
         }
         .animate-float-paper {
           animation: float-paper 5s ease-in infinite;
+        }
+        @keyframes fade-in-up {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
         }
       `}</style>
     </div>

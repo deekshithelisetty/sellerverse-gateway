@@ -57,7 +57,7 @@ export function AppSidebar({
             ? `group flex items-center justify-center px-0 w-full py-2 transition-all`
             : `group flex items-center gap-3 px-2 py-1.5 rounded-lg transition-all ${
                 isActive
-                  ? 'glass-card border border-white/20 shadow-lg'
+                  ? 'glass border border-white/10'
                   : 'hover:glass hover:border hover:border-white/10'
               }`
         }

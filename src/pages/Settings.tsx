@@ -132,7 +132,7 @@ export default function Settings() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold mb-1 bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Settings</h2>
+        <h2 className="text-3xl font-bold mb-1 bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Settings</h2>
         <p className="text-sm text-muted-foreground">Configure your dashboard preferences</p>
       </div>
 
@@ -146,7 +146,7 @@ export default function Settings() {
         >
           <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Font Settings</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Font Settings</CardTitle>
             <CardDescription className="text-xs">Customize text appearance</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -193,7 +193,7 @@ export default function Settings() {
         >
           <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Language</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Language</CardTitle>
             <CardDescription className="text-xs">Select your preferred language</CardDescription>
           </CardHeader>
           <CardContent>
@@ -227,7 +227,7 @@ export default function Settings() {
         >
           <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Theme</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Theme</CardTitle>
             <CardDescription className="text-xs">Choose a color theme for your dashboard</CardDescription>
           </CardHeader>
           <CardContent>
@@ -275,7 +275,7 @@ export default function Settings() {
         >
           <Card className="glass-card border-white/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Brand Logo</CardTitle>
+            <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Brand Logo</CardTitle>
             <CardDescription className="text-xs">Upload your brand logo for the dashboard header</CardDescription>
           </CardHeader>
           <CardContent>
@@ -320,7 +320,7 @@ export default function Settings() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(45deg, #5B21B6, #9333EA, #EC4899)' }}>Interested Category</CardTitle>
+                <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Interested Category</CardTitle>
                 <CardDescription className="text-xs">Select categories to add to your sidebar navigation</CardDescription>
               </div>
               <Button

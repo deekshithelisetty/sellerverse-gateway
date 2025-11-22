@@ -53,7 +53,7 @@ export const ExperienceGallery = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
         className="text-center max-w-3xl"
       >
-        <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-5xl font-bold mb-4" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           Rediscover Your Memories
         </h2>
         <p className="text-lg text-muted-foreground">
