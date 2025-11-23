@@ -14,7 +14,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-3">
       {/* Ultra bright vibrant gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-b-[3rem]"></div>
       
@@ -35,19 +35,19 @@ const HeroSection = () => {
           <div className="relative grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              <div className="inline-block">
-                <div className="glass px-4 py-2 rounded-full text-sm font-medium">
+              <div className="inline-block animate-pulse hover:animate-none">
+                <div className="glass px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg">
                   <span className="text-gradient">✨ Connect to ONDC Platform</span>
                 </div>
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-                The Laboratory of{" "}
-                <span className="text-gradient">Digital Commerce</span>
+                Modern Service Platform —{" "}
+                <span className="text-gradient">High-level vision</span>
               </h1>
 
               <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
-                We experiment, create, and transform your business ideas into powerful digital experiences on the ONDC network
+                Build a premium platform where creators can sell products and experiences, manage profiles, and track analytics—all in one dashboard.
               </p>
 
               <div className="flex flex-wrap gap-4">

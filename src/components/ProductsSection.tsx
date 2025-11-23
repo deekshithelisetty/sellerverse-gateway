@@ -1,4 +1,5 @@
 import { Link2, Palette, ShoppingCart, BarChart3, Calendar, Mail, Globe, Zap } from "lucide-react";
+import { GlareCard } from "@/components/ui/glare-card";
 
 const ProductsSection = () => {
   const features = [
@@ -53,23 +54,32 @@ const ProductsSection = () => {
   ];
 
   return (
-    <section id="products" className="relative pt-8 pb-16 px-6" style={{ scrollMarginTop: '4rem' }}>
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background rounded-t-[3rem] rounded-b-[3rem]"></div>
-      <div className="max-w-7xl mx-auto relative">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+    <section id="products" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
+      {/* Vibrant background matching PricingSection */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-[3rem] rounded-b-[3rem]"></div>
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-200 to-purple-300 rounded-full blur-3xl opacity-70 animate-pulse" style={{
+        animationDelay: '1s'
+      }}></div>
+      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{
+        animationDelay: '2s'
+      }}></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold mb-6">
             Everything You Need to Succeed
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-sm text-muted-foreground whitespace-nowrap">
             Powerful features designed to help creators, entrepreneurs, and businesses grow their digital presence
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-4">
           {features.map((feature, index) => (
-            <div 
+            <GlareCard 
               key={index}
-              className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform group cursor-pointer"
+              className="glass-card rounded-2xl p-6 group cursor-pointer"
             >
               <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <feature.icon className="w-7 h-7 text-white" />
@@ -78,7 +88,7 @@ const ProductsSection = () => {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {feature.description}
               </p>
-            </div>
+            </GlareCard>
           ))}
         </div>
       </div>

@@ -6,13 +6,33 @@ import PricingSection from "@/components/PricingSection";
 import ONDCSection from "@/components/ONDCSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 import { SectionWrapper } from "@/components/SectionWrapper";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Scroll to top when coming from dashboard or other pages
+    if (location.pathname === '/') {
+      const homeSection = document.getElementById("home");
+      if (homeSection) {
+        homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen">
       <Navigation />
-      <HeroSection />
+      <div id="home">
+        <HeroSection />
+      </div>
+      <ScrollToTop />
       
       {/* Products Section */}
       <SectionWrapper delay={0}>
