@@ -1,71 +1,51 @@
 import { Store, ShoppingCart } from "lucide-react";
 const ONDCSection = () => {
-  const sellers = [{
-    name: "Varun Bakery",
-    image: "🍰",
-    badge: "I sell on ONDC",
-    position: "top-20 left-[30%]"
-  }, {
-    name: "Lakshmi Pickles",
-    image: "🥘",
-    badge: "I sell on ONDC",
-    position: "top-40 left-[40%]"
-  }, {
-    name: "Preethi",
-    image: "👩‍🍳",
-    badge: "2 Sarees",
-    position: "bottom-40 left-[20%]"
-  }, {
-    name: "WOW Momo",
-    image: "🥟",
-    badge: "I sell on ONDC",
-    position: "bottom-32 left-[35%]"
-  }, {
-    name: "Farmer's Produce",
-    image: "🌾",
-    badge: "I sell on ONDC",
-    position: "bottom-20 right-[40%]"
-  }];
-  const buyers = [{
-    name: "Kudumbashree",
-    image: "🏪",
-    badge: "I sell on ONDC",
-    position: "top-32 right-[30%]"
-  }, {
-    name: "Jyoti Silks",
-    image: "👗",
-    badge: "I sell on ONDC",
-    position: "top-48 right-[35%]"
-  }, {
-    name: "Abha",
-    image: "👩",
-    badge: "1 Saree",
-    position: "top-64 right-[20%]"
-  }];
-  const sellerNodes = [{
-    position: "top-24 left-[10%]",
-    delay: "0s"
-  }, {
-    position: "top-48 left-[20%]",
-    delay: "0.3s"
-  }, {
-    position: "bottom-28 left-[25%]",
-    delay: "0.6s"
-  }, {
-    position: "bottom-16 right-[35%]",
-    delay: "0.9s"
-  }];
-  const buyerNodes = [{
-    position: "top-40 right-[10%]",
-    delay: "0.2s"
-  }, {
-    position: "top-56 right-[22%]",
-    delay: "0.5s"
-  }, {
-    position: "bottom-24 right-[18%]",
-    delay: "0.8s"
-  }];
-  return <section id="ondc" className="relative py-16 px-6 overflow-hidden rounded-t-[3rem] rounded-b-[3rem] min-h-screen flex items-center">
+  // Combine all cards and position them in a 360-degree circle (spread upward)
+  const allCards = [
+    { name: "Varun Bakery", image: "🍰", badge: "I sell on ONDC", type: "seller", angle: -20 },
+    { name: "Lakshmi Pickles", image: "🥘", badge: "I sell on ONDC", type: "seller", angle: 20 },
+    { name: "Preethi", image: "👩‍🍳", badge: "2 Sarees", type: "seller", angle: 70 },
+    { name: "WOW Momo", image: "🥟", badge: "I sell on ONDC", type: "seller", angle: 120 },
+    { name: "Farmer's Produce", image: "🌾", badge: "I sell on ONDC", type: "seller", angle: 160 },
+    { name: "Kudumbashree", image: "🏪", badge: "I sell on ONDC", type: "buyer", angle: 200 },
+    { name: "Jyoti Silks", image: "👗", badge: "I sell on ONDC", type: "buyer", angle: 250 },
+    { name: "Abha", image: "👩", badge: "1 Saree", type: "buyer", angle: 300 },
+  ];
+
+  // Calculate positions in a circle (radius ~32% from center, centered)
+  const getCardPosition = (angle: number) => {
+    const radius = 32; // percentage from center
+    const centerX = 50;
+    const centerY = 50; // Centered vertically
+    const radian = (angle * Math.PI) / 180;
+    const x = centerX + radius * Math.cos(radian);
+    const y = centerY + radius * Math.sin(radian);
+    return { x, y };
+  };
+  
+  // Position nodes in a circle at a different radius than cards to avoid overlap
+  // Spread them more evenly to avoid overlapping
+  const allNodes = [
+    { type: "seller", angle: 0, delay: "0s" },
+    { type: "seller", angle: 45, delay: "0.3s" },
+    { type: "seller", angle: 90, delay: "0.6s" },
+    { type: "seller", angle: 135, delay: "0.9s" },
+    { type: "buyer", angle: 180, delay: "0.2s" },
+    { type: "buyer", angle: 225, delay: "0.5s" },
+    { type: "buyer", angle: 270, delay: "0.8s" },
+  ];
+
+  // Calculate node positions (at 22% radius, between center and cards, centered)
+  const getNodePosition = (angle: number) => {
+    const radius = 22; // percentage from center (closer than cards, reduced to avoid overlap)
+    const centerX = 50;
+    const centerY = 50; // Centered vertically
+    const radian = (angle * Math.PI) / 180;
+    const x = centerX + radius * Math.cos(radian);
+    const y = centerY + radius * Math.sin(radian);
+    return { x, y };
+  };
+  return <section id="ondc" className="relative pt-8 pb-16 px-6 overflow-hidden rounded-t-[3rem] rounded-b-[3rem] h-screen flex items-center" style={{ scrollMarginTop: '4rem' }}>
       {/* Crystal clear glass effect background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-100/80 via-indigo-100/80 to-purple-100/80 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30"></div>
       
@@ -81,51 +61,23 @@ const ONDCSection = () => {
       animationDelay: "1.5s"
     }}></div>
       
-      <div className="max-w-7xl mx-auto relative w-full">
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold mb-6 flex items-center justify-center gap-2 flex-wrap">
-            <span className="text-orange-500" style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.6), 0 0 40px rgba(249, 115, 22, 0.4)' }}>
-              The Future of
-            </span>
-            <span className="text-white" style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4)' }}>
-              C
-            </span>
-            <svg className="inline-block animate-spin-slow" width="40" height="40" viewBox="0 0 40 40" style={{ margin: '0 -4px' }}>
-              <circle cx="20" cy="20" r="18" fill="white" stroke="#001F8D" strokeWidth="2" />
-              <g transform="translate(20, 20)">
-                {[...Array(24)].map((_, i) => {
-                  const angle = (i * 15 * Math.PI) / 180;
-                  const x1 = 0;
-                  const y1 = 0;
-                  const x2 = Math.cos(angle) * 16;
-                  const y2 = Math.sin(angle) * 16;
-                  return (
-                    <line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="#001F8D"
-                      strokeWidth="1.5"
-                    />
-                  );
-                })}
-                <circle cx="0" cy="0" r="3" fill="#001F8D" />
-              </g>
-            </svg>
-            <span className="text-white" style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4)' }}>
-              mmerce
-            </span>
-            <span className="text-green-500" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(34, 197, 94, 0.4)' }}>
-              is Open
+      <div className="max-w-7xl mx-auto relative w-full h-full flex flex-col justify-center">
+        <div className="text-center mb-3">
+          <h2 className="text-4xl font-bold mb-2">
+            <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              The Future of Commerce is Open
             </span>
           </h2>
-          <p className="max-w-4xl mx-auto leading-relaxed text-sm text-slate-600">We are proud to be part of the Open Network for Digital Commerce (ONDC), a revolutionary initiative to unbundle and democratize e-commerce in India.</p>
         </div>
 
         {/* Network Diagram */}
-        <div className="relative h-[600px] glass-card rounded-3xl p-8">
+        <div className="relative flex-1 glass-card rounded-3xl p-8 min-h-[500px]">
+          {/* Description text at top of card */}
+          <div className="text-center mb-6">
+            <p className="text-xs text-slate-600 max-w-4xl mx-auto leading-relaxed">
+              We are proud to be part of the Open Network for Digital Commerce (ONDC), a revolutionary initiative to unbundle and democratize e-commerce in India.
+            </p>
+          </div>
           {/* Connection Lines Background */}
           <svg className="absolute inset-0 w-full h-full opacity-30" style={{
           zIndex: 1
@@ -140,72 +92,92 @@ const ONDCSection = () => {
                 <stop offset="100%" stopColor="hsl(280, 50%, 65%)" stopOpacity="0.6" />
               </linearGradient>
             </defs>
-            {/* Animated lines */}
-            <line x1="20%" y1="30%" x2="50%" y2="50%" stroke="url(#ondcLineGradient1)" strokeWidth="2" className="animate-pulse" />
-            <line x1="30%" y1="70%" x2="50%" y2="50%" stroke="url(#ondcLineGradient1)" strokeWidth="2" className="animate-pulse" style={{
-            animationDelay: "0.3s"
-          }} />
-            <line x1="50%" y1="50%" x2="75%" y2="40%" stroke="url(#ondcLineGradient2)" strokeWidth="2" className="animate-pulse" style={{
-            animationDelay: "0.6s"
-          }} />
-            <line x1="50%" y1="50%" x2="80%" y2="70%" stroke="url(#ondcLineGradient2)" strokeWidth="2" className="animate-pulse" style={{
-            animationDelay: "0.9s"
-          }} />
+            {/* Animated lines - connecting each card to center */}
+            {allCards.map((card, index) => {
+              const pos = getCardPosition(card.angle);
+              return (
+                <line
+                  key={`card-line-${index}`}
+                  x1={`${pos.x}%`}
+                  y1={`${pos.y}%`}
+                  x2="50%"
+                  y2="50%"
+                  stroke={card.type === "seller" ? "url(#ondcLineGradient1)" : "url(#ondcLineGradient2)"}
+                  strokeWidth="2"
+                  className="animate-pulse"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                />
+              );
+            })}
+            {/* Animated lines - connecting each node to center */}
+            {allNodes.map((node, index) => {
+              const pos = getNodePosition(node.angle);
+              return (
+                <line
+                  key={`node-line-${index}`}
+                  x1={`${pos.x}%`}
+                  y1={`${pos.y}%`}
+                  x2="50%"
+                  y2="50%"
+                  stroke={node.type === "seller" ? "url(#ondcLineGradient1)" : "url(#ondcLineGradient2)"}
+                  strokeWidth="2"
+                  className="animate-pulse"
+                  style={{ animationDelay: `${(index + 8) * 0.1}s` }}
+                />
+              );
+            })}
           </svg>
 
-          {/* Seller Nodes */}
-          {sellerNodes.map((node, index) => <div key={`seller-${index}`} className={`absolute ${node.position} z-10`} style={{
-          animation: `scale-in 0.5s ease-out ${node.delay} both, float 3s ease-in-out ${node.delay} infinite`
-        }}>
-              <div className="glass-card rounded-2xl p-4 flex items-center gap-3 hover:scale-110 transition-all shadow-lg">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white">
-                  <Store className="w-5 h-5" />
+          {/* All Nodes positioned in 360-degree circle (between center and cards) */}
+          {allNodes.map((node, index) => {
+            const pos = getNodePosition(node.angle);
+            return (
+              <div
+                key={`node-${index}`}
+                className="absolute z-10"
+                style={{
+                  left: `${pos.x}%`,
+                  top: `${pos.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  animation: `scale-in 0.5s ease-out ${node.delay} both, float 3s ease-in-out ${node.delay} infinite`
+                }}
+              >
+                <div className="glass-card rounded-2xl p-4 flex items-center gap-3 hover:scale-110 transition-all shadow-lg">
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${node.type === "seller" ? "from-orange-400 to-orange-600" : "from-green-400 to-emerald-600"} flex items-center justify-center text-white`}>
+                    {node.type === "seller" ? <Store className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
+                  </div>
+                  <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">{node.type === "seller" ? "SELLER APP" : "BUYER APP"}</span>
                 </div>
-                <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">SELLER APP</span>
               </div>
-            </div>)}
+            );
+          })}
 
-          {/* Buyer Nodes */}
-          {buyerNodes.map((node, index) => <div key={`buyer-${index}`} className={`absolute ${node.position} z-10`} style={{
-          animation: `scale-in 0.5s ease-out ${node.delay} both, float 3s ease-in-out ${node.delay} infinite`
-        }}>
-              <div className="glass-card rounded-2xl p-4 flex items-center gap-3 hover:scale-110 transition-all shadow-lg">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white">
-                  <ShoppingCart className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">BUYER APP</span>
-              </div>
-            </div>)}
-
-          {/* Seller Cards */}
-          {sellers.map((seller, index) => <div key={`seller-card-${index}`} className={`absolute ${seller.position} z-20`} style={{
-          animation: `fade-in 0.6s ease-out ${index * 0.2}s both, float 4s ease-in-out ${index * 0.3}s infinite`
-        }}>
-              <div className="glass-card rounded-xl p-3 flex flex-col items-center gap-2 hover:scale-110 transition-all shadow-xl">
-                <div className="w-12 h-12 rounded-lg bg-white dark:bg-card flex items-center justify-center text-2xl">
-                  {seller.image}
-                </div>
-                <span className="text-xs font-bold">{seller.name}</span>
-                <div className="px-3 py-1 rounded-full bg-primary/20 text-primary">
-                  <span className="text-xs font-semibold">{seller.badge}</span>
-                </div>
-              </div>
-            </div>)}
-
-          {/* Buyer Cards */}
-          {buyers.map((buyer, index) => <div key={`buyer-card-${index}`} className={`absolute ${buyer.position} z-20`} style={{
-          animation: `fade-in 0.6s ease-out ${(index + 3) * 0.2}s both, float 4s ease-in-out ${(index + 2) * 0.3}s infinite`
-        }}>
-              <div className="glass-card rounded-xl p-3 flex flex-col items-center gap-2 hover:scale-110 transition-all shadow-xl">
-                <div className="w-12 h-12 rounded-lg bg-white dark:bg-card flex items-center justify-center text-2xl">
-                  {buyer.image}
-                </div>
-                <span className="text-xs font-bold">{buyer.name}</span>
-                <div className="px-3 py-1 rounded-full bg-secondary/20 text-secondary">
-                  <span className="text-xs font-semibold">{buyer.badge}</span>
+          {/* All Cards positioned in 360-degree circle */}
+          {allCards.map((card, index) => {
+            const pos = getCardPosition(card.angle);
+            return (
+              <div
+                key={`card-${index}`}
+                className="absolute z-20"
+                style={{
+                  left: `${pos.x}%`,
+                  top: `${pos.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  animation: `fade-in 0.6s ease-out ${index * 0.1}s both, float 4s ease-in-out ${index * 0.2}s infinite`
+                }}
+              >
+                <div className="glass-card rounded-xl p-3 flex flex-col items-center gap-2 hover:scale-110 transition-all shadow-xl">
+                  <div className="w-12 h-12 rounded-lg bg-white dark:bg-card flex items-center justify-center text-2xl">
+                    {card.image}
+                  </div>
+                  <span className="text-xs font-bold">{card.name}</span>
+                  <div className={`px-3 py-1 rounded-full ${card.type === "seller" ? "bg-primary/20 text-primary" : "bg-secondary/20 text-secondary"}`}>
+                    <span className="text-xs font-semibold">{card.badge}</span>
+                  </div>
                 </div>
               </div>
-            </div>)}
+            );
+          })}
 
           {/* Central ONDC Hub */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">

@@ -1,6 +1,8 @@
 import { Facebook, Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const Footer = () => {
+  const { heroPageLogo } = useSettings();
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
@@ -54,9 +56,15 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
             {/* Brand Section */}
             <div className="lg:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
-                <h3 className="text-2xl font-bold">SELLER TSP</h3>
+              <div className="flex items-center gap-3 mb-4">
+                {heroPageLogo ? (
+                  <img src={heroPageLogo} alt="Hero Page Logo" className="h-8 w-auto object-contain" />
+                ) : (
+                  <>
+                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+                    <h3 className="text-2xl font-bold">SELLER TSP</h3>
+                  </>
+                )}
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 Empowering businesses on the Open Network for Digital Commerce. Join the revolution of inclusive e-commerce.
@@ -166,7 +174,7 @@ const Footer = () => {
         {/* Credits */}
         <div className="text-center">
           <p className="text-xs text-muted-foreground">
-            Powered by Open Network for Digital Commerce • Made with ❤️ in India
+            Powered by Tabhi Group of Companies • Made with ❤️ in India
           </p>
         </div>
       </div>

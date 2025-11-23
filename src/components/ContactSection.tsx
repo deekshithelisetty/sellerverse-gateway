@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MapPin, Phone, Mail, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Send, Bell } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }).max(100, { message: "Name must be less than 100 characters" }),
@@ -19,6 +20,7 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 const ContactSection = () => {
   const { toast } = useToast();
+  const { contactInfo } = useSettings();
   const {
     register,
     handleSubmit,
@@ -49,7 +51,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-16 px-6 overflow-hidden">
+    <section id="contact" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
       {/* Gradient Background matching hero */}
       <div className="absolute inset-0 gradient-mesh rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-t-[3rem] rounded-b-[3rem]"></div>
@@ -59,16 +61,13 @@ const ContactSection = () => {
       <div className="absolute bottom-20 right-20 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
 
       <div className="max-w-7xl mx-auto relative">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-6 text-gradient">Get in Touch</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-          </p>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-6 text-gradient">Get in Touch</h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Side - Address Information */}
-          <div className="space-y-8">
+          <div className="space-y-4">
             <div className="glass-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
               <div className="flex items-start gap-6">
                 <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-lg">
@@ -76,12 +75,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Visit Us</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    ONDC Headquarters<br />
-                    Quality Council of India Campus<br />
-                    2nd Floor, Institution of Engineers Building<br />
-                    2, Bahadur Shah Zafar Marg<br />
-                    New Delhi - 110002, India
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {contactInfo.visitUs}
                   </p>
                 </div>
               </div>
@@ -94,52 +89,57 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Call Us</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    +91 11 2345 6789<br />
-                    Mon-Fri: 9:00 AM - 6:00 PM IST
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {contactInfo.callUs}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="glass-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
-              <div className="flex items-start gap-6 mb-6">
+              <div className="flex items-start gap-6">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-lg">
                   <Mail className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Email Us</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    info@ondc.org<br />
-                    support@ondc.org
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {contactInfo.emailUs}
                   </p>
                 </div>
               </div>
+            </div>
 
-              {/* Newsletter Section */}
-              <div className="pt-6 border-t border-border/50">
-                <h4 className="text-lg font-bold mb-3">Stay Updated</h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Subscribe to our newsletter for the latest updates and insights.
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-4 py-2 rounded-full glass border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
-                  />
-                  <button className="px-6 py-2 rounded-full gradient-primary text-white font-semibold hover:shadow-lg transition-all text-sm whitespace-nowrap">
-                    Subscribe
-                  </button>
+            {/* Stay Updated Section - Separate Card */}
+            <div className="glass-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
+              <div className="flex items-start gap-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Bell className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold mb-2">Stay Updated</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Subscribe to our newsletter for the latest updates and insights.
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="flex-1 px-4 py-2 rounded-full glass border border-primary/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                    />
+                    <button className="px-6 py-2 rounded-full gradient-primary text-white font-semibold hover:shadow-lg transition-all text-sm whitespace-nowrap">
+                      Subscribe
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right Side - Contact Form */}
-          <div className="glass-card rounded-3xl p-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-2">
+          <div className="glass-card rounded-3xl p-8 min-h-[calc(100vh-8rem)] flex flex-col">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 flex-1 flex flex-col">
+              <div className="space-y-1">
                 <Label htmlFor="name" className="text-sm font-semibold">
                   Full Name <span className="text-destructive">*</span>
                 </Label>
@@ -154,7 +154,7 @@ const ContactSection = () => {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="email" className="text-sm font-semibold">
                   Email Address <span className="text-destructive">*</span>
                 </Label>
@@ -170,7 +170,7 @@ const ContactSection = () => {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="phone" className="text-sm font-semibold">
                   Phone Number
                 </Label>
@@ -186,7 +186,7 @@ const ContactSection = () => {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1 flex-1 flex flex-col">
                 <Label htmlFor="message" className="text-sm font-semibold">
                   Message <span className="text-destructive">*</span>
                 </Label>
@@ -194,7 +194,7 @@ const ContactSection = () => {
                   id="message"
                   placeholder="Tell us how we can help you..."
                   rows={6}
-                  className="glass border-primary/30 focus:border-primary resize-none"
+                  className="glass border-primary/30 focus:border-primary resize-none flex-1"
                   {...register("message")}
                 />
                 {errors.message && (
@@ -202,20 +202,22 @@ const ContactSection = () => {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full gap-2 gradient-primary border-0 hover:shadow-lg transition-all py-6 text-base font-semibold"
-              >
-                {isSubmitting ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    Send Message
-                    <Send className="w-5 h-5" />
-                  </>
-                )}
-              </Button>
+              <div className="mt-auto">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full gap-2 gradient-primary border-0 hover:shadow-lg transition-all py-6 text-base font-semibold"
+                >
+                  {isSubmitting ? (
+                    "Sending..."
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           </div>
         </div>

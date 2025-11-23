@@ -29,7 +29,7 @@ const PricingSection = () => {
     gradient: "from-orange-500 to-rose-500",
     popular: false
   }];
-  return <section id="pricing" className="relative py-16 px-6 overflow-hidden">
+  return <section id="pricing" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
       {/* Vibrant background matching hero */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
@@ -42,10 +42,10 @@ const PricingSection = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-4xl font-bold mb-6">
             Simple, Transparent <span className="text-gradient">Pricing</span>
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-sm text-muted-foreground whitespace-nowrap">
             Choose the perfect plan for your business. All plans include ONDC platform integration
           </p>
         </div>
@@ -61,13 +61,13 @@ const PricingSection = () => {
                 </div>}
               
               <div className={`glass-card rounded-3xl p-8 h-full hover:scale-105 transition-all duration-300 ${plan.popular ? 'border-2 border-white/40' : ''}`}>
-                {/* Icon */}
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <plan.icon className="w-7 h-7 text-white" />
+                {/* Icon and Plan name */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0`}>
+                    <plan.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold">{plan.name}</h3>
                 </div>
-
-                {/* Plan name and price */}
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
                 
                 <div className="mb-8">
@@ -76,7 +76,7 @@ const PricingSection = () => {
                 </div>
 
                 {/* CTA Button */}
-                <Button className={`w-full mb-8 ${plan.popular ? 'gradient-primary border-0 hover:shadow-lg' : 'glass border-white/20 hover:bg-white/10'}`} size="lg">
+                <Button className={`w-full mb-8 ${plan.popular ? 'gradient-primary border-0 hover:shadow-lg text-white' : 'glass border-white/20 hover:gradient-primary hover:border-0 hover:shadow-lg text-black'}`} size="lg">
                   {plan.price === "Custom" ? "Contact Sales" : "Get Started"}
                 </Button>
 

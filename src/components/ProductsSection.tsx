@@ -53,7 +53,7 @@ const ProductsSection = () => {
   ];
 
   return (
-    <section id="products" className="relative py-16 px-6">
+    <section id="products" className="relative pt-8 pb-16 px-6" style={{ scrollMarginTop: '4rem' }}>
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="max-w-7xl mx-auto relative">
         <div className="text-center mb-16">

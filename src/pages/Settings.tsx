@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Upload, Check, Plus, X } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Upload, Check, Plus, X, Edit, Save } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
 
@@ -47,15 +49,21 @@ export default function Settings() {
     fontName,
     theme,
     brandLogo,
+    heroPageLogo,
     language,
     interestedCategories,
+    contactInfo,
     setFontSize,
     setFontName,
     setTheme,
     setBrandLogo,
+    setHeroPageLogo,
     setLanguage,
     setInterestedCategories,
+    setContactInfo,
   } = useSettings();
+
+  const [editingContact, setEditingContact] = useState<{ type: 'visitUs' | 'callUs' | 'emailUs' | null; value: string }>({ type: null, value: '' });
 
   useEffect(() => {
     // Simulate loading animation
@@ -94,6 +102,46 @@ export default function Settings() {
   const handleRemoveLogo = () => {
     setBrandLogo(null);
     toast.success('Brand logo removed');
+  };
+
+  const handleHeroPageLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('File size must be less than 2MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setHeroPageLogo(event.target?.result as string);
+        toast.success('Hero page logo uploaded successfully');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveHeroPageLogo = () => {
+    setHeroPageLogo(null);
+    toast.success('Hero page logo removed');
+  };
+
+  const handleEditContact = (type: 'visitUs' | 'callUs' | 'emailUs') => {
+    setEditingContact({ type, value: contactInfo[type] });
+  };
+
+  const handleSaveContact = () => {
+    if (editingContact.type) {
+      setContactInfo({
+        ...contactInfo,
+        [editingContact.type]: editingContact.value,
+      });
+      setEditingContact({ type: null, value: '' });
+      toast.success(`${editingContact.type === 'visitUs' ? 'Visit Us' : editingContact.type === 'callUs' ? 'Call Us' : 'Email Us'} updated successfully`);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingContact({ type: null, value: '' });
   };
 
   const handleAddCategory = () => {
@@ -136,7 +184,24 @@ export default function Settings() {
         <p className="text-sm text-muted-foreground">Configure your dashboard preferences</p>
       </div>
 
-      {/* First Row: Font Settings, Language, Theme */}
+      <Tabs defaultValue="general" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2 mb-6 glass-card border-white/20">
+          <TabsTrigger 
+            value="general" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white"
+          >
+            General Settings
+          </TabsTrigger>
+          <TabsTrigger 
+            value="super-admin" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white"
+          >
+            Super Admin Setting
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="general" className="space-y-4">
+          {/* First Row: Font Settings, Language, Theme */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Font Settings */}
         <motion.div
@@ -373,6 +438,201 @@ export default function Settings() {
         </Card>
         </motion.div>
       </div>
+        </TabsContent>
+
+        <TabsContent value="super-admin" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Hero Page Logo Upload */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <Card className="glass-card border-white/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Hero Page Logo</CardTitle>
+                  <CardDescription className="text-xs">Upload logo for the hero page header (left side)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {heroPageLogo ? (
+                    <div className="flex items-center gap-4">
+                      <div className="glass-card p-3 rounded-lg border-white/20 flex items-center justify-center flex-1">
+                        <img src={heroPageLogo} alt="Hero Page Logo" className="max-h-12 object-contain" />
+                      </div>
+                      <Button onClick={handleRemoveHeroPageLogo} variant="outline" size="sm" className="h-9">
+                        Remove Logo
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="glass-card p-6 rounded-lg border-2 border-dashed border-white/20 text-center">
+                      <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <Label htmlFor="hero-logo-upload" className="cursor-pointer">
+                        <span className="text-sm text-primary font-semibold">Click to upload</span>
+                        <span className="text-sm text-muted-foreground"> or drag and drop</span>
+                        <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 2MB</p>
+                      </Label>
+                      <Input
+                        id="hero-logo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleHeroPageLogoUpload}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Visit Us */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <Card className="glass-card border-white/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Visit Us</CardTitle>
+                      <CardDescription className="text-xs">Manage visit us address information</CardDescription>
+                    </div>
+                    {editingContact.type !== 'visitUs' && (
+                      <Button onClick={() => handleEditContact('visitUs')} variant="outline" size="sm" className="h-9 gap-2">
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {editingContact.type === 'visitUs' ? (
+                    <div className="space-y-4">
+                      <Textarea
+                        value={editingContact.value}
+                        onChange={(e) => setEditingContact({ ...editingContact, value: e.target.value })}
+                        placeholder="Enter address (use line breaks for multiple lines)"
+                        className="min-h-[120px] glass border-primary/30 focus:border-primary"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={handleSaveContact} size="sm" className="h-9 gap-2">
+                          <Save className="h-4 w-4" />
+                          Update
+                        </Button>
+                        <Button onClick={handleCancelEdit} variant="outline" size="sm" className="h-9">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                      {contactInfo.visitUs}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Call Us */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+              transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <Card className="glass-card border-white/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Call Us</CardTitle>
+                      <CardDescription className="text-xs">Manage call us phone and hours information</CardDescription>
+                    </div>
+                    {editingContact.type !== 'callUs' && (
+                      <Button onClick={() => handleEditContact('callUs')} variant="outline" size="sm" className="h-9 gap-2">
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {editingContact.type === 'callUs' ? (
+                    <div className="space-y-4">
+                      <Textarea
+                        value={editingContact.value}
+                        onChange={(e) => setEditingContact({ ...editingContact, value: e.target.value })}
+                        placeholder="Enter phone number and hours (use line breaks for multiple lines)"
+                        className="min-h-[80px] glass border-primary/30 focus:border-primary"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={handleSaveContact} size="sm" className="h-9 gap-2">
+                          <Save className="h-4 w-4" />
+                          Update
+                        </Button>
+                        <Button onClick={handleCancelEdit} variant="outline" size="sm" className="h-9">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                      {contactInfo.callUs}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Email Us */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0, scale: isLoading ? 0.95 : 1 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <Card className="glass-card border-white/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, #232526, #414345)' }}>Email Us</CardTitle>
+                      <CardDescription className="text-xs">Manage email us addresses</CardDescription>
+                    </div>
+                    {editingContact.type !== 'emailUs' && (
+                      <Button onClick={() => handleEditContact('emailUs')} variant="outline" size="sm" className="h-9 gap-2">
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {editingContact.type === 'emailUs' ? (
+                    <div className="space-y-4">
+                      <Textarea
+                        value={editingContact.value}
+                        onChange={(e) => setEditingContact({ ...editingContact, value: e.target.value })}
+                        placeholder="Enter email addresses (use line breaks for multiple emails)"
+                        className="min-h-[80px] glass border-primary/30 focus:border-primary"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={handleSaveContact} size="sm" className="h-9 gap-2">
+                          <Save className="h-4 w-4" />
+                          Update
+                        </Button>
+                        <Button onClick={handleCancelEdit} variant="outline" size="sm" className="h-9">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                      {contactInfo.emailUs}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Add Category Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

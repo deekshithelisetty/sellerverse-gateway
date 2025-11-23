@@ -1,18 +1,28 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+interface ContactInfo {
+  visitUs: string;
+  callUs: string;
+  emailUs: string;
+}
+
 interface SettingsContextType {
   fontSize: string;
   fontName: string;
   theme: string;
   brandLogo: string | null;
+  heroPageLogo: string | null;
   language: string;
   interestedCategories: string[];
+  contactInfo: ContactInfo;
   setFontSize: (size: string) => void;
   setFontName: (name: string) => void;
   setTheme: (theme: string) => void;
   setBrandLogo: (logo: string | null) => void;
+  setHeroPageLogo: (logo: string | null) => void;
   setLanguage: (lang: string) => void;
   setInterestedCategories: (categories: string[]) => void;
+  setContactInfo: (info: ContactInfo) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -38,10 +48,22 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [fontName, setFontName] = useState(() => localStorage.getItem('fontName') || 'Bricolage Grotesque');
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'default');
   const [brandLogo, setBrandLogo] = useState<string | null>(() => localStorage.getItem('brandLogo'));
+  const [heroPageLogo, setHeroPageLogo] = useState<string | null>(() => localStorage.getItem('heroPageLogo'));
   const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en');
   const [interestedCategories, setInterestedCategories] = useState<string[]>(() => {
     const stored = localStorage.getItem('interestedCategories');
     return stored ? JSON.parse(stored) : [];
+  });
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(() => {
+    const stored = localStorage.getItem('contactInfo');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return {
+      visitUs: 'ONDC Headquarters\nQuality Council of India Campus\n2nd Floor, Institution of Engineers Building\n2, Bahadur Shah Zafar Marg\nNew Delhi - 110002, India',
+      callUs: '+91 11 2345 6789\nMon-Fri: 9:00 AM - 6:00 PM IST',
+      emailUs: 'info@ondc.org\nsupport@ondc.org',
+    };
   });
 
   useEffect(() => {
@@ -72,6 +94,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [brandLogo]);
 
   useEffect(() => {
+    if (heroPageLogo) {
+      localStorage.setItem('heroPageLogo', heroPageLogo);
+    } else {
+      localStorage.removeItem('heroPageLogo');
+    }
+  }, [heroPageLogo]);
+
+  useEffect(() => {
     localStorage.setItem('language', language);
   }, [language]);
 
@@ -79,20 +109,28 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('interestedCategories', JSON.stringify(interestedCategories));
   }, [interestedCategories]);
 
+  useEffect(() => {
+    localStorage.setItem('contactInfo', JSON.stringify(contactInfo));
+  }, [contactInfo]);
+
   return (
     <SettingsContext.Provider value={{
       fontSize,
       fontName,
       theme,
       brandLogo,
+      heroPageLogo,
       language,
       interestedCategories,
+      contactInfo,
       setFontSize,
       setFontName,
       setTheme,
       setBrandLogo,
+      setHeroPageLogo,
       setLanguage,
       setInterestedCategories,
+      setContactInfo,
     }}>
       {children}
     </SettingsContext.Provider>
