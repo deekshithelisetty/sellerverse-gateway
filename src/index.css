@@ -392,9 +392,26 @@ All colors MUST be HSL.
     border-width: 2px !important;
   }
 
-  /* Rich signup gradient - blue to cyan */
-  .signup-gradient-rich {
-    background: linear-gradient(to right, #2E3192, #1BFFFF);
+  /* iPhone-like glassy finish for sign in - cool blue/purple tones */
+  .auth-dialog-glassy-signin {
+    background: rgba(124, 58, 237, 0.2);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 60px rgba(124, 58, 237, 0.1);
+  }
+
+  /* iPhone-like glassy finish for sign up - custom cyan/blue tone (#00A9F4) */
+  .auth-dialog-glassy-signup {
+    background: rgba(0, 169, 244, 0.2);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(0, 169, 244, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 169, 244, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 60px rgba(0, 169, 244, 0.1);
   }
 
   /* New Category Dialog Gradient */

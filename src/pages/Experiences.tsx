@@ -112,9 +112,9 @@ export default function Experiences({
 
         {/* Right - Preview Panel */}
         {showPreview && (
-          <div className="w-96 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm flex flex-col overflow-hidden shadow-lg animate-fade-in">
-            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              <ExperiencePreview data={experienceData} />
+          <div className="w-96 rounded-2xl bg-gradient-to-b from-primary/5 to-background/50 backdrop-blur-sm flex flex-col overflow-hidden shadow-lg animate-fade-in">
+            <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <ExperiencePreview data={experienceData} onClose={() => setShowPreview(false)} />
             </div>
           </div>
         )}

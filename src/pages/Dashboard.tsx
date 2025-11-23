@@ -66,14 +66,14 @@ const chartConfig = {
 function DashboardContent() {
   return (
     <div className="space-y-6 pb-0"> 
-      <div>
+      <div className="animate-fade-in-up" style={{ animationDelay: '0s' }}>
         <h2 className="text-3xl font-bold mb-2" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Dashboard</h2>
         <p className="text-muted-foreground">Here's a snapshot of your seller platform today.</p>
       </div>
 
       {/* Score Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Total Revenue</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -87,7 +87,7 @@ function DashboardContent() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Total Sellers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -101,7 +101,7 @@ function DashboardContent() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Pending Orders</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
@@ -115,7 +115,7 @@ function DashboardContent() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium" style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Active Products</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
@@ -133,7 +133,7 @@ function DashboardContent() {
       {/* Charts Row */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
         {/* Bar Chart */}
-        <Card className="glass-card border-white/20 min-w-0">
+        <Card className="glass-card border-white/20 min-w-0 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           <CardHeader>
             <CardTitle style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Sales & Orders Overview</CardTitle>
             <CardDescription>Monthly sales and order statistics</CardDescription>
@@ -153,7 +153,7 @@ function DashboardContent() {
         </Card>
 
         {/* Line Chart */}
-        <Card className="glass-card border-white/20 min-w-0">
+        <Card className="glass-card border-white/20 min-w-0 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           <CardHeader>
             <CardTitle style={{ background: 'linear-gradient(to right, #2E3192, #1BFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Visitor Analytics</CardTitle>
             <CardDescription>Weekly visitor trends</CardDescription>
@@ -213,7 +213,8 @@ function DashboardContent() {
 export default function Dashboard() {
   const {
     user,
-    signOut
+    signOut,
+    isLoading
   } = useAuth();
   const { brandLogo } = useSettings();
   const navigate = useNavigate();
@@ -224,15 +225,30 @@ export default function Dashboard() {
   const [sidebarHovered, setSidebarHovered] = useState(false);
   
   useEffect(() => {
-    if (!user) {
+    // Only redirect if auth has finished loading and user is still null
+    if (!isLoading && !user) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, isLoading, navigate]);
 
   const handleSignOut = () => {
     signOut();
     navigate('/');
   };
+  
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen overflow-hidden fixed inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="text-white font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Only redirect if user is not authenticated (after loading)
   if (!user) {
     return null;
   }
@@ -253,7 +269,7 @@ export default function Dashboard() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-2">
         <div className="w-full mx-auto">
           <div className="glass-card rounded-full px-6 py-2 flex items-center justify-between backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
               {brandLogo ? (
                 <img src={brandLogo} alt="Brand Logo" className="h-8 w-auto object-contain" />
               ) : (
@@ -273,7 +289,7 @@ export default function Dashboard() {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass-card border-white/20">
+              <DropdownMenuContent align="end" className="w-56 glass-card border-white/20 !rounded-2xl">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">Bhuvan Tummala</p>
@@ -281,12 +297,18 @@ export default function Dashboard() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
+                <DropdownMenuItem 
+                  onClick={() => navigate('/dashboard/profile')}
+                  className="hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:backdrop-blur-sm focus:bg-gradient-to-r focus:from-purple-500/20 focus:to-pink-500/20 focus:backdrop-blur-sm transition-all rounded-lg"
+                >
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
+                <DropdownMenuItem 
+                  onClick={handleSignOut}
+                  className="hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:backdrop-blur-sm focus:bg-gradient-to-r focus:from-purple-500/20 focus:to-pink-500/20 focus:backdrop-blur-sm transition-all rounded-lg"
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>

@@ -90,7 +90,7 @@ export function ExperienceCircularMenu({ onClose }: { onClose?: () => void }) {
           </div>
           
           {/* Right: Menu Items Only (Published, Draft, Rejected, Media, Services, Stays) */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
             {menuItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = item.id === selectedMenu;
@@ -160,6 +160,59 @@ export function ExperienceCircularMenu({ onClose }: { onClose?: () => void }) {
                 </button>
               );
             })}
+            {/* Close Icon after STAYS */}
+            <button
+              onClick={() => setSelectedMenu(null)}
+              className="group relative overflow-hidden rounded-full 
+                       w-[50px] h-[50px] hover:w-[160px]
+                       transition-all duration-500 ease-in-out
+                       flex items-center justify-center
+                       bg-muted/20 hover:bg-transparent
+                       border-2 border-border hover:border-transparent
+                       shadow-lg hover:shadow-2xl
+                       animate-card-fade-in
+                       cursor-pointer ml-2"
+              style={{
+                animationDelay: `${menuItems.length * 50}ms`,
+              }}
+            >
+              {/* Background Color (always visible) */}
+              <div 
+                className="absolute inset-0 transition-opacity duration-500 ease-in-out bg-gray-500"
+              />
+
+              {/* Gradient Background on Hover */}
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 
+                         transition-opacity duration-500 ease-in-out bg-gradient-to-r from-gray-500 to-gray-700"
+              />
+
+              {/* Gradient Glow Blur */}
+              <div 
+                className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-60 
+                         transition-opacity duration-500 ease-in-out -z-10 bg-gradient-to-r from-gray-500 to-gray-700"
+              />
+
+              {/* Icon - Hidden on Hover */}
+              <X 
+                className="w-6 h-6 text-white
+                         opacity-100 scale-100 
+                         group-hover:opacity-0 group-hover:scale-0
+                         transition-all duration-300 ease-in-out
+                         relative z-10"
+              />
+
+              {/* Text - Shown on Hover */}
+              <span 
+                className="absolute text-xs font-bold text-white tracking-wider
+                         opacity-0 scale-0 
+                         group-hover:opacity-100 group-hover:scale-100
+                         transition-all duration-500 ease-in-out delay-100
+                         z-10"
+              >
+                CLOSE
+              </span>
+            </button>
           </div>
         </div>
 

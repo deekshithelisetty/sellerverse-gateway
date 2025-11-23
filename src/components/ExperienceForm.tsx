@@ -17,7 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Plus, Trash2, Upload, FolderUp, X, ChevronDown, Minus } from 'lucide-react';
+import { Plus, Trash2, Upload, FolderUp, X, ChevronDown, ChevronUp, Minus, RotateCcw, ChevronRight } from 'lucide-react';
 import { ExperienceData } from '@/pages/Experiences';
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
@@ -184,6 +184,11 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const imagesInputRef = useRef<HTMLInputElement>(null);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const allAccordionItems = ['basic', 'media', 'location', 'schedule', 'booking', 'tags'];
+  const isAllExpanded = expandedItems.length === allAccordionItems.length;
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+
   const updateField = (field: keyof ExperienceData, value: any) => {
     onChange({ ...data, [field]: value });
   };
@@ -336,6 +341,84 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
   const [openItineraries, setOpenItineraries] = useState<{ [key: string]: boolean }>({ "1-0": true });
   const [openFaqs, setOpenFaqs] = useState<{ [key: number]: boolean }>({});
 
+  const calculateProgress = (): number => {
+    const totalSteps = 6;
+    return Math.round((completedSteps.size / totalSteps) * 100);
+  };
+
+  const isStepComplete = (step: string): boolean => {
+    switch (step) {
+      case 'basic':
+        return data.name.trim() && data.description.trim() ? true : false;
+      case 'media':
+        return (data.thumbnailImage || thumbnailImage) ? true : false;
+      case 'location':
+        return (data.city.trim() && data.state.trim() && data.fullAddress.trim() && data.mapLink.trim()) ? true : false;
+      case 'schedule':
+        return data.schedule.some(entry => 
+          entry.heading.trim() && entry.timing.trim() && entry.plan.trim()
+        );
+      case 'booking':
+        return Object.keys(data.bookingInfo).length > 0 && 
+          Object.values(data.bookingInfo).some(category => 
+            Array.isArray(category) && category.length > 0 && 
+            category.some(item => item.header.trim() && item.details.trim())
+          );
+      case 'tags':
+        return data.tags.some(tag => tag.trim());
+      default:
+        return false;
+    }
+  };
+
+  const goToNextStep = (currentStep: string) => {
+    // Mark current step as completed if it has data
+    if (isStepComplete(currentStep)) {
+      setCompletedSteps(prev => new Set([...prev, currentStep]));
+    }
+    
+    const stepOrder = ['basic', 'media', 'location', 'schedule', 'booking', 'tags'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    if (currentIndex < stepOrder.length - 1) {
+      const nextStep = stepOrder[currentIndex + 1];
+      setExpandedItems([...expandedItems.filter(item => item !== currentStep), nextStep]);
+    }
+  };
+
+  const clearAll = () => {
+    const emptyData: ExperienceData = {
+      name: '',
+      description: '',
+      aspectRatio: 'square',
+      contentType: [],
+      city: '',
+      state: '',
+      fullAddress: '',
+      mapLink: '',
+      dayCount: 1,
+      schedule: [{ day: 1, heading: '', timing: '', plan: '' }],
+      bookingInfo: {},
+      tags: [''],
+      faqs: [{ question: '', answer: '' }],
+      price: '',
+      thumbnailImage: undefined,
+      uploadedImages: [],
+    };
+    onChange(emptyData);
+    setThumbnailImage(null);
+    setUploadedImages([]);
+    setDayCount(1);
+    setOpenDays({ 1: true });
+    setOpenItineraries({ "1-0": true });
+    setOpenCollapsibles({});
+    setOpenTagsSection(true);
+    setOpenFaqsSection(true);
+    setOpenFaqs({});
+    setSelectedBookingCategories([]);
+    setExpandedItems([]);
+    setCompletedSteps(new Set());
+  };
+
   const toggleCategory = (category: string) => {
     if (!selectedBookingCategories.includes(category)) {
       setSelectedBookingCategories([...selectedBookingCategories, category]);
@@ -480,17 +563,62 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
           <h3 className="text-2xl font-semibold mb-2" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Create Experience</h3>
           <p className="text-sm text-muted-foreground">Fill in the details to create a comprehensive experience.</p>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onClose}
-          className="close-button-experience"
-        >
-          <X className="w-5 h-5 close-icon-experience" />
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 min-w-[120px]">
+            <div className="h-2 w-20 relative overflow-hidden rounded-full bg-white/10">
+              {calculateProgress() === 0 ? (
+                <div className="h-full bg-white/30 w-full transition-all" />
+              ) : (
+                <div 
+                  className="h-full bg-gradient-to-r from-[#f24270] to-[#ffc7b5] transition-all"
+                  style={{ width: `${calculateProgress()}%` }}
+                />
+              )}
+            </div>
+            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+              {calculateProgress()}%
+            </span>
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={clearAll}
+            title="Clear All"
+            className="clear-button-experience"
+          >
+            <RotateCcw className="w-5 h-5 clear-icon-experience" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => {
+              if (isAllExpanded) {
+                setExpandedItems([]);
+              } else {
+                setExpandedItems(allAccordionItems);
+              }
+            }}
+            title={isAllExpanded ? "Collapse All" : "Expand All"}
+            className="collapse-expand-button-experience"
+          >
+            {isAllExpanded ? (
+              <ChevronUp className="w-5 h-5 collapse-expand-icon-experience" />
+            ) : (
+              <ChevronDown className="w-5 h-5 collapse-expand-icon-experience" />
+            )}
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose}
+            className="close-button-experience"
+          >
+            <X className="w-5 h-5 close-icon-experience" />
+          </Button>
+        </div>
       </div>
 
-      <Accordion type="multiple" defaultValue={[]} className="space-y-4">
+      <Accordion type="multiple" value={expandedItems} onValueChange={setExpandedItems} className="space-y-4">
         {/* Section 1: Basic Information */}
         <AccordionItem value="basic" className="border rounded-lg px-4 bg-card/50">
           <AccordionTrigger className="text-lg font-semibold hover:no-underline" style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
@@ -517,6 +645,16 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 value={data.description}
                 onChange={(e) => updateField('description', e.target.value)}
               />
+            </div>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('basic')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -678,6 +816,16 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 )}
               </div>
             </div>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('media')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
@@ -737,6 +885,16 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 value={data.price}
                 onChange={(e) => updateField('price', e.target.value)}
               />
+            </div>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('location')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -904,6 +1062,16 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 </Collapsible>
               ))}
             </div>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('schedule')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
@@ -1065,6 +1233,16 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 );
               })}
             </div>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('booking')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
@@ -1193,6 +1371,18 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
                 </CollapsibleContent>
               </div>
             </Collapsible>
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="button"
+                onClick={() => goToNextStep('tags')}
+                className="gap-2"
+                style={{ background: 'linear-gradient(to right, #f24270, #ffc7b5)' }}
+                disabled
+                title="This is the last step"
+              >
+                Complete <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -1214,6 +1404,24 @@ export function ExperienceForm({ data, onChange, onClose }: { data: ExperienceDa
         </Button>
       </div>
       <style>{`
+        .clear-button-experience:hover {
+          background: linear-gradient(to right, #f24270, #ffc7b5);
+        }
+        .clear-icon-experience {
+          transition: color 0.2s;
+        }
+        .clear-button-experience:hover .clear-icon-experience {
+          color: white;
+        }
+        .collapse-expand-button-experience:hover {
+          background: linear-gradient(to right, #f24270, #ffc7b5);
+        }
+        .collapse-expand-icon-experience {
+          transition: color 0.2s;
+        }
+        .collapse-expand-button-experience:hover .collapse-expand-icon-experience {
+          color: white;
+        }
         .close-button-experience:hover {
           background: linear-gradient(to right, #f24270, #ffc7b5);
         }

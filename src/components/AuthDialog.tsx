@@ -107,11 +107,7 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className={`sm:max-w-[420px] ${activeTab === 'signup' ? 'max-h-[95vh]' : 'max-h-[85vh]'} ${activeTab === 'signup' ? 'overflow-hidden' : 'overflow-y-auto'} border-2 border-transparent backdrop-blur-xl shadow-2xl rounded-2xl transition-all duration-700 ${
-          activeTab === 'signup' 
-            ? 'signup-gradient-rich' 
-            : 'experience-gradient-bg'
-        }`}
+        className={`sm:max-w-[420px] ${activeTab === 'signup' ? 'max-h-[95vh]' : 'max-h-[85vh]'} ${activeTab === 'signup' ? 'overflow-hidden' : 'overflow-y-auto'} ${activeTab === 'signup' ? 'auth-dialog-glassy-signup' : 'auth-dialog-glassy-signin'} shadow-2xl rounded-2xl transition-all duration-700`}
       >
         <DialogHeader className={activeTab === 'signup' ? 'pb-2' : ''}>
           <DialogTitle className={`${activeTab === 'signup' ? 'text-xl' : 'text-2xl'} font-bold text-white`}>Seller Portal</DialogTitle>
@@ -121,9 +117,31 @@ export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         </DialogHeader>
 
         <Tabs defaultValue="signin" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
-            <TabsTrigger value="signin" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">Sign Up</TabsTrigger>
+          <TabsList className={`grid w-full grid-cols-2 border transition-all duration-500 ${
+            activeTab === 'signin' 
+              ? 'bg-purple-500/20 border-purple-400/30' 
+              : 'bg-[#00A9F4]/20 border-[#00A9F4]/30'
+          }`}>
+            <TabsTrigger 
+              value="signin" 
+              className={`data-[state=active]:text-white text-white/70 transition-all duration-300 ${
+                activeTab === 'signin'
+                  ? 'data-[state=active]:bg-purple-500/30 data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/20'
+                  : 'data-[state=active]:bg-white/20'
+              }`}
+            >
+              Sign In
+            </TabsTrigger>
+            <TabsTrigger 
+              value="signup" 
+              className={`data-[state=active]:text-white text-white/70 transition-all duration-300 ${
+                activeTab === 'signup'
+                  ? 'data-[state=active]:bg-[#00A9F4]/30 data-[state=active]:shadow-lg data-[state=active]:shadow-[#00A9F4]/20'
+                  : 'data-[state=active]:bg-white/20'
+              }`}
+            >
+              Sign Up
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="signup" className="space-y-2">

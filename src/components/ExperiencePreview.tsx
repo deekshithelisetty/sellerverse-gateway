@@ -1,4 +1,4 @@
-import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Share2, ChevronDown } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, CheckCircle, XCircle, Sun, Moon, Sunrise, Share2, ChevronDown, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,8 +13,34 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from 'motion/react';
 import { useState } from 'react';
-export function ExperiencePreview({ data }: { data: ExperienceData }) {
+import { toast } from 'sonner';
+export function ExperiencePreview({ data, onClose }: { data: ExperienceData; onClose?: () => void }) {
   const [isImagesExpanded, setIsImagesExpanded] = useState(false);
+  
+  const handleShare = () => {
+    // Generate a unique ID for this share
+    const shareId = `exp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Store the experience data in localStorage
+    localStorage.setItem(`shared-experience-${shareId}`, JSON.stringify(data));
+    
+    // Generate the shareable URL
+    const shareUrl = `${window.location.origin}/share/${shareId}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      toast.success('Share link copied to clipboard!', {
+        description: 'You can now share this link with others.',
+        duration: 3000,
+      });
+    }).catch(() => {
+      // Fallback: show the URL in a toast if clipboard fails
+      toast.info('Share Link', {
+        description: shareUrl,
+        duration: 5000,
+      });
+    });
+  };
   
   const getInitials = (name: string) => {
     return name
@@ -95,37 +121,36 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
     
     if (hour === null) return 'Other';
     
-    if (hour >= 5 && hour < 12) return 'Morning';
-    if (hour >= 12 && hour < 17) return 'Afternoon';
-    if (hour >= 17 && hour < 22) return 'Evening';
+    // 0 to 12 (0:00 to 12:00) = Morning
+    if (hour >= 0 && hour < 12) return 'Morning';
+    // 12 to 18 (12:00 to 18:00/6 PM) = Evening
+    if (hour >= 12 && hour < 18) return 'Evening';
+    // 18 to 24 (18:00/6 PM to 24:00/midnight) = Night
     return 'Night';
   };
 
   const getTimePeriodIcon = (period: string) => {
     switch (period) {
-      case 'Morning': return <Sunrise className="w-4 h-4" />;
-      case 'Afternoon': return <Sun className="w-4 h-4" />;
-      case 'Evening':
-      case 'Night': return <Moon className="w-4 h-4" />;
-      default: return <Clock className="w-4 h-4" />;
+      case 'Morning': return <Sunrise className="w-4 h-4 text-yellow-400" />;
+      case 'Evening': return <Sun className="w-4 h-4 text-orange-400" />;
+      case 'Night': return <Moon className="w-4 h-4 text-blue-300" />;
+      default: return <Clock className="w-4 h-4 text-white" />;
     }
   };
 
-  const groupScheduleByDayAndTime = () => {
-    const grouped: { [key: number]: { [key: string]: typeof data.schedule } } = {};
+  const groupScheduleByDay = () => {
+    const grouped: { [key: number]: typeof data.schedule } = {};
     
     // Initialize all days up to dayCount
     for (let i = 1; i <= data.dayCount; i++) {
-      grouped[i] = { Morning: [], Afternoon: [], Evening: [], Night: [], Other: [] };
+      grouped[i] = [];
     }
     
     data.schedule.forEach(entry => {
       if (!grouped[entry.day]) {
-        grouped[entry.day] = { Morning: [], Afternoon: [], Evening: [], Night: [], Other: [] };
+        grouped[entry.day] = [];
       }
-      
-      const period = entry.timing ? getTimePeriod(entry.timing) : 'Other';
-      grouped[entry.day][period].push(entry);
+      grouped[entry.day].push(entry);
     });
     
     return grouped;
@@ -139,16 +164,33 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
       className="flex justify-center items-start w-full h-full"
     >
       {/* Always Maximized View */}
-      <div className="w-full h-full overflow-y-auto gradient-border-animated rounded-lg">
+      <div className="w-full h-full overflow-y-auto rounded-lg [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Content */}
         <div className="experience-gradient-bg text-white">
           {/* Top Header Bar */}
           <div className="sticky top-0 bg-white/10 backdrop-blur-sm border-b border-white/20 px-4 py-3 flex items-center justify-between z-20 max-w-4xl mx-auto">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-white hover:bg-white/20"
+              onClick={handleShare}
+              title="Share this experience"
+            >
               <Share2 className="w-4 h-4" />
             </Button>
             <h3 className="text-sm font-semibold text-white">Experience Details</h3>
-            <div className="w-8"></div>
+            {onClose && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-white hover:bg-white/20"
+                onClick={onClose}
+                title="Close preview"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+            {!onClose && <div className="w-8"></div>}
           </div>
 
           {/* Hero Image */}
@@ -180,14 +222,14 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               </Avatar>
               <div>
                 <p className="text-xs text-white/70">Created by</p>
-                <p className="text-sm font-semibold text-white">Bhuvith Trammela</p>
+                <p className="text-sm font-semibold text-white">Bhuvan Tummala</p>
               </div>
             </div>
 
             {/* Title */}
             <div>
               <h1 className="text-2xl font-bold leading-tight mb-2 text-white">
-                {data.name || 'Experience Title'}
+                {data.name || 'Experience Name'}
               </h1>
               {data.price && (
                 <div className="flex items-center gap-1 text-white">
@@ -305,7 +347,7 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
               <div className="space-y-3">
                 <h2 className="text-lg font-semibold text-white">Day Planning</h2>
                 <Accordion type="multiple" className="w-full space-y-2">
-                  {Object.entries(groupScheduleByDayAndTime()).map(([day, periods]) => (
+                  {Object.entries(groupScheduleByDay()).map(([day, entries]) => (
                     <AccordionItem key={day} value={`day-${day}`} className="border border-white/20 rounded-lg px-1 bg-white/5">
                       <AccordionTrigger className="text-sm font-semibold text-white hover:no-underline px-3">
                         <div className="flex items-center gap-2">
@@ -316,51 +358,41 @@ export function ExperiencePreview({ data }: { data: ExperienceData }) {
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="px-3 pb-3">
-                        {/* Day Activities grouped by time period */}
+                        {/* Day Activities - each entry shows its own time period */}
                         <div className="ml-4 pl-4 border-l-2 border-white/20 space-y-4">
-                          {(['Morning', 'Afternoon', 'Evening', 'Night', 'Other'] as const).map(period => {
-                            const entries = periods[period];
-                            // Only show periods that have actual data
-                            if (!entries || entries.length === 0) return null;
-
+                          {entries.map((entry, idx) => {
+                            if (!entry.heading && !entry.timing && !entry.plan) return null;
+                            
+                            const period = entry.timing ? getTimePeriod(entry.timing) : 'Other';
+                            
                             return (
-                              <div key={period} className="space-y-3">
-                                {/* Time Period Header */}
-                                {period !== 'Other' && (
-                                  <div className="flex items-center gap-2 mb-2">
+                              <div key={idx} className="space-y-2 pb-3 border-b border-white/10 last:border-0">
+                                {/* Heading */}
+                                {entry.heading && (
+                                  <h4 className="text-sm font-semibold text-white">{entry.heading}</h4>
+                                )}
+                                
+                                {/* Timing Badge with Period Icon and Label */}
+                                {entry.timing && (
+                                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/20">
                                     {getTimePeriodIcon(period)}
-                                    <span className="text-sm font-semibold text-white">{period}</span>
+                                    <span className="text-xs font-medium text-white">
+                                      {entry.timing}
+                                    </span>
+                                    {period !== 'Other' && (
+                                      <span className="text-xs font-semibold text-white/90 ml-1">
+                                        {period}
+                                      </span>
+                                    )}
                                   </div>
                                 )}
-
-                                {/* Entries for this time period */}
-                                {entries.map((entry, idx) => (
-                                  entry.heading || entry.timing || entry.plan ? (
-                                    <div key={idx} className="space-y-2 pb-3 border-b border-white/10 last:border-0">
-                                      {/* Heading */}
-                                      {entry.heading && (
-                                        <h4 className="text-sm font-semibold text-white">{entry.heading}</h4>
-                                      )}
-                                      
-                                      {/* Timing Badge */}
-                                      {entry.timing && (
-                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20">
-                                          <Clock className="w-3 h-3 text-white" />
-                                          <span className="text-xs font-medium text-white">
-                                            {entry.timing}
-                                          </span>
-                                        </div>
-                                      )}
-                                      
-                                      {/* Activity Details */}
-                                      {entry.plan && (
-                                        <div className="text-sm leading-relaxed text-white/80 space-y-1">
-                                          {formatTextWithBullets(entry.plan)}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ) : null
-                                ))}
+                                
+                                {/* Activity Details */}
+                                {entry.plan && (
+                                  <div className="text-sm leading-relaxed text-white/80 space-y-1">
+                                    {formatTextWithBullets(entry.plan)}
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
