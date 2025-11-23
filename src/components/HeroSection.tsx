@@ -14,7 +14,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-3">
+    <div className="relative h-screen flex items-center justify-center overflow-hidden pt-[104px]">
       {/* Ultra bright vibrant gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-b-[3rem]"></div>
       
@@ -24,36 +24,36 @@ const HeroSection = () => {
       <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-cyan-200 rounded-full blur-3xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
       <div className="absolute top-1/3 right-1/3 w-[500px] h-[500px] bg-gradient-to-br from-blue-100 to-pink-200 rounded-full blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
-        <div className="glass-card rounded-[3rem] p-12 md:p-16 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4">
+        <div className="glass-card rounded-[3rem] p-6 md:p-8 relative overflow-hidden">
           {/* Subtle grid pattern overlay */}
           <div className="absolute inset-0 opacity-5" style={{
             backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
             backgroundSize: '40px 40px'
           }}></div>
 
-          <div className="relative grid lg:grid-cols-2 gap-12 items-center">
+          <div className="relative grid lg:grid-cols-2 gap-6 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
-              <div className="inline-block animate-pulse hover:animate-none">
+            <div className="space-y-4">
+              <div className="inline-block animate-pulse hover:animate-none -mt-2">
                 <div className="glass px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg">
                   <span className="text-gradient">✨ Connect to ONDC Platform</span>
                 </div>
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-2">
                 Modern Service Platform —{" "}
                 <span className="text-gradient">High-level vision</span>
               </h1>
 
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
+              <p className="text-base md:text-lg text-muted-foreground max-w-xl mb-2">
                 Build a premium platform where creators can sell products and experiences, manage profiles, and track analytics—all in one dashboard.
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 <Button 
                   size="lg" 
-                  className="gradient-primary border-0 hover:shadow-lg hover:scale-105 transition-all text-base px-8 py-6 rounded-2xl group"
+                  className="gradient-primary border-0 hover:shadow-lg hover:scale-105 transition-all text-base px-6 py-4 rounded-2xl group"
                   onClick={() => setAuthDialogOpen(true)}
                 >
                   Start Your Journey
@@ -62,25 +62,10 @@ const HeroSection = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="glass border-white/20 hover:bg-white/10 text-base px-8 py-6 rounded-2xl"
+                  className="glass border-white/20 hover:bg-white/10 text-base px-6 py-4 rounded-2xl"
                 >
                   Learn More
                 </Button>
-              </div>
-
-              {/* Service Tags */}
-              <div className="grid grid-cols-2 gap-3 pt-6">
-                {services.map((service, index) => (
-                  <div 
-                    key={index}
-                    className="glass-card rounded-2xl p-4 hover:scale-105 transition-transform cursor-pointer group"
-                  >
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                      <service.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <p className="text-sm font-semibold">{service.label}</p>
-                  </div>
-                ))}
               </div>
             </div>
 
@@ -113,7 +98,39 @@ const HeroSection = () => {
                     <span className="text-xs font-semibold whitespace-nowrap">Instant Setup</span>
                   </div>
                 </div>
+
+                <div className="absolute top-1/2 -left-8 glass-card rounded-2xl px-4 py-3 animate-float-delayed shadow-xl" style={{ animationDelay: '0.3s' }}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                    <span className="text-xs font-semibold whitespace-nowrap">Buyer</span>
+                  </div>
+                </div>
+
+                <div className="absolute top-3/4 -right-8 glass-card rounded-2xl px-4 py-3 animate-float shadow-xl" style={{ animationDelay: '0.6s' }}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></div>
+                    <span className="text-xs font-semibold whitespace-nowrap">Seller</span>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+
+          {/* Service Tags - Horizontal Scrolling - Full Width */}
+          <div className="relative overflow-hidden pt-4 mt-4 w-full">
+            <div className="flex gap-4 animate-scroll-left">
+              {/* Duplicate services for seamless loop */}
+              {[...services, ...services].map((service, index) => (
+                <div 
+                  key={index}
+                  className="glass-card rounded-2xl p-4 hover:scale-105 transition-transform cursor-pointer group flex-shrink-0 min-w-[180px]"
+                >
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-sm font-semibold">{service.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -130,12 +147,25 @@ const HeroSection = () => {
           50% { transform: translateY(-15px); }
         }
 
+        @keyframes scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
 
         .animate-float-delayed {
           animation: float-delayed 4s ease-in-out infinite;
+        }
+
+        .animate-scroll-left {
+          animation: scroll-left 20s linear infinite;
         }
       `}</style>
       <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useEffect, useRef, useState } from "react";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }).max(100, { message: "Name must be less than 100 characters" }),
@@ -21,6 +22,8 @@ type ContactFormData = z.infer<typeof contactSchema>;
 const ContactSection = () => {
   const { toast } = useToast();
   const { contactInfo } = useSettings();
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const {
     register,
     handleSubmit,
@@ -50,8 +53,33 @@ const ContactSection = () => {
     }
   };
 
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-80px 0px -50px 0px',
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <section id="contact" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
+    <section ref={sectionRef} id="contact" className="relative pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
       {/* Gradient Background matching hero */}
       <div className="absolute inset-0 gradient-mesh rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-t-[3rem] rounded-b-[3rem]"></div>
@@ -67,7 +95,7 @@ const ContactSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Side - Address Information */}
-          <div className="space-y-4">
+          <div className={`space-y-4 max-w-md ${isVisible ? 'animate-fadeInLeft' : 'opacity-0'}`}>
             <div className="glass-card rounded-3xl p-8 hover:scale-105 transition-all duration-300">
               <div className="flex items-start gap-6">
                 <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-lg">
@@ -137,7 +165,7 @@ const ContactSection = () => {
           </div>
 
           {/* Right Side - Contact Form */}
-          <div className="glass-card rounded-3xl p-8 min-h-[calc(100vh-8rem)] flex flex-col">
+          <div className={`glass-card rounded-3xl p-8 min-h-[calc(100vh-8rem)] flex flex-col ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 flex-1 flex flex-col">
               <div className="space-y-1">
                 <Label htmlFor="name" className="text-sm font-semibold">
@@ -222,6 +250,38 @@ const ContactSection = () => {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-fadeInRight {
+          animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .animate-fadeInLeft {
+          animation: fadeInLeft 0.8s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 };

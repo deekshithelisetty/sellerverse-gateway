@@ -30,19 +30,21 @@ const Index = () => {
     <div className="min-h-screen">
       <Navigation />
       <div id="home">
-        <HeroSection />
+        <SectionWrapper delay={0}>
+          <HeroSection />
+        </SectionWrapper>
       </div>
       <ScrollToTop />
       
       {/* Products Section */}
-      <SectionWrapper delay={0}>
+      <SectionWrapper delay={100}>
         <ProductsSection />
       </SectionWrapper>
       
-      {/* Creators Section */}
-      <SectionWrapper delay={100}>
+      {/* Creators Section - No animation */}
+      <div>
         <CreatorsSection />
-      </SectionWrapper>
+      </div>
 
       {/* Pricing Section */}
       <SectionWrapper delay={200}>
@@ -60,7 +62,9 @@ const Index = () => {
       </SectionWrapper>
 
       {/* Footer */}
-      <Footer />
+      <SectionWrapper delay={500}>
+        <Footer />
+      </SectionWrapper>
     </div>
   );
 };

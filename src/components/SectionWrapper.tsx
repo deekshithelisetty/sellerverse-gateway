@@ -14,18 +14,31 @@ export const SectionWrapper = ({ children, className = '', delay = 0 }: SectionW
     const element = ref.current;
     if (!element) return;
 
+    // Check if element is already in viewport on mount
+    const rect = element.getBoundingClientRect();
+    const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    if (isInViewport) {
+      setTimeout(() => {
+        setIsVisible(true);
+      }, delay);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setTimeout(() => {
             setIsVisible(true);
           }, delay);
-          observer.disconnect();
+        } else {
+          // Only reset if scrolled far enough away
+          if (entry.boundingClientRect.top > window.innerHeight * 1.5) {
+            setIsVisible(false);
+          }
         }
       },
       {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px',
+        rootMargin: '-80px 0px -50px 0px', // Account for fixed navigation
       }
     );
 
@@ -46,6 +59,7 @@ export const SectionWrapper = ({ children, className = '', delay = 0 }: SectionW
       } ${className}`}
       style={{
         transitionProperty: 'opacity, transform',
+        transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       }}
     >
       {children}

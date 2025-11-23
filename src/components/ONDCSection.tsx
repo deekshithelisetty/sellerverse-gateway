@@ -45,7 +45,7 @@ const ONDCSection = () => {
     const y = centerY + radius * Math.sin(radian);
     return { x, y };
   };
-  return <section id="ondc" className="relative pt-8 pb-16 px-6 overflow-hidden rounded-t-[3rem] rounded-b-[3rem] h-screen flex items-center" style={{ scrollMarginTop: '4rem' }}>
+  return <section id="ondc" className="relative pb-16 px-6 overflow-hidden rounded-t-[3rem] rounded-b-[3rem] h-screen flex items-center" style={{ scrollMarginTop: '4rem' }}>
       {/* Crystal clear glass effect background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-100/80 via-indigo-100/80 to-purple-100/80 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30"></div>
       

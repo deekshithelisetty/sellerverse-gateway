@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Zap, Crown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
 const PricingSection = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const plans = [{
     name: "Starter",
     icon: Zap,
@@ -29,7 +33,33 @@ const PricingSection = () => {
     gradient: "from-orange-500 to-rose-500",
     popular: false
   }];
-  return <section id="pricing" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-80px 0px -50px 0px',
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return <section ref={sectionRef} id="pricing" className="relative pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
       {/* Vibrant background matching hero */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
@@ -51,9 +81,19 @@ const PricingSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 items-center">
-          {plans.map((plan, index) => <div key={index} className={`relative group ${plan.popular ? 'md:-mt-8 md:scale-110' : ''}`} style={{
-          animation: `fade-in 0.6s ease-out ${index * 0.2}s both`
-        }}>
+          {plans.map((plan, index) => {
+            let animationClass = '';
+            if (isVisible) {
+              if (index === 0) {
+                animationClass = 'animate-fadeInLeft';
+              } else if (index === 2) {
+                animationClass = 'animate-fadeInRight';
+              } else {
+                animationClass = 'animate-fadeInCenter';
+              }
+            }
+            
+            return <div key={index} className={`relative group ${plan.popular ? 'md:-mt-8 md:scale-110' : ''} ${animationClass} ${!isVisible ? 'opacity-0' : ''}`}>
               {plan.popular && <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-20">
                   <div className="glass-card rounded-full px-4 py-1.5 text-sm font-semibold bg-white/20 border border-white/30">
                     Most Popular
@@ -90,7 +130,8 @@ const PricingSection = () => {
                     </div>)}
                 </div>
               </div>
-            </div>)}
+            </div>;
+          })}
         </div>
 
         {/* Money back guarantee */}
@@ -100,15 +141,50 @@ const PricingSection = () => {
       </div>
 
       <style>{`
-        @keyframes fade-in {
+        @keyframes fadeInRight {
           from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeInCenter {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
           to {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        .animate-fadeInRight {
+          animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .animate-fadeInLeft {
+          animation: fadeInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-fadeInCenter {
+          animation: fadeInCenter 0.8s ease-out forwards;
+          animation-delay: 0.2s;
         }
       `}</style>
     </section>;

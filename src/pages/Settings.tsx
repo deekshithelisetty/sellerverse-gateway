@@ -185,20 +185,28 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2 mb-6 glass-card border-white/20">
+        <div className="flex justify-center mb-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2 glass-card border-white/20">
           <TabsTrigger 
             value="general" 
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white"
+            className="data-[state=active]:text-white settings-tab-trigger"
           >
             General Settings
           </TabsTrigger>
           <TabsTrigger 
             value="super-admin" 
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white"
+            className="data-[state=active]:text-white settings-tab-trigger"
           >
             Super Admin Setting
           </TabsTrigger>
         </TabsList>
+        </div>
+
+        <style>{`
+          .settings-tab-trigger[data-state="active"] {
+            background: linear-gradient(to bottom, #232526, #414345) !important;
+          }
+        `}</style>
 
         <TabsContent value="general" className="space-y-4">
           {/* First Row: Font Settings, Language, Theme */}

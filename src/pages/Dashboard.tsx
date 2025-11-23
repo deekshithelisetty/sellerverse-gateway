@@ -189,7 +189,7 @@ function DashboardContent() {
             {recentActivities.map((activity) => {
               const Icon = activity.icon;
               return (
-                <div key={activity.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+                <div key={activity.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-accent/50 transition-colors">
                   <div className="p-2 rounded-full bg-primary/10">
                     <Icon className="h-4 w-4 text-primary" />
                   </div>

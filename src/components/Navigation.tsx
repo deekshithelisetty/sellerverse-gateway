@@ -14,25 +14,28 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const navHeight = 65; // Reduced navigation height offset
+      const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = sectionTop - navHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      setActiveSection(sectionId);
+    }
+  };
+
   const scrollToHome = () => {
     if (location.pathname === '/') {
-      const homeSection = document.getElementById("home");
-      if (homeSection) {
-        homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        setActiveSection("home");
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      scrollToSection("home");
     } else {
       navigate('/');
-      // Scroll to top after navigation
       setTimeout(() => {
-        const homeSection = document.getElementById("home");
-        if (homeSection) {
-          homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        scrollToSection("home");
       }, 100);
     }
   };
@@ -127,11 +130,7 @@ const Navigation = () => {
               href="#home"
               onClick={(e) => {
                 e.preventDefault();
-                const homeSection = document.getElementById("home");
-                if (homeSection) {
-                  homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("home");
-                }
+                scrollToSection("home");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "home" || activeSection === ""
@@ -145,11 +144,7 @@ const Navigation = () => {
               href="#products"
               onClick={(e) => {
                 e.preventDefault();
-                const section = document.getElementById("products");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("products");
-                }
+                scrollToSection("products");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "products"
@@ -163,11 +158,7 @@ const Navigation = () => {
               href="#creators"
               onClick={(e) => {
                 e.preventDefault();
-                const section = document.getElementById("creators");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("creators");
-                }
+                scrollToSection("creators");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "creators"
@@ -181,11 +172,7 @@ const Navigation = () => {
               href="#pricing"
               onClick={(e) => {
                 e.preventDefault();
-                const section = document.getElementById("pricing");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("pricing");
-                }
+                scrollToSection("pricing");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "pricing"
@@ -199,11 +186,7 @@ const Navigation = () => {
               href="#ondc"
               onClick={(e) => {
                 e.preventDefault();
-                const section = document.getElementById("ondc");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("ondc");
-                }
+                scrollToSection("ondc");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "ondc"
@@ -217,11 +200,7 @@ const Navigation = () => {
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                const section = document.getElementById("contact");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setActiveSection("contact");
-                }
+                scrollToSection("contact");
               }}
               className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === "contact"

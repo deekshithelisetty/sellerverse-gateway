@@ -44,8 +44,8 @@ const CREATORS = [
 
 function getSectionClass(theme: string | undefined) {
   return theme === "dark"
-    ? "bg-destructive text-secondary px-8 py-12"
-    : "bg-accent px-8 py-12"
+    ? "bg-destructive text-secondary px-8 pb-12"
+    : "bg-accent px-8 pb-12"
 }
 
 function getReviewStarsClass(theme: string | undefined) {
@@ -70,7 +70,7 @@ const CreatorsSection = () => {
   const { theme } = useTheme();
 
   return (
-    <section id="creators" className={getSectionClass(theme)} style={{ scrollMarginTop: '4rem' }}>
+    <section id="creators" className={getSectionClass(theme)} style={{ scrollMarginTop: '4.5rem' }}>
       <div className="relative z-10">
         <h3 className="text-center text-4xl font-bold mb-6 !text-foreground">
           Success Stories from Our Creators

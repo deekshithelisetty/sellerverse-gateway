@@ -1,7 +1,10 @@
 import { Link2, Palette, ShoppingCart, BarChart3, Calendar, Mail, Globe, Zap } from "lucide-react";
 import { GlareCard } from "@/components/ui/glare-card";
+import { useEffect, useRef, useState } from "react";
 
 const ProductsSection = () => {
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const features = [
     {
       icon: Link2,
@@ -53,8 +56,42 @@ const ProductsSection = () => {
     }
   ];
 
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    cardRefs.current.forEach((card, index) => {
+      if (!card) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisibleCards((prev) => new Set([...prev, index]));
+          } else {
+            // Reset when leaving viewport so it can animate again
+            setVisibleCards((prev) => {
+              const newSet = new Set(prev);
+              newSet.delete(index);
+              return newSet;
+            });
+          }
+        },
+        {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px',
+        }
+      );
+
+      observer.observe(card);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, []);
+
   return (
-    <section id="products" className="relative pt-8 pb-16 px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
+    <section id="products" className="relative h-screen flex items-center px-6 overflow-hidden" style={{ scrollMarginTop: '4rem' }}>
       {/* Vibrant background matching PricingSection */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-[3rem] rounded-b-[3rem]"></div>
       <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full blur-3xl opacity-70 animate-pulse"></div>
@@ -66,8 +103,8 @@ const ProductsSection = () => {
       }}></div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-6">
+        <div className="text-center mb-6 -mt-12">
+          <h2 className="text-4xl font-bold mb-2">
             Everything You Need to Succeed
           </h2>
           <p className="text-sm text-muted-foreground whitespace-nowrap">
@@ -75,21 +112,40 @@ const ProductsSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-4">
-          {features.map((feature, index) => (
-            <GlareCard 
-              key={index}
-              className="glass-card rounded-2xl p-6 group cursor-pointer"
-            >
-              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <feature.icon className="w-7 h-7 text-white" />
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((feature, index) => {
+            const isVisible = visibleCards.has(index);
+            return (
+              <div
+                key={index}
+                ref={(el) => (cardRefs.current[index] = el)}
+                className={`transition-all duration-700 ease-out ${
+                  isVisible
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                }`}
+                style={{
+                  transitionDelay: `${index * 100}ms`,
+                  transitionProperty: 'opacity, transform',
+                  transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                }}
+              >
+                <GlareCard 
+                  className="glass-card rounded-2xl p-6 group cursor-pointer"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                      <feature.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold leading-tight">{feature.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </GlareCard>
               </div>
-              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
-            </GlareCard>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

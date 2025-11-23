@@ -1,9 +1,12 @@
 import { Facebook, Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useEffect, useRef, useState } from "react";
 
 const Footer = () => {
   const { heroPageLogo } = useSettings();
   const currentYear = new Date().getFullYear();
+  const [isVisible, setIsVisible] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
 
   const footerLinks = {
     product: [
@@ -40,8 +43,37 @@ const Footer = () => {
     { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
+  useEffect(() => {
+    const element = footerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-80px 0px -50px 0px',
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <footer className="relative py-12 px-6 overflow-hidden">
+    <footer ref={footerRef} className={`relative py-12 px-6 overflow-hidden transition-all duration-700 ease-out ${
+      isVisible
+        ? 'opacity-100 translate-y-0'
+        : 'opacity-0 translate-y-8'
+    }`}>
       {/* Gradient Background matching hero */}
       <div className="absolute inset-0 gradient-mesh rounded-t-[3rem]"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-t-[3rem]"></div>
