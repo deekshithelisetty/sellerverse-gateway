@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { CategoryProvider } from "@/contexts/CategoryContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SharedExperience from "./pages/SharedExperience";
@@ -18,7 +19,8 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <AuthProvider>
         <SettingsProvider>
-          <TooltipProvider>
+          <CategoryProvider>
+            <TooltipProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -30,7 +32,8 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
-          </TooltipProvider>
+            </TooltipProvider>
+          </CategoryProvider>
         </SettingsProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -10,6 +10,8 @@ import Settings from '@/pages/Settings';
 import NBBLSettlement from '@/pages/NBBLSettlement';
 import Profile from '@/pages/Profile';
 import Hookpoint from '@/pages/Hookpoint';
+import CategoryManagement from '@/pages/CategoryManagement';
+import SubcategoryProducts from '@/pages/SubcategoryProducts';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -363,6 +365,7 @@ export default function Dashboard() {
                   <main className="h-full overflow-auto p-3">
                     <Routes>
                       <Route index element={<DashboardContent />} />
+                      <Route path="category-management" element={<CategoryManagement />} />
                       <Route path="ondc" element={
                         <ONDCRegistrationForm 
                           showBenefits={showONDCBenefits}
@@ -376,6 +379,12 @@ export default function Dashboard() {
                           setShowForm={setShowForm}
                         />
                       } />
+                      <Route path="experience" element={
+                        <Experiences 
+                          showForm={showForm}
+                          setShowForm={setShowForm}
+                        />
+                      } />
                       <Route path="profile" element={<Profile />} />
                       <Route path="retail" element={<div>
                         <h2 className="text-3xl font-bold mb-6">Retail Management</h2>
@@ -383,6 +392,7 @@ export default function Dashboard() {
                       </div>} />
                       <Route path="settings" element={<Settings />} />
                       <Route path="hookpoint" element={<Hookpoint />} />
+                      <Route path=":categoryId/:subcategoryId" element={<SubcategoryProducts />} />
                     </Routes>
                   </main>
                 </div>

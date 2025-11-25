@@ -25,6 +25,7 @@ const fontNames = [
 ];
 
 const defaultCategoryOptions = [
+  'Experience',
   'Retail',
   'Products',
   'Mobility',
@@ -201,7 +202,7 @@ export default function Settings() {
                 value="super-admin" 
                 className="data-[state=active]:text-white settings-tab-trigger"
               >
-                Super Admin Setting
+                Hero Page Setting
               </TabsTrigger>
             </TabsList>
           </div>

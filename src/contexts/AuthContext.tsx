@@ -33,9 +33,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const getRoleFromEmail = (email: string): 'admin' | 'user' | 'seller' => {
-    if (email === 'admin@tahbi.com') {
+    if (email === 'admin@tabhi.com') {
       return 'admin';
-    } else if (email === 'user@tahbi.com') {
+    } else if (email === 'user@tabhi.com') {
       return 'user';
     }
     return 'seller';
