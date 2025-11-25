@@ -222,7 +222,10 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [showONDCBenefits, setShowONDCBenefits] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
-  const [sidebarHovered, setSidebarHovered] = useState(false);
+  
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
   
   useEffect(() => {
     // Only redirect if auth has finished loading and user is still null
@@ -332,16 +335,26 @@ export default function Dashboard() {
             <div className="relative flex gap-2 flex-1 min-h-0 w-full overflow-hidden">
               {/* Left Section - Menu */}
               <aside 
-                className={`${sidebarHovered ? 'w-[240px]' : 'w-[80px]'} flex-shrink-0 transition-all duration-300 h-full`}
-                onMouseEnter={() => setSidebarHovered(true)}
-                onMouseLeave={() => setSidebarHovered(false)}
+                className={`${!sidebarCollapsed ? 'w-[240px]' : 'w-[80px]'} flex-shrink-0 h-full relative transition-[width] duration-300 ease-in-out`}
               >
-                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4 overflow-hidden">
+                <div className="h-full rounded-2xl border border-white/20 bg-background/30 backdrop-blur-sm shadow-lg p-4 overflow-hidden will-change-contents">
                   <AppSidebar 
-                    collapsed={!sidebarHovered} 
-                    onToggle={() => {}} 
+                    collapsed={sidebarCollapsed} 
+                    onToggle={toggleSidebar} 
                   />
                 </div>
+                {/* Collapse/Expand Icon Button - Middle right of sidebar */}
+                <button
+                  onClick={toggleSidebar}
+                  className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm border border-white/20 shadow-lg flex items-center justify-center hover:bg-background/70"
+                  aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
+                  {sidebarCollapsed ? (
+                    <ChevronRight className="w-3 h-3 text-black" />
+                  ) : (
+                    <ChevronLeft className="w-3 h-3 text-black" />
+                  )}
+                </button>
               </aside>
 
               {/* Center Section - Main Content */}

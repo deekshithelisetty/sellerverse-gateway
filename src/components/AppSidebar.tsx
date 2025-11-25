@@ -1,7 +1,7 @@
 import { Home, Network, Sparkles, Settings, Landmark, Package, Webhook } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useSettings } from '@/contexts/SettingsContext';
-import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '@/contexts/AuthContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const menuItems = [
@@ -21,14 +21,30 @@ export function AppSidebar({
   onToggle: () => void;
 }) {
   const { interestedCategories } = useSettings();
+  const { user } = useAuth();
   
   // Use collapsed prop to determine if expanded
   const isExpanded = !collapsed;
+  
+  // Filter menu items based on role
+  const getFilteredMenuItems = () => {
+    if (user?.role === 'admin') {
+      // Admin sees all menus including Hookpoint
+      return menuItems;
+    } else if (user?.role === 'user') {
+      // User sees all menus except Hookpoint
+      return menuItems.filter(item => item.title !== 'Hookpoint');
+    }
+    // Seller sees all menus except Hookpoint
+    return menuItems.filter(item => item.title !== 'Hookpoint');
+  };
+  
+  const filteredMenuItems = getFilteredMenuItems();
 
   // Split menu items: before Settings, Settings, and after Settings
-  const settingsIndex = menuItems.findIndex(item => item.title === 'Settings');
-  const beforeSettings = menuItems.slice(0, settingsIndex);
-  const settingsAndAfter = menuItems.slice(settingsIndex);
+  const settingsIndex = filteredMenuItems.findIndex(item => item.title === 'Settings');
+  const beforeSettings = filteredMenuItems.slice(0, settingsIndex);
+  const settingsAndAfter = filteredMenuItems.slice(settingsIndex);
 
   // Create dynamic category items
   const categoryGradients = [
@@ -53,35 +69,46 @@ export function AppSidebar({
         to={item.url}
         end={item.url === '/dashboard'}
         className={({ isActive }) =>
-          !isExpanded
-            ? `group flex items-center justify-center px-0 w-full py-2 transition-all`
-            : `group flex items-center gap-3 px-2 py-1.5 rounded-xl transition-all ${
-                isActive
-                  ? 'glass border border-white/10'
-                  : 'hover:glass hover:border hover:border-white/10'
-              }`
+          `group flex items-center ${!isExpanded ? 'justify-center px-0' : 'gap-3 px-2'} w-full py-2 ${isExpanded ? 'rounded-xl' : ''} transition-all duration-300 ease-in-out ${
+            isExpanded && isActive
+              ? 'glass border border-white/10'
+              : isExpanded
+              ? 'hover:glass hover:border hover:border-white/10'
+              : ''
+          }`
         }
       >
-        <div className={`${!isExpanded ? 'w-9 h-9' : 'w-8 h-8'} rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center group-hover:scale-110 transition-transform ${!isExpanded ? 'shadow-lg' : 'shadow-md'} flex-shrink-0`}>
-          <item.icon className={`${!isExpanded ? 'h-5 w-5' : 'h-4 w-4'} text-white`} strokeWidth={2} />
+        <div 
+          className={`w-8 h-8 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center flex-shrink-0 transition-all duration-300 ease-in-out ${!isExpanded ? 'shadow-lg' : 'shadow-md'}`}
+          style={{ 
+            transform: !isExpanded ? 'scale(1.125)' : 'scale(1)',
+            transitionDelay: !isExpanded ? '100ms' : '0ms'
+          }}
+        >
+          <item.icon 
+            className={`h-4 w-4 text-white transition-all duration-300 ease-in-out`}
+            strokeWidth={2}
+            style={{ 
+              transform: !isExpanded ? 'scale(1.25)' : 'scale(1)',
+              transitionDelay: !isExpanded ? '100ms' : '0ms'
+            }}
+          />
         </div>
-        {isExpanded && (
-          <div className="flex flex-col">
-            <span 
-              className={`text-xs font-semibold ${
-                item.title === 'Hookpoint' 
-                  ? 'bg-clip-text text-transparent' 
-                  : ''
-              }`}
-              style={item.title === 'Hookpoint' ? { backgroundImage: 'linear-gradient(to right, #FF512F, #DD2476)' } : {}}
-            >
-              {item.title}
-            </span>
-            {item.subtitle && (
-              <span className="text-[10px] font-normal opacity-80 leading-tight">{item.subtitle}</span>
-            )}
-          </div>
-        )}
+        <div className={`flex flex-col overflow-hidden transition-[max-width,opacity] duration-300 ease-in-out ${!isExpanded ? 'max-w-0 opacity-0 delay-0' : 'max-w-[160px] opacity-100 delay-0'}`}>
+          <span 
+            className={`text-xs font-semibold whitespace-nowrap ${
+              item.title === 'Hookpoint' 
+                ? 'bg-clip-text text-transparent' 
+                : ''
+            }`}
+            style={item.title === 'Hookpoint' ? { backgroundImage: 'linear-gradient(to right, #FF512F, #DD2476)' } : {}}
+          >
+            {item.title}
+          </span>
+          {item.subtitle && (
+            <span className="text-[10px] font-normal opacity-80 leading-tight whitespace-nowrap">{item.subtitle}</span>
+          )}
+        </div>
       </NavLink>
     );
 
@@ -100,20 +127,12 @@ export function AppSidebar({
             </div>
           ))}
 
-          {/* Render dynamic categories with animation */}
-          <AnimatePresence>
-            {dynamicCategories.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                {renderMenuItem(item, beforeSettings.length + index)}
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {/* Render dynamic categories */}
+          {dynamicCategories.map((item, index) => (
+            <div key={item.title}>
+              {renderMenuItem(item, beforeSettings.length + index)}
+            </div>
+          ))}
 
           {/* Render Settings and items after Settings */}
           {settingsAndAfter.map((item, index) => (

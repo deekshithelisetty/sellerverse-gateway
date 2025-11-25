@@ -4,7 +4,7 @@ interface User {
   id: string;
   email: string;
   phone?: string;
-  role: 'seller';
+  role: 'seller' | 'admin' | 'user';
 }
 
 interface AuthContextType {
@@ -32,6 +32,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
+  const getRoleFromEmail = (email: string): 'admin' | 'user' | 'seller' => {
+    if (email === 'admin@tahbi.com') {
+      return 'admin';
+    } else if (email === 'user@tahbi.com') {
+      return 'user';
+    }
+    return 'seller';
+  };
+
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
     // Mock authentication - in real app this would call backend
@@ -39,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const mockUser: User = {
       id: '1',
       email,
-      role: 'seller'
+      role: getRoleFromEmail(email)
     };
     setUser(mockUser);
     localStorage.setItem('mockUser', JSON.stringify(mockUser));
@@ -53,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: '1',
       email,
       phone,
-      role: 'seller'
+      role: getRoleFromEmail(email)
     };
     setUser(mockUser);
     localStorage.setItem('mockUser', JSON.stringify(mockUser));
@@ -76,11 +85,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithOTP = async (emailOrPhone: string) => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
+    const email = emailOrPhone.includes('@') ? emailOrPhone : undefined;
     const mockUser: User = {
       id: '1',
-      email: emailOrPhone.includes('@') ? emailOrPhone : undefined,
-      phone: !emailOrPhone.includes('@') ? emailOrPhone : undefined,
-      role: 'seller'
+      email,
+      phone: !email ? emailOrPhone : undefined,
+      role: email ? getRoleFromEmail(email) : 'seller'
     };
     setUser(mockUser);
     localStorage.setItem('mockUser', JSON.stringify(mockUser));

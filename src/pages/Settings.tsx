@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSettings, themes, languages } from '@/contexts/SettingsContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -43,6 +44,8 @@ export default function Settings() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const showSuperAdminTab = user?.role === 'admin';
 
   const {
     fontSize,
@@ -185,22 +188,24 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <div className="flex justify-center mb-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2 glass-card border-white/20">
-          <TabsTrigger 
-            value="general" 
-            className="data-[state=active]:text-white settings-tab-trigger"
-          >
-            General Settings
-          </TabsTrigger>
-          <TabsTrigger 
-            value="super-admin" 
-            className="data-[state=active]:text-white settings-tab-trigger"
-          >
-            Super Admin Setting
-          </TabsTrigger>
-        </TabsList>
-        </div>
+        {showSuperAdminTab && (
+          <div className="flex justify-center mb-6">
+            <TabsList className="grid w-full max-w-md grid-cols-2 glass-card border-white/20">
+              <TabsTrigger 
+                value="general" 
+                className="data-[state=active]:text-white settings-tab-trigger"
+              >
+                General Settings
+              </TabsTrigger>
+              <TabsTrigger 
+                value="super-admin" 
+                className="data-[state=active]:text-white settings-tab-trigger"
+              >
+                Super Admin Setting
+              </TabsTrigger>
+            </TabsList>
+          </div>
+        )}
 
         <style>{`
           .settings-tab-trigger[data-state="active"] {
@@ -448,7 +453,8 @@ export default function Settings() {
       </div>
         </TabsContent>
 
-        <TabsContent value="super-admin" className="space-y-4">
+        {showSuperAdminTab && (
+          <TabsContent value="super-admin" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Hero Page Logo Upload */}
             <motion.div
@@ -640,6 +646,7 @@ export default function Settings() {
             </motion.div>
           </div>
         </TabsContent>
+        )}
       </Tabs>
 
       {/* Add Category Dialog */}
