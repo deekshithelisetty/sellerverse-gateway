@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ExperiencePreview } from '@/components/ExperiencePreview';
 import { ExperienceData } from './Experiences';
-
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 export default function SharedExperience() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
